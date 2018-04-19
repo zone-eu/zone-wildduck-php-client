@@ -18,10 +18,11 @@ class Client
 {
     /**
      * @param string $name
+     * @param array $arguments
      * @return mixed
      * @throws ApiClassNotFoundException
      */
-    public static function __callStatic(string $name)
+    public static function __callStatic(string $name, array $arguments = [])
     {
         $class = "Wildduck\\Api\\" . ucfirst($name);
         if (!class_exists($class)) {

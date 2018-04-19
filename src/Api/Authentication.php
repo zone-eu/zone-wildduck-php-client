@@ -27,6 +27,8 @@ class Authentication
 
         try {
             $res = Request::post('authentication.authenticate', $params);
+
+            dd($res);
         } catch (ServerException $e) {
             dd($e->getResponse()->getStatusCode() . ' ' . $e->getResponse()->getReasonPhrase());
         } catch (GuzzleException $e) {
