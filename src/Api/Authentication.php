@@ -2,17 +2,17 @@
 
 namespace Wildduck\Api;
 
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\ServerException;
-use Illuminate\Validation\Validator;
+use Validator;
+use Wildduck\Exceptions\UriNotFoundException;
 use Wildduck\Http\Request;
+use Wildduck\Util\Uri;
 
 class Authentication
 {
 
     public function authenticate(array $params)
     {
-        $validator = Validator::make($params, [
+        $validator = app()['validator']->make($params, [
             'username' => 'required|string',
             'password' => 'required|string',
             'protocol' => 'sometimes|string',
@@ -26,12 +26,8 @@ class Authentication
         }
 
         try {
-            $res = Request::post('authentication.authenticate', $params);
-
-            dd($res);
-        } catch (ServerException $e) {
-            dd($e->getResponse()->getStatusCode() . ' ' . $e->getResponse()->getReasonPhrase());
-        } catch (GuzzleException $e) {
+            return Request::post(Uri::get('authentication.authenticate'), $params);
+        } catch (UriNotFoundException $e) {
 
         }
     }

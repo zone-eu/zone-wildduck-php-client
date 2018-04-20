@@ -4,6 +4,7 @@ namespace Wildduck;
 
 use Wildduck\Api\Address;
 use Wildduck\Api\Authentication;
+use Wildduck\Api\Users;
 use Wildduck\Exceptions\ApiClassNotFoundException;
 
 /**
@@ -11,8 +12,9 @@ use Wildduck\Exceptions\ApiClassNotFoundException;
  *
  * @package Wildduck
  *
- * @method Address address()
- * @method Authentication authentication()
+ * @method static Address address()
+ * @method static Authentication authentication()
+ * @method static Users users()
  */
 class Client
 {

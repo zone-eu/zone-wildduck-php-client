@@ -3,7 +3,10 @@
 namespace Wildduck\Http;
 
 use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\ServerException;
+use Wildduck\Exceptions\UriNotFoundException;
+use Wildduck\Util\Uri;
 
 /**
  * Class Request
@@ -11,14 +14,15 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Request
 {
+    const HTTP_OK = 0;
+    const HTTP_ERROR = 1;
 
     /**
      * @param string $uri
      * @param array $params
-     * @return ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return array
      */
-    public static function get(string $uri, array $params = []) : ResponseInterface
+    public static function get(string $uri, array $params = []) : array
     {
         return self::request('get', $uri, $params);
     }
@@ -26,10 +30,9 @@ class Request
     /**
      * @param string $uri
      * @param array $params
-     * @return ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return array
      */
-    public static function post(string $uri, array $params = []) : ResponseInterface
+    public static function post(string $uri, array $params = []) : array
     {
         return self::request('post', $uri, $params);
     }
@@ -37,10 +40,9 @@ class Request
     /**
      * @param string $uri
      * @param array $params
-     * @return ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return array
      */
-    public static function put(string $uri, array $params = []) : ResponseInterface
+    public static function put(string $uri, array $params = []) : array
     {
         return self::request('put', $uri, $params);
     }
@@ -48,10 +50,9 @@ class Request
     /**
      * @param string $uri
      * @param array $params
-     * @return mixed|\Psr\Http\Message\ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return mixed|\Psr\Http\Message\array
      */
-    public static function delete(string $uri, array $params = []) : ResponseInterface
+    public static function delete(string $uri, array $params = []) : array
     {
         return self::request('delete', $uri, $params);
     }
@@ -60,15 +61,13 @@ class Request
      * @param string $method
      * @param string $uri
      * @param array $params
-     * @return mixed|\Psr\Http\Message\ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return array
      */
-    public static function request(string $method, string $uri, array $params = []) : ResponseInterface
+    public static function request(string $method, string $uri, array $params = []) : array
     {
         $client = new Client([
             'base_uri' => config('wildduck.host'),
             'timeout' => 2.0,
-            'json' => true,
         ]);
         
         $opts = [];
@@ -77,10 +76,43 @@ class Request
             if ($method === 'get') {
                 $opts = ['query' => $params];
             } else {
-                $opts = ['body' => $params];
+                $opts = ['json' => $params];
             }
         }
 
-        return $client->request($method, $uri, $opts);
+        try {
+            $res = $client->request($method, $uri, $opts);
+
+            $body = json_decode($res->getBody()->getContents(), true);
+
+            if (isset($body['error'])) {
+                return [
+                    'code' => self::HTTP_ERROR,
+                    'status_code' => $res->getStatusCode(),
+                    'message' => $body['error'],
+                ];
+            }
+
+            return [
+                'code' => self::HTTP_OK,
+                'data' => $body,
+            ];
+        } catch (ServerException $e) {
+            $statusCode = $e->getResponse()->getStatusCode();
+            $message = json_decode($e->getResponse()->getBody()->getContents(), true);
+
+            return [
+                'code' => self::HTTP_ERROR,
+                'status_code' => $statusCode,
+                'message' => $message,
+            ];
+        } catch (GuzzleException $e) {
+            $message = $e->getMessage();
+
+            return [
+                'code' => self::HTTP_ERROR,
+                'message' => $message,
+            ];
+        }
     }
 }

@@ -2,17 +2,17 @@
 
 namespace Wildduck\Exceptions;
 
-class InvalidRequestException extends \Exception implements \Throwable
+class InvalidRequestException extends \Exception
 {
 
     private $errors;
 
-    public function __construct(array $errors)
+    public function __construct(array $errors, $code = 0, \Throwable $previous = null)
     {
         $class = get_called_class();
         $this->errors = $errors;
 
-        parent::__construct("Validation errors in $class", 0, null);
+        parent::__construct("Validation errors in $class", $code, $previous);
     }
 
     public function getErrors()

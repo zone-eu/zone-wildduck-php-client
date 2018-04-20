@@ -9,11 +9,13 @@ class Uri
     private static $uris = [
         'address.create' => '/users/:user/address',
         'authentication.authenticate' => '/authenticate',
+        'users.create' => '/users',
+        'users.delete' => '/users/:id'
     ];
 
     public static function get($keyword, $args = [])
     {
-        if (!in_array($keyword, self::$uris)) {
+        if (!array_key_exists($keyword, self::$uris)) {
             throw new UriNotFoundException($keyword);
         }
 
