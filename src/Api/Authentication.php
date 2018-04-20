@@ -3,6 +3,7 @@
 namespace Wildduck\Api;
 
 use Validator;
+use Wildduck\Exceptions\InvalidRequestException;
 use Wildduck\Exceptions\UriNotFoundException;
 use Wildduck\Http\Request;
 use Wildduck\Util\Uri;
@@ -22,7 +23,7 @@ class Authentication
         ]);
 
         if ($validator->fails()) {
-            throw new InvalidRequestException($validator->errors()->all());
+            throw new InvalidRequestException($validator);
         }
 
         try {

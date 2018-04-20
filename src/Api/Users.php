@@ -38,7 +38,7 @@ class Users
         ]);
 
         if ($validator->fails()) {
-            throw new InvalidRequestException($validator->errors()->all()); // TODO: Pass in Validator instance instead
+            throw new InvalidRequestException($validator);
         }
 
         try {
@@ -55,7 +55,7 @@ class Users
         ]);
 
         if ($validator->fails()) {
-            throw new InvalidRequestException($validator->errors()->all());
+            throw new InvalidRequestException($validator);
         }
 
         try {

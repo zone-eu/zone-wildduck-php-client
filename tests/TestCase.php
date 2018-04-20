@@ -24,25 +24,25 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ];
     }
 
-    public function testUserCreation()
-    {
-        $r = Wildduck::users()->create([
-            'username' => 'ivan',
-            'password' => 'Asd123',
-        ]);
-
-        $this->assertTrue($r['code'] === Wildduck\Http\Request::HTTP_OK);
-        $this->assertArrayHasKey('data', $r);
-        $this->assertTrue($r['data']['success']);
-        $this->assertArrayHasKey('id', $r['data']);
-
-        return $r['data']['id'];
-    }
+//    public function testUserCreation()
+//    {
+//        $r = Wildduck::users()->create([
+//            'username' => 'ivan',
+//            'password' => 'Asd123',
+//        ]);
+//
+//        $this->assertTrue($r['code'] === Wildduck\Http\Request::HTTP_OK);
+//        $this->assertArrayHasKey('data', $r);
+//        $this->assertTrue($r['data']['success']);
+//        $this->assertArrayHasKey('id', $r['data']);
+//
+//        return $r['data']['id'];
+//    }
 
     public function testLogin()
     {
         $params = [
-            'username' => 'ivan',
+            'name' => 'ivan',
             'password' => 'Asd123',
         ];
 
@@ -58,14 +58,14 @@ class TestCase extends \Orchestra\Testbench\TestCase
     /**
      * @depends testUserCreation
      */
-    public function testUserDeletion($id)
-    {
-        $r = Wildduck::users()->delete([
-            'id' => $id,
-        ]);
-
-        $this->assertTrue($r['code'] === Wildduck\Http\Request::HTTP_OK);
-        $this->assertArrayHasKey('data', $r);
-        $this->assertTrue($r['data']['success']);
-    }
+//    public function testUserDeletion($id)
+//    {
+//        $r = Wildduck::users()->delete([
+//            'id' => $id,
+//        ]);
+//
+//        $this->assertTrue($r['code'] === Wildduck\Http\Request::HTTP_OK);
+//        $this->assertArrayHasKey('data', $r);
+//        $this->assertTrue($r['data']['success']);
+//    }
 }
