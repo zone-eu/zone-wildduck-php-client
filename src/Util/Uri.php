@@ -8,6 +8,9 @@ class Uri
 {
     private static $uris = [
         'address.create' => '/users/:user/address',
+        'asps.list' => '/users/:user/asps',
+        'asps.create' => '/users/:user/asps',
+        'asps.delete' => '/users/:user/asps/:asp',
         'authentication.authenticate' => '/authenticate',
         'users.create' => '/users',
         'users.delete' => '/users/:id'

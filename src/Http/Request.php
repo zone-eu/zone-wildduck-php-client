@@ -5,8 +5,7 @@ namespace Wildduck\Http;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
-use Wildduck\Exceptions\UriNotFoundException;
-use Wildduck\Util\Uri;
+use Wildduck\Client as WildduckClient;
 
 /**
  * Class Request
@@ -66,7 +65,7 @@ class Request
     public static function request(string $method, string $uri, array $params = []) : array
     {
         $client = new Client([
-            'base_uri' => config('wildduck.host'),
+            'base_uri' => WildduckClient::instance()->getHost(),
             'timeout' => 2.0,
         ]);
         
@@ -109,10 +108,16 @@ class Request
         } catch (GuzzleException $e) {
             $message = $e->getMessage();
 
-            return [
+            $response = [
                 'code' => self::HTTP_ERROR,
                 'message' => $message,
             ];
+
+            if (WildduckClient::instance()->getDebug()) {
+                $response['details'] = $e->getTrace();
+            }
+
+            return $response;
         }
     }
 }
