@@ -4,12 +4,13 @@ namespace Wildduck\Tests;
 
 use Wildduck;
 
-class TestCase extends \Orchestra\Testbench\TestCase
+class BasicTest extends \Orchestra\Testbench\TestCase
 {
 
     protected function getEnvironmentSetUp($application)
     {
         $application['config']->set('wildduck.host', 'http://localhost:8080');
+        $application['config']->set('wildduck.debug', true);
     }
 
     protected function getPackageProviders($application)
@@ -31,6 +32,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'password' => 'Asd123',
         ]);
 
+        var_export($r);
+
         $this->assertTrue($r['code'] === Wildduck\Http\Request::HTTP_OK);
         $this->assertArrayHasKey('data', $r);
         $this->assertTrue($r['data']['success']);
@@ -47,6 +50,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ];
 
         $r = Wildduck::authentication()->authenticate($params);
+        var_export($r);
 
         $this->assertTrue($r['code'] === Wildduck\Http\Request::HTTP_OK);
         $this->assertArrayHasKey('data', $r);
@@ -63,6 +67,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $r = Wildduck::users()->delete([
             'id' => $id,
         ]);
+        var_export($r);
 
         $this->assertTrue($r['code'] === Wildduck\Http\Request::HTTP_OK);
         $this->assertArrayHasKey('data', $r);

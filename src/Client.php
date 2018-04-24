@@ -24,7 +24,7 @@ class Client
      *
      * @var Client $client
      */
-    private $client = null;
+    private static $client = null;
 
     /**
      * Wildduck Server API endpoint
@@ -39,27 +39,17 @@ class Client
     private $debug = false;
 
     /**
-     * Client constructor. Build singleton if it doesn't exist.
-     *
-     * @return Client
-     */
-    public function __construct()
-    {
-        if ($this->client === null) {
-            $this->client = $this;
-        }
-
-        return $this->client;
-    }
-
-    /**
-     * Get singleton instance.
+     * Get or create a singleton instance.
      *
      * @return Client
      */
     public static function instance()
     {
-        return new self;
+        if (self::$client === null) {
+            self::$client = new self;
+        }
+
+        return self::$client;
     }
 
     /**
