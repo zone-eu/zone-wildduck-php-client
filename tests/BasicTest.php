@@ -10,7 +10,7 @@ class BasicTest extends \Orchestra\Testbench\TestCase
     protected function getEnvironmentSetUp($application)
     {
         $application['config']->set('wildduck.host', 'http://localhost:8080');
-        $application['config']->set('wildduck.debug', true);
+        $application['config']->set('wildduck.debug', false);
     }
 
     protected function getPackageProviders($application)

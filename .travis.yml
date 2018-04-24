@@ -1,5 +1,13 @@
 language: php
 php:
   - '7.1'
+services:
+  - mongodb
+  - redis-server
+before_install:
+  - git clone https://github.com/nodemailer/wildduck.git
+  - cd wildduck
+  - npm install
+  - node server.js &
 install: composer install
 script: vendor/bin/phpunit tests
