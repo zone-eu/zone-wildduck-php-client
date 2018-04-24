@@ -9,5 +9,6 @@ before_install:
   - cd wildduck
   - npm install
   - node server.js &
+  - cd ..
 install: composer install
 script: vendor/bin/phpunit tests
