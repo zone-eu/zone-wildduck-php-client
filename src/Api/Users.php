@@ -10,6 +10,23 @@ use Wildduck\Util\Uri;
 class Users
 {
 
+    public function get(array $params)
+    {
+        $validator = app()['validator']->make($params, [
+            'id' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        try {
+            return Request::get(Uri::get('users.get', $params));
+        } catch (UriNotFoundException $e) {
+
+        }
+    }
+
     public function create(array $params)
     {
         $validator = app()['validator']->make($params, [
@@ -48,7 +65,7 @@ class Users
         }
     }
 
-    public function delete($params)
+    public function delete(array $params)
     {
         $validator = app()['validator']->make($params, [
             'id' => 'required|string',
