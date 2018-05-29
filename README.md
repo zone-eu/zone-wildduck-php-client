@@ -9,3 +9,7 @@ Requires a minimum of PHP 7 (library uses type hinting).
 ```bash
 composer install kurbar/wildduck-client
 ```
+
+## Roadmap
+
+[ ] Entity objects

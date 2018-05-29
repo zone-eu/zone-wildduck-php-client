@@ -4,6 +4,7 @@ namespace Wildduck;
 
 use Wildduck\Api\Address;
 use Wildduck\Api\Authentication;
+use Wildduck\Api\Autoreplies;
 use Wildduck\Api\Filters;
 use Wildduck\Api\Users;
 use Wildduck\Exceptions\ApiClassNotFoundException;
@@ -15,6 +16,7 @@ use Wildduck\Exceptions\ApiClassNotFoundException;
  *
  * @method static Address address()
  * @method static Authentication authentication()
+ * @method static Autoreplies autoreplies()
  * @method static Filters filters()
  * @method static Users users()
  */

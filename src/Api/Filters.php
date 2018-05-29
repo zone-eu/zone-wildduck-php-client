@@ -10,8 +10,15 @@ use Wildduck\Util\Uri;
 class Filters
 {
 
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws UriNotFoundException
+     */
     public function get(array $params)
     {
+        /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'user' => 'required|string',
             'filter' => 'required|string',
@@ -21,15 +28,18 @@ class Filters
             throw new InvalidRequestException($validator);
         }
 
-        try {
-            return Request::get(Uri::get('filters.get', $params));
-        } catch (UriNotFoundException $e) {
-
-        }
+        return Request::get(Uri::get('filters.get', $params));
     }
 
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws UriNotFoundException
+     */
     public function getByUser(array $params)
     {
+        /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'user' => 'required|string',
         ]);
@@ -38,15 +48,18 @@ class Filters
             throw new InvalidRequestException($validator);
         }
 
-        try {
-            return Request::get(Uri::get('filters.user', $params));
-        } catch (UriNotFoundException $e) {
-
-        }
+        return Request::get(Uri::get('filters.user', $params));
     }
 
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws UriNotFoundException
+     */
     public function create(array $params)
     {
+        /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'user' => 'required|string',
             'name' => 'string',
@@ -74,15 +87,18 @@ class Filters
 
         unset($params['user']);
 
-        try {
-            return Request::post(Uri::get('filters.create', $args), $params);
-        } catch (UriNotFoundException $e) {
-
-        }
+        return Request::post(Uri::get('filters.create', $args), $params);
     }
 
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws UriNotFoundException
+     */
     public function update(array $params)
     {
+        /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'user' => 'required|string',
             'filter' => 'required|string',
@@ -113,15 +129,18 @@ class Filters
         unset($params['user']);
         unset($params['filter']);
 
-        try {
-            return Request::put(Uri::get('filters.update', $args), $params);
-        } catch (UriNotFoundException $e) {
-
-        }
+        return Request::put(Uri::get('filters.update', $args), $params);
     }
 
+    /**
+     * @param array $params
+     * @return array|mixed|\Psr\Http\Message\array
+     * @throws InvalidRequestException
+     * @throws UriNotFoundException
+     */
     public function delete(array $params)
     {
+        /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'user' => 'required|string',
             'filter' => 'required|string',
@@ -131,10 +150,6 @@ class Filters
             throw new InvalidRequestException($validator);
         }
 
-        try {
-            return Request::delete(Uri::get('filters.get', $params));
-        } catch (UriNotFoundException $e) {
-
-        }
+        return Request::delete(Uri::get('filters.get', $params));
     }
 }

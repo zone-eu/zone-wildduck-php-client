@@ -2,17 +2,22 @@
 
 namespace Wildduck\Api;
 
-use Validator;
 use Wildduck\Exceptions\InvalidRequestException;
-use Wildduck\Exceptions\UriNotFoundException;
 use Wildduck\Http\Request;
 use Wildduck\Util\Uri;
 
 class Authentication
 {
 
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
     public function authenticate(array $params)
     {
+        /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'username' => 'required|string',
             'password' => 'required|string',
@@ -26,10 +31,6 @@ class Authentication
             throw new InvalidRequestException($validator);
         }
 
-        try {
-            return Request::post(Uri::get('authentication.authenticate'), $params);
-        } catch (UriNotFoundException $e) {
-
-        }
+        return Request::post(Uri::get('authentication.authenticate'), $params);
     }
 }

@@ -3,15 +3,21 @@
 namespace Wildduck\Api;
 
 use Wildduck\Exceptions\InvalidRequestException;
-use Wildduck\Exceptions\UriNotFoundException;
 use Wildduck\Http\Request;
 use Wildduck\Util\Uri;
 
 class Users
 {
 
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
     public function get(array $params)
     {
+        /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'id' => 'required|string',
         ]);
@@ -20,15 +26,18 @@ class Users
             throw new InvalidRequestException($validator);
         }
 
-        try {
-            return Request::get(Uri::get('users.get', $params));
-        } catch (UriNotFoundException $e) {
-
-        }
+        return Request::get(Uri::get('users.get', $params));
     }
 
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
     public function create(array $params)
     {
+        /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'username' => 'required|alpha_num',
             'password' => 'required',
@@ -58,15 +67,18 @@ class Users
             throw new InvalidRequestException($validator);
         }
 
-        try {
-            return Request::post(Uri::get('users.create'), $params);
-        } catch (UriNotFoundException $e) {
-
-        }
+        return Request::post(Uri::get('users.create'), $params);
     }
 
+    /**
+     * @param array $params
+     * @return array|mixed|\Psr\Http\Message\array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
     public function delete(array $params)
     {
+        /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'id' => 'required|string',
         ]);
@@ -75,10 +87,6 @@ class Users
             throw new InvalidRequestException($validator);
         }
 
-        try {
-            return Request::delete(Uri::get('users.delete', $params));
-        } catch (UriNotFoundException $e) {
-
-        }
+        return Request::delete(Uri::get('users.delete', $params));
     }
 }

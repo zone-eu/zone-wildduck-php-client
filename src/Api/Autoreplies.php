@@ -6,16 +6,15 @@ use Wildduck\Exceptions\InvalidRequestException;
 use Wildduck\Http\Request;
 use Wildduck\Util\Uri;
 
-class ApplicationPasswords
+class Autoreplies
 {
-
     /**
      * @param array $params
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
      */
-    public function all(array $params)
+    public function get(array $params)
     {
         /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
@@ -26,7 +25,7 @@ class ApplicationPasswords
             throw new InvalidRequestException($validator);
         }
 
-        return Request::get(Uri::get('asps.list', $params));
+        return Request::get(Uri::get('autoreplies.get', $params));
     }
 
     /**
@@ -35,16 +34,18 @@ class ApplicationPasswords
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
      */
-    public function create(array $params)
+    public function update(array $params)
     {
         /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'user' => 'required|string',
-            'description' => 'required|string',
-            'scopes' => 'required|array',
-            'generateMobileConfig' => 'sometimes|boolean',
-            'sess' => 'sometimes|string',
-            'ip' => 'sometimes|string',
+            'status' => 'boolean',
+            'name' => 'string',
+            'subject' => 'string',
+            'html' => 'string',
+            'text' => 'string',
+            'start' => 'string',
+            'end' => 'string',
         ]);
 
         if ($validator->fails()) {
@@ -56,12 +57,13 @@ class ApplicationPasswords
         ];
 
         unset($params['user']);
-        return Request::post(Uri::get('asps.create', $args), $params);
+
+        return Request::put(Uri::get('autoreplies.update', $args), $params);
     }
 
     /**
      * @param array $params
-     * @return array|mixed|\Psr\Http\Message\array
+     * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
      */
@@ -70,13 +72,12 @@ class ApplicationPasswords
         /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'user' => 'required|string',
-            'asp' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             throw new InvalidRequestException($validator);
         }
 
-        return Request::delete(Uri::get('asps.delete', $params));
+        return Request::get(Uri::get('autoreplies.delete', $params));
     }
 }

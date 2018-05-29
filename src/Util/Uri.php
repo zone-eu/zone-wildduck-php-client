@@ -12,6 +12,9 @@ class Uri
         'asps.create' => '/users/:user/asps',
         'asps.delete' => '/users/:user/asps/:asp',
         'authentication.authenticate' => '/authenticate',
+        'autoreplies.get' => '/users/:user/autoreply',
+        'autoreplies.update' => '/users/:user/autoreply',
+        'autoreplies.delete' => '/users/:user/autoreply',
         'filters.create' => '/users/:user/filters',
         'filters.delete' => '/users/:user/filters/:filter',
         'filters.user' => '/users/:user/filters',
@@ -22,6 +25,12 @@ class Uri
         'users.delete' => '/users/:id',
     ];
 
+    /**
+     * @param string $keyword
+     * @param array $args
+     * @return string
+     * @throws UriNotFoundException
+     */
     public static function get($keyword, $args = [])
     {
         if (!array_key_exists($keyword, self::$uris)) {
