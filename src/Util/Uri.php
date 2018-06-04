@@ -23,6 +23,7 @@ class Uri
         'users.get' => '/users/:id',
         'users.create' => '/users',
         'users.delete' => '/users/:id',
+        'users.resolve' => '/users/resolve/:username',
     ];
 
     /**
