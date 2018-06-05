@@ -6,6 +6,7 @@ use Wildduck\Api\Address;
 use Wildduck\Api\Authentication;
 use Wildduck\Api\Autoreplies;
 use Wildduck\Api\Filters;
+use Wildduck\Api\TwoFactorAuth;
 use Wildduck\Api\Users;
 use Wildduck\Exceptions\ApiClassNotFoundException;
 
@@ -18,6 +19,7 @@ use Wildduck\Exceptions\ApiClassNotFoundException;
  * @method static Authentication authentication()
  * @method static Autoreplies autoreplies()
  * @method static Filters filters()
+ * @method static TwoFactorAuth twoFactorAuth()
  * @method static Users users()
  */
 class Client
