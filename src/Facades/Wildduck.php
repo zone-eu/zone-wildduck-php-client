@@ -13,7 +13,7 @@ use Wildduck\Api\Users;
 use Wildduck\Client;
 
 /**
- * @method static Addresses address()
+ * @method static Addresses addresses()
  * @method static ApplicationPasswords applicationPasswords()
  * @method static Authentication authentication()
  * @method static Autoreplies autoreplies()

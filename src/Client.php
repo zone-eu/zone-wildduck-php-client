@@ -16,7 +16,7 @@ use Wildduck\Exceptions\ApiClassNotFoundException;
  *
  * @package Wildduck
  *
- * @method static Addresses address()
+ * @method static Addresses addresses()
  * @method static ApplicationPasswords applicationPasswords()
  * @method static Authentication authentication()
  * @method static Autoreplies autoreplies()
