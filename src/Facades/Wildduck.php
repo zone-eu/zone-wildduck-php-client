@@ -12,16 +12,19 @@ use Wildduck\Api\TwoFactorAuth;
 use Wildduck\Api\Users;
 use Wildduck\Client;
 
+/**
+ * @method static Addresses address()
+ * @method static ApplicationPasswords applicationPasswords()
+ * @method static Authentication authentication()
+ * @method static Autoreplies autoreplies()
+ * @method static Filters filters()
+ * @method static TwoFactorAuth twoFactorAuth()
+ * @method static Users users()
+ */
 class Wildduck extends Facade
 {
     /**
-     * @method static Addresses address()
-     * @method static ApplicationPasswords applicationPasswords()
-     * @method static Authentication authentication()
-     * @method static Autoreplies autoreplies()
-     * @method static Filters filters()
-     * @method static TwoFactorAuth twoFactorAuth()
-     * @method static Users users()
+     * {@inheritdoc}
      */
     protected static function getFacadeAccessor()
     {
