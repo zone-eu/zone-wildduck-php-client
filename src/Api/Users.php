@@ -109,4 +109,52 @@ class Users
 
         return Request::get(Uri::get('users.resolve', $params));
     }
+
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function update(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'id' => 'required|string',
+            'name' => 'sometimes|string',
+            'existingPassword' => 'sometimes|string',
+            'password' => 'sometimes|string',
+            'tags' => 'sometimes|array',
+            'retention' => 'sometimes|integer',
+            'encryptMessages' => 'sometimes|boolean',
+            'encryptForwarded' => 'sometimes|boolean',
+            'pubKey' => 'sometimes|string',
+            'language' => 'sometimes|string',
+            'targets' => 'sometimes|array',
+            'spamLevel' => 'sometimes|integer',
+            'quota' => 'sometimes|integer',
+            'recipients' => 'sometimes|integer',
+            'forwards' => 'sometimes|integer',
+            'imapMaxUpload' => 'sometimes|integer',
+            'imapMaxDownload' => 'sometimes|integer',
+            'pop3MaxDownload' => 'sometimes|integer',
+            'receivedMax' => 'sometimes|integer',
+            'disable2fa' => 'sometimes|boolean',
+            'disabled' => 'sometimes|boolean',
+            'sess' => 'sometimes|string',
+            'ip' => 'sometimes|string',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        $args = [
+            'id' => $params['id'],
+        ];
+
+        unset($params['id']);
+
+        return Request::post(Uri::get('users.create', $args), $params);
+    }
 }
