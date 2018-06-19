@@ -10,6 +10,21 @@ Requires a minimum of PHP 7 (library uses type hinting).
 composer install kurbar/wildduck-client
 ```
 
+## Implemented endpoints
+- [ ] Addresses
+- [ ] Application Passwords
+- [ ] Archive
+- [ ] Authentication
+- [ ] Autoreplies
+- [ ] DKIM
+- [ ] DomainAliases
+- [ ] Filters
+- [ ] Mailboxes
+- [ ] Messages
+- [ ] Submission
+- [ ] TwoFactorAuth
+- [ ] Users
+
 ## Roadmap
 
-[ ] Entity objects
+- [ ] Entity objects
