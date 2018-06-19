@@ -1,12 +1,14 @@
 <?php
 
+namespace Wildduck\Facades;
 
-namespace Wildduck;
+use Illuminate\Support\Facades\Facade;
+use Wildduck\Client;
 
-class Facade extends \Illuminate\Support\Facades\Facade
+class Wildduck extends Facade
 {
     /**
-     * {@inheritdoc}
+     * @return Client
      */
     protected static function getFacadeAccessor()
     {

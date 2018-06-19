@@ -31,7 +31,7 @@
                 "Wildduck\\ServiceProvider"
             ],
             "aliases": {
-                "Wildduck": "Wildduck\\Facade"
+                "Wildduck": "Wildduck\\Facades\\Wildduck"
             }
         }
     }

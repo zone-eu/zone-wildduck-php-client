@@ -21,7 +21,7 @@ class BasicTest extends \Orchestra\Testbench\TestCase
     protected function getPackageAliases($application)
     {
         return [
-            'Wildduck' => 'Wildduck\Facade',
+            'Wildduck' => 'Wildduck\Wildduck',
         ];
     }
 
