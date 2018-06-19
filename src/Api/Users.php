@@ -155,6 +155,6 @@ class Users
 
         unset($params['id']);
 
-        return Request::post(Uri::get('users.create', $args), $params);
+        return Request::put(Uri::get('users.update', $args), $params);
     }
 }
