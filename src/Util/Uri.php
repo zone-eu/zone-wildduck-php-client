@@ -7,7 +7,12 @@ use Wildduck\Exceptions\UriNotFoundException;
 class Uri
 {
     private static $uris = [
-        'address.create' => '/users/:user/address',
+        'addresses.create' => '/users/:user/addresses',
+        'addresses.create.forwarded' => '/addresses/forwarded',
+        'addresses.delete' => '/users/:user/addresses/:address',
+        'addresses.delete.forwarded' => '/addresses/forwarded/:address',
+        //
+        'addresses.list' => '/users/:user/addresses',
         'asps.list' => '/users/:user/asps',
         'asps.create' => '/users/:user/asps',
         'asps.delete' => '/users/:user/asps/:asp',

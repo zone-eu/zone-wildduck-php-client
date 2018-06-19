@@ -2,7 +2,8 @@
 
 namespace Wildduck;
 
-use Wildduck\Api\Address;
+use Wildduck\Api\Addresses;
+use Wildduck\Api\ApplicationPasswords;
 use Wildduck\Api\Authentication;
 use Wildduck\Api\Autoreplies;
 use Wildduck\Api\Filters;
@@ -15,7 +16,8 @@ use Wildduck\Exceptions\ApiClassNotFoundException;
  *
  * @package Wildduck
  *
- * @method static Address address()
+ * @method static Addresses address()
+ * @method static ApplicationPasswords applicationPasswords()
  * @method static Authentication authentication()
  * @method static Autoreplies autoreplies()
  * @method static Filters filters()
@@ -49,7 +51,7 @@ class Client
      *
      * @return Client
      */
-    public static function instance()
+    public static function instance() : Client
     {
         if (self::$client === null) {
             self::$client = new self;
@@ -74,7 +76,7 @@ class Client
      * @param string $host
      * @return $this
      */
-    public function setHost(string $host)
+    public function setHost(string $host) : Client
     {
         $this->host = $host;
         return $this;
@@ -85,7 +87,7 @@ class Client
      *
      * @return bool
      */
-    public function getDebug()
+    public function getDebug() : bool
     {
         return $this->debug;
     }
@@ -96,7 +98,8 @@ class Client
      * @param bool $debug
      * @return $this
      */
-    public function setDebug(bool $debug) {
+    public function setDebug(bool $debug) : Client
+    {
         $this->debug = $debug;
         return $this;
     }
