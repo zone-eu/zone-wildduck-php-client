@@ -133,4 +133,37 @@ class Addresses
 
         return Request::get(Uri::get('addresses.list', $params));
     }
+
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function update(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required|string',
+            'id' => 'required|string',
+            'name' => 'sometimes|string',
+            'address' => 'sometimes|email',
+            'main' => 'sometimes|boolean',
+            'tags' => 'sometimes|array',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        $args = [
+            'user' => $params['user'],
+            'id' => $params['id'],
+        ];
+
+        unset($params['user']);
+        unset($params['id']);
+
+        return Request::put(Uri::get('addresses.update', $args), $params);
+    }
 }

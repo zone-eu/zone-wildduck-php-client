@@ -13,6 +13,7 @@ class Uri
         'addresses.delete.forwarded' => '/addresses/forwarded/:address',
         //
         'addresses.list' => '/users/:user/addresses',
+        'addresses.update' => '/users/:user/addresses/:id',
         'asps.list' => '/users/:user/asps',
         'asps.create' => '/users/:user/asps',
         'asps.delete' => '/users/:user/asps/:asp',
