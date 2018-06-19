@@ -112,7 +112,26 @@ class Addresses
         return Request::delete(Uri::get('addresses.delete', $params));
     }
 
-    // TODO: get
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function get(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required|string',
+            'address' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        return Request::get(Uri::get('addresses.get', $params));
+    }
 
     /**
      * @param array $params

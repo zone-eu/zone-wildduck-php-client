@@ -9,6 +9,7 @@ class Uri
     private static $uris = [
         'addresses.create' => '/users/:user/addresses',
         'addresses.create.forwarded' => '/addresses/forwarded',
+        'addresses.get' => '/users/:user/addresses/:address',
         'addresses.delete' => '/users/:user/addresses/:address',
         'addresses.delete.forwarded' => '/addresses/forwarded/:address',
         //
