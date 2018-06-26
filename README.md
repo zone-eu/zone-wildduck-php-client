@@ -19,7 +19,7 @@ composer install kurbar/wildduck-client
 - [ ] DKIM
 - [ ] DomainAliases
 - [ ] Filters
-- [ ] Mailboxes
+- [X] Mailboxes
 - [ ] Messages
 - [ ] Submission
 - [ ] TwoFactorAuth

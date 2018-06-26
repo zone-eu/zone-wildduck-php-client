@@ -34,6 +34,15 @@ class Uri
         'two-factor.enable' => '/users/:user/2fa/custom',
         'two-factor.disable' => '/users/:user/2fa/custom',
 
+        'mailboxes.create' => '/users/:user/mailboxes',
+        'mailboxes.delete' => '/users/:user/mailboxes/:mailbox',
+        'mailboxes.list' => '/users/:user/mailboxes',
+        'mailboxes.get' => '/users/:user/mailboxes/:mailbox',
+        'mailboxes.update' => '/users/:user/mailboxes/:mailbox',
+
+        'messages.list' => '/users/:user/mailboxes/:mailbox/messages',
+        'messages.get' => '/users/:user/mailboxes/:mailbox/messages/:message',
+
         'users.get' => '/users/:id',
         'users.create' => '/users',
         'users.delete' => '/users/:id',
