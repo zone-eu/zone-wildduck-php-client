@@ -28,3 +28,4 @@ composer install kurbar/wildduck-client
 ## Roadmap
 
 - [ ] Entity objects
+- [ ] Remove Laravel dependency (standalone validation)
