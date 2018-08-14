@@ -10,6 +10,7 @@ use Wildduck\Api\Autoreplies;
 use Wildduck\Api\Filters;
 use Wildduck\Api\Mailboxes;
 use Wildduck\Api\Messages;
+use Wildduck\Api\Submission;
 use Wildduck\Api\TwoFactorAuth;
 use Wildduck\Api\Users;
 use Wildduck\Client;
@@ -22,6 +23,7 @@ use Wildduck\Client;
  * @method static Filters filters()
  * @method static Mailboxes mailboxes()
  * @method static Messages messages()
+ * @method static Submission submission()
  * @method static TwoFactorAuth twoFactorAuth()
  * @method static Users users()
  */
