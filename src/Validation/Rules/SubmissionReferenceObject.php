@@ -9,7 +9,7 @@ class SubmissionReferenceObject extends Rule
 
     public function passes($attribute, $value)
     {
-        dd($attribute);
+        dd($attribute, $value);
     }
 
     public function message()
