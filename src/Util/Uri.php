@@ -20,6 +20,8 @@ class Uri
         'asps.delete' => '/users/:user/asps/:asp',
 
         'authentication.authenticate' => '/authenticate',
+        'authentication.listEvents' => '/users/:user/authlog',
+        'authentication.getEvent' => '/users/:user/authlog/:event',
 
         'autoreplies.get' => '/users/:user/autoreply',
         'autoreplies.update' => '/users/:user/autoreply',

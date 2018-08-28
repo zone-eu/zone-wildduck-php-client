@@ -33,4 +33,45 @@ class Authentication
 
         return Request::post(Uri::get('authentication.authenticate'), $params);
     }
+
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function listEvents(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        return Request::get(Uri::get('authentication.listEvents', $params));
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function getEvent(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required',
+            'event' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        return Request::get(Uri::get('authentication.getEvent', $params));
+    }
 }
