@@ -99,7 +99,7 @@ class Request
                 'data' => $body,
             ];
         } catch (BadResponseException $e) {
-            throw new $e;
+            throw $e;
         } catch (GuzzleException $e) {
             $message = $e->getMessage();
 
