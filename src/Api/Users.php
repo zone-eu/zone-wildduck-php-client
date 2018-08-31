@@ -14,6 +14,7 @@ class Users
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \Wildduck\Exceptions\RequestFailedException
      */
     public function get(array $params)
     {
@@ -34,6 +35,7 @@ class Users
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \Wildduck\Exceptions\RequestFailedException
      */
     public function create(array $params)
     {
@@ -75,6 +77,7 @@ class Users
      * @return array|mixed|\Psr\Http\Message\array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \Wildduck\Exceptions\RequestFailedException
      */
     public function delete(array $params)
     {
@@ -95,6 +98,7 @@ class Users
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \Wildduck\Exceptions\RequestFailedException
      */
     public function resolve(array $params)
     {
@@ -115,6 +119,7 @@ class Users
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \Wildduck\Exceptions\RequestFailedException
      */
     public function update(array $params)
     {

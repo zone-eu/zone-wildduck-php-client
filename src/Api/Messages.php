@@ -13,6 +13,7 @@ class Messages
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \Wildduck\Exceptions\RequestFailedException
      */
     public function list(array $params)
     {
@@ -47,6 +48,7 @@ class Messages
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \Wildduck\Exceptions\RequestFailedException
      */
     public function get(array $params)
     {
@@ -69,6 +71,7 @@ class Messages
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \Wildduck\Exceptions\RequestFailedException
      */
     public function downloadAttachment(array $params)
     {
@@ -92,6 +95,7 @@ class Messages
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \Wildduck\Exceptions\RequestFailedException
      */
     public function events(array $params)
     {
@@ -114,6 +118,7 @@ class Messages
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \Wildduck\Exceptions\RequestFailedException
      */
     public function source(array $params)
     {

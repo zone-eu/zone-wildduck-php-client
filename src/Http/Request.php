@@ -3,14 +3,11 @@
 namespace Wildduck\Http;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\ServerException;
 use Wildduck\Client as WildduckClient;
+use Wildduck\Exceptions\RequestFailedException;
 
-/**
- * Class Request
- * @package Wildduck\Http
- */
 class Request
 {
     const HTTP_OK = 0;
@@ -20,6 +17,7 @@ class Request
      * @param string $uri
      * @param array $params
      * @return array
+     * @throws RequestFailedException
      */
     public static function get(string $uri, array $params = []) : array
     {
@@ -30,6 +28,7 @@ class Request
      * @param string $uri
      * @param array $params
      * @return array
+     * @throws RequestFailedException
      */
     public static function post(string $uri, array $params = []) : array
     {
@@ -40,6 +39,7 @@ class Request
      * @param string $uri
      * @param array $params
      * @return array
+     * @throws RequestFailedException
      */
     public static function put(string $uri, array $params = []) : array
     {
@@ -50,6 +50,7 @@ class Request
      * @param string $uri
      * @param array $params
      * @return mixed|\Psr\Http\Message\array
+     * @throws RequestFailedException
      */
     public static function delete(string $uri, array $params = []) : array
     {
@@ -61,6 +62,7 @@ class Request
      * @param string $uri
      * @param array $params
      * @return array
+     * @throws RequestFailedException
      */
     public static function request(string $method, string $uri, array $params = []) : array
     {
@@ -96,15 +98,10 @@ class Request
                 'code' => self::HTTP_OK,
                 'data' => $body,
             ];
-        } catch (ServerException $e) {
+        } catch (BadResponseException $e) {
             $statusCode = $e->getResponse()->getStatusCode();
-            $message = json_decode($e->getResponse()->getBody()->getContents(), true);
-
-            return [
-                'code' => self::HTTP_ERROR,
-                'status_code' => $statusCode,
-                'message' => $message,
-            ];
+            $data = $e->getResponse()->getBody()->getContents();
+            throw new RequestFailedException('Mail server request failed', $statusCode, null, $data);
         } catch (GuzzleException $e) {
             $message = $e->getMessage();
 
