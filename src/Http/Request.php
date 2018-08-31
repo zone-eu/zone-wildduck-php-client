@@ -99,9 +99,7 @@ class Request
                 'data' => $body,
             ];
         } catch (BadResponseException $e) {
-            $statusCode = $e->getResponse()->getStatusCode();
-            $data = $e->getResponse()->getBody()->getContents();
-            throw new RequestFailedException('Mail server request failed', $statusCode, null, $data);
+            throw new $e;
         } catch (GuzzleException $e) {
             $message = $e->getMessage();
 
