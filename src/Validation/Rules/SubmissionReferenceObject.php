@@ -9,11 +9,19 @@ class SubmissionReferenceObject extends Rule
 
     public function passes($attribute, $value)
     {
-        dd($attribute, $value);
+        if (!$value) {
+            return true;
+        }
+
+        if ($value['mailbox'] && $value['id'] && $value['action']) {
+            return true;
+        }
+
+        return false;
     }
 
     public function message()
     {
-        return '';
+        return ':attribute must have mailbox, id and action defined if present';
     }
 }

@@ -5,7 +5,6 @@ namespace Wildduck\Api;
 use Wildduck\Exceptions\InvalidRequestException;
 use Wildduck\Http\Request;
 use Wildduck\Util\Uri;
-use Wildduck\Validation\Rules\SubmissionReferenceObject;
 
 class Submission
 {
@@ -21,7 +20,7 @@ class Submission
         /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
             'user' => 'required|string',
-            'reference' => new SubmissionReferenceObject,
+            'reference' => 'required_with:reference.mailbox,reference.id,reference.action',
             'mailbox' => 'string',
             'uploadOnly' => 'boolean',
             'isDraft' => 'boolean',
