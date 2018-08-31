@@ -83,21 +83,7 @@ class Request
 
         try {
             $res = $client->request($method, $uri, $opts);
-
-            $body = json_decode($res->getBody()->getContents(), true);
-
-            if (isset($body['error'])) {
-                return [
-                    'code' => self::HTTP_ERROR,
-                    'status_code' => $res->getStatusCode(),
-                    'message' => $body['error'],
-                ];
-            }
-
-            return [
-                'code' => self::HTTP_OK,
-                'data' => $body,
-            ];
+            return json_decode($res->getBody()->getContents(), true);
         } catch (BadResponseException $e) {
             throw $e;
         } catch (GuzzleException $e) {
