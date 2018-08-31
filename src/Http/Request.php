@@ -6,12 +6,15 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use Wildduck\Client as WildduckClient;
+use Wildduck\Exceptions\InvalidRequestException;
 use Wildduck\Exceptions\RequestFailedException;
 
 class Request
 {
     const HTTP_OK = 0;
     const HTTP_ERROR = 1;
+
+    const CODE_INPUT_VALIDATION_ERROR = 'InputValidationError';
 
     /**
      * @param string $uri
@@ -84,6 +87,12 @@ class Request
         try {
             $res = $client->request($method, $uri, $opts);
             $data = json_decode($res->getBody()->getContents(), true);
+
+            if (isset($data['error'])) {
+                if (isset($data['code']) && $data['code'] === self::CODE_INPUT_VALIDATION_ERROR) {
+                    throw new InvalidRequestException($data['error']);
+                }
+            };
 
             if (isset($data['success'])) {
                 unset($data['success']); // No point in returning in response
