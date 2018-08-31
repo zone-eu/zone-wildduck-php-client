@@ -63,4 +63,71 @@ class Messages
 
         return Request::get(Uri::get('messages.get', $params), ['markAsSeen' => true]);
     }
+
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function downloadAttachment(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required|string',
+            'mailbox' => 'required|string',
+            'message' => 'required|integer',
+            'attachment' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        return Request::get(Uri::get('messages.downloadAttachment', $params));
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function events(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required|string',
+            'mailbox' => 'required|string',
+            'message' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        return Request::get(Uri::get('messages.events', $params));
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function source(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required|string',
+            'mailbox' => 'required|string',
+            'message' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        return Request::get(Uri::get('messages.source', $params));
+    }
 }

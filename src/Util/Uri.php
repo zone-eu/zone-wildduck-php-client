@@ -44,6 +44,9 @@ class Uri
 
         'messages.list' => '/users/:user/mailboxes/:mailbox/messages',
         'messages.get' => '/users/:user/mailboxes/:mailbox/messages/:message',
+        'messages.downloadAttachment' => '/users/:user/mailboxes/:mailbox/messages/:message/attachments/:attachment',
+        'messages.events' => '/users/:user/mailboxes/:mailbox/messages/:message/events',
+        'messages.source' => '/users/:user/mailboxes/:mailbox/messages/:message/message.eml',
 
         'submission.submit' => '/users/:user/submit',
 
