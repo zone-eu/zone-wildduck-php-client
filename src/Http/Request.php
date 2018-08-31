@@ -83,6 +83,10 @@ class Request
 
         try {
             $res = $client->request($method, $uri, $opts);
+            if (isset($res['success'])) {
+                unset($res['success']); // No point in returning in response
+            }
+
             return json_decode($res->getBody()->getContents(), true);
         } catch (BadResponseException $e) {
             throw $e;
