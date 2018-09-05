@@ -21,6 +21,8 @@ class Request
      * @param array $params
      * @return array
      * @throws RequestFailedException
+     * @throws InvalidRequestException
+     * @throws \ErrorException
      */
     public static function get(string $uri, array $params = []) : array
     {
@@ -32,6 +34,8 @@ class Request
      * @param array $params
      * @return array
      * @throws RequestFailedException
+     * @throws InvalidRequestException
+     * @throws \ErrorException
      */
     public static function post(string $uri, array $params = []) : array
     {
@@ -43,6 +47,8 @@ class Request
      * @param array $params
      * @return array
      * @throws RequestFailedException
+     * @throws InvalidRequestException
+     * @throws \ErrorException
      */
     public static function put(string $uri, array $params = []) : array
     {
@@ -54,6 +60,8 @@ class Request
      * @param array $params
      * @return mixed|\Psr\Http\Message\array
      * @throws RequestFailedException
+     * @throws InvalidRequestException
+     * @throws \ErrorException
      */
     public static function delete(string $uri, array $params = []) : array
     {
@@ -66,6 +74,8 @@ class Request
      * @param array $params
      * @return array
      * @throws RequestFailedException
+     * @throws InvalidRequestException
+     * @throws \ErrorException
      */
     public static function request(string $method, string $uri, array $params = []) : array
     {
@@ -103,17 +113,7 @@ class Request
             throw $e;
         } catch (GuzzleException $e) {
             $message = $e->getMessage();
-
-            $response = [
-                'code' => self::HTTP_ERROR,
-                'message' => $message,
-            ];
-
-            if (WildduckClient::instance()->getDebug()) {
-                $response['details'] = $e->getTrace();
-            }
-
-            return $response;
+            throw new \ErrorException($message, self::HTTP_ERROR, $e);
         }
     }
 }
