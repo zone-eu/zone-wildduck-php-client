@@ -113,7 +113,7 @@ class Request
             throw $e;
         } catch (GuzzleException $e) {
             $message = $e->getMessage();
-            throw new \ErrorException($message, self::HTTP_ERROR, $e);
+            throw new \ErrorException($message, self::HTTP_ERROR);
         }
     }
 }
