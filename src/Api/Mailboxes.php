@@ -14,6 +14,7 @@ class Mailboxes
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \ErrorException
      */
     public function create(array $params)
     {
@@ -42,6 +43,7 @@ class Mailboxes
      * @return array|mixed|\Psr\Http\Message\array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \ErrorException
      */
     public function delete(array $params)
     {
@@ -63,6 +65,7 @@ class Mailboxes
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \ErrorException
      */
     public function list(array $params)
     {
@@ -90,6 +93,7 @@ class Mailboxes
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \ErrorException
      */
     public function get(array $params)
     {
@@ -111,6 +115,7 @@ class Mailboxes
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
+     * @throws \ErrorException
      */
     public function update(array $params)
     {
