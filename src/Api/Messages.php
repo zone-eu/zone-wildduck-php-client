@@ -81,7 +81,7 @@ class Messages
         $validator = app()['validator']->make($params, [
             'user' => 'required|string',
             'mailbox' => 'required|string',
-            'message' => 'required|integer',
+            'message' => 'required|string',
             'moveTo' => 'sometimes|string',
             'seen' => 'sometimes|boolean',
             'flagged' => 'sometimes|boolean',
