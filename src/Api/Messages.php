@@ -176,4 +176,46 @@ class Messages
 
         return Request::get(Uri::get('messages.source', $params));
     }
+
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \ErrorException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function search(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required|string',
+            'mailbox' => 'sometimes|string',
+            'thread' => 'sometimes|string',
+            'query' => 'sometimes|string',
+            'datestart' => 'sometimes|string',
+            'dateend' => 'sometimes|string',
+            'from' => 'sometimes|string',
+            'to' => 'sometimes|string',
+            'subject' => 'sometimes|string',
+            'attachments' => 'sometimes|boolean',
+            'flagged' => 'sometimes|boolean',
+            'searchable' => 'sometimes|boolean',
+            'limit' => 'sometimes|integer',
+            'page' => 'sometimes|integer',
+            'next' => 'sometimes|integer',
+            'previous' => 'sometimes|integer',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        $args = [
+            'user' => $params['user'],
+        ];
+
+        unset($params['user']);
+
+        return Request::get(Uri::get('messages.search', $args), $params);
+    }
 }
