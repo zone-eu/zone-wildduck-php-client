@@ -15,6 +15,7 @@ class Users
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
      * @throws \Wildduck\Exceptions\RequestFailedException
+     * @throws \ErrorException
      */
     public function get(array $params)
     {
@@ -36,6 +37,7 @@ class Users
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
      * @throws \Wildduck\Exceptions\RequestFailedException
+     * @throws \ErrorException
      */
     public function create(array $params)
     {
@@ -78,6 +80,7 @@ class Users
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
      * @throws \Wildduck\Exceptions\RequestFailedException
+     * @throws \ErrorException
      */
     public function delete(array $params)
     {
@@ -99,6 +102,7 @@ class Users
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
      * @throws \Wildduck\Exceptions\RequestFailedException
+     * @throws \ErrorException
      */
     public function resolve(array $params)
     {
@@ -120,6 +124,7 @@ class Users
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException
      * @throws \Wildduck\Exceptions\RequestFailedException
+     * @throws \ErrorException
      */
     public function update(array $params)
     {
@@ -161,5 +166,31 @@ class Users
         unset($params['id']);
 
         return Request::put(Uri::get('users.update', $args), $params);
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     * @throws InvalidRequestException
+     * @throws \ErrorException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function stream(array $params)
+    {
+
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        $args = [
+            'id' => $params['user'],
+        ];
+
+        return Request::get(Uri::get('users.stream', $args));
     }
 }

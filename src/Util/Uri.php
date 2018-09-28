@@ -56,6 +56,7 @@ class Uri
         'users.delete' => '/users/:id',
         'users.resolve' => '/users/resolve/:username',
         'users.update' => '/users/:id',
+        'users.stream' => '/users/:id/updates',
     ];
 
     /**
