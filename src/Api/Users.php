@@ -2,6 +2,7 @@
 
 namespace Wildduck\Api;
 
+use Wildduck\Client;
 use Wildduck\Exceptions\InvalidRequestException;
 use Wildduck\Http\Request;
 use Wildduck\Util\Uri;
@@ -168,7 +169,29 @@ class Users
         return Request::put(Uri::get('users.update', $args), $params);
     }
 
+    public function getSourceUrl(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        $args = [
+            'id' => $params['user'],
+        ];
+
+        $baseUrl = Client::instance()->getHost();
+        $uri = Uri::get('users.stream', $args);
+
+        return $baseUrl . $uri;
+    }
+
     /**
+     * TODO: Doesn't work this way. Maybe figure out at some point. Get eventSource url through getSourceUrl() instead.
      * @param array $params
      * @return array
      * @throws InvalidRequestException
