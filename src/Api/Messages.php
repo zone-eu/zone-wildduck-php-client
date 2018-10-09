@@ -25,8 +25,8 @@ class Messages
             'limit' => 'sometimes|integer',
             'page' => 'sometimes|integer',
             'order' => 'sometimes|in:asc,desc',
-            'next' => 'sometimes|number',
-            'previous' => 'sometimes|number',
+            'next' => 'sometimes|string',
+            'previous' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
