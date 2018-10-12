@@ -84,22 +84,21 @@ class Request
             'timeout' => 2.0,
         ]);
         
-        $opts = [];
-        $headers = [];
-        
+        $opts = [
+            'query' => [],
+        ];
+
         if (count($params)) {
             if ($method === 'get') {
-                $opts = ['query' => $params];
+                $opts['query'] = $params;
             } else {
-                $opts = ['json' => $params];
+                $opts['json'] = $params;
             }
         }
 
         if (null !== $accessToken = WildduckClient::instance()->getAccessToken()) {
-            $headers['X-Access-Token'] = $accessToken;
+            $opts['query']['accessToken'] = $accessToken;
         }
-
-        $opts['headers'] = $headers;
 
         try {
             $res = $client->request($method, $uri, $opts);
