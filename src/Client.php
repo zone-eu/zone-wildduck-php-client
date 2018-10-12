@@ -53,6 +53,12 @@ class Client
     private $debug = false;
 
     /**
+     * Wildduck API access token if authentication is enabled
+     * @var string $accessToken
+     */
+    private $accessToken = null;
+
+    /**
      * Get or create a singleton instance.
      *
      * @return Client
@@ -107,6 +113,24 @@ class Client
     public function setDebug(bool $debug) : Client
     {
         $this->debug = $debug;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccessToken(): string
+    {
+        return $this->accessToken;
+    }
+
+    /**
+     * @param string $accessToken
+     * @return Client
+     */
+    public function setAccessToken(string $accessToken = null): Client
+    {
+        $this->accessToken = $accessToken;
         return $this;
     }
 

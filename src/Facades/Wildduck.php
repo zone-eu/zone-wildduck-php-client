@@ -36,6 +36,7 @@ class Wildduck extends Facade
     {
         return Client::instance()
             ->setHost(config('wildduck.host'))
-            ->setDebug(config('wildduck.debug'));
+            ->setDebug(config('wildduck.debug'))
+            ->setAccessToken(config('wildduck.access_token'));
     }
 }

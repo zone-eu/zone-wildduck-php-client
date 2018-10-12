@@ -85,6 +85,7 @@ class Request
         ]);
         
         $opts = [];
+        $headers = [];
         
         if (count($params)) {
             if ($method === 'get') {
@@ -93,6 +94,12 @@ class Request
                 $opts = ['json' => $params];
             }
         }
+
+        if (null !== $accessToken = WildduckClient::instance()->getAccessToken()) {
+            $headers['X-Access-Token'] = $accessToken;
+        }
+
+        $opts['headers'] = $headers;
 
         try {
             $res = $client->request($method, $uri, $opts);
