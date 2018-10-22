@@ -77,7 +77,7 @@ class Request
      * @throws InvalidRequestException
      * @throws \ErrorException
      */
-    public static function request(string $method, string $uri, array $params = []) : array
+    public static function request(string $method, string $uri, array $params = [])
     {
         $client = new Client([
             'base_uri' => WildduckClient::instance()->getHost(),
