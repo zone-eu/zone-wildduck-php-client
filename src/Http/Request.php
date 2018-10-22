@@ -72,7 +72,7 @@ class Request
      * @param string $method
      * @param string $uri
      * @param array $params
-     * @return array
+     * @return array|string
      * @throws RequestFailedException
      * @throws InvalidRequestException
      * @throws \ErrorException
@@ -102,19 +102,26 @@ class Request
 
         try {
             $res = $client->request($method, $uri, $opts);
-            $data = json_decode($res->getBody()->getContents(), true);
+            $contentType = $res->getHeader('Content-Type');
 
-            if (isset($data['error'])) {
-                if (isset($data['code']) && $data['code'] === self::CODE_INPUT_VALIDATION_ERROR) {
-                    throw new InvalidRequestException($data['error']);
+            if (in_array('application/json', $contentType)) {
+                $data = json_decode($res->getBody()->getContents(), true);
+
+                if (isset($data['error'])) {
+                    if (isset($data['code']) && $data['code'] === self::CODE_INPUT_VALIDATION_ERROR) {
+                        throw new InvalidRequestException($data['error']);
+                    }
+                };
+
+                if (isset($data['success'])) {
+                    unset($data['success']); // No point in returning in response
                 }
-            };
 
-            if (isset($data['success'])) {
-                unset($data['success']); // No point in returning in response
+                return $data;
             }
 
-            return $data;
+            // Non-JSON response
+            return $res->getBody()->getContents();
         } catch (BadResponseException $e) {
             throw $e;
         } catch (GuzzleException $e) {
