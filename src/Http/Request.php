@@ -20,12 +20,12 @@ class Request
     /**
      * @param string $uri
      * @param array $params
-     * @return array
+     * @return array|string
      * @throws RequestFailedException
      * @throws InvalidRequestException
      * @throws \ErrorException
      */
-    public static function get(string $uri, array $params = []) : array
+    public static function get(string $uri, array $params = [])
     {
         return self::request('get', $uri, $params);
     }
@@ -33,12 +33,12 @@ class Request
     /**
      * @param string $uri
      * @param array $params
-     * @return array
+     * @return array|string
      * @throws RequestFailedException
      * @throws InvalidRequestException
      * @throws \ErrorException
      */
-    public static function post(string $uri, array $params = []) : array
+    public static function post(string $uri, array $params = [])
     {
         return self::request('post', $uri, $params);
     }
@@ -46,12 +46,12 @@ class Request
     /**
      * @param string $uri
      * @param array $params
-     * @return array
+     * @return array|string
      * @throws RequestFailedException
      * @throws InvalidRequestException
      * @throws \ErrorException
      */
-    public static function put(string $uri, array $params = []) : array
+    public static function put(string $uri, array $params = [])
     {
         return self::request('put', $uri, $params);
     }
@@ -59,12 +59,12 @@ class Request
     /**
      * @param string $uri
      * @param array $params
-     * @return mixed|\Psr\Http\Message\array
+     * @return array|string
      * @throws RequestFailedException
      * @throws InvalidRequestException
      * @throws \ErrorException
      */
-    public static function delete(string $uri, array $params = []) : array
+    public static function delete(string $uri, array $params = [])
     {
         return self::request('delete', $uri, $params);
     }
