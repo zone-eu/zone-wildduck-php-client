@@ -104,6 +104,22 @@ class Messages
         return Request::put(Uri::get('messages.update', $args), $params);
     }
 
+    public function delete(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required|string',
+            'mailbox' => 'required|string',
+            'message' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        return Request::delete(Uri::get('messages.delete', $params));
+    }
+
     /**
      * @param array $params
      * @return array
