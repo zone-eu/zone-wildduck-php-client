@@ -44,7 +44,14 @@ class Authentication
     {
         /** @var \Illuminate\Validation\Validator $validator */
         $validator = app()['validator']->make($params, [
-            'user' => 'required',
+            'user' => 'required|string',
+            'action' => 'sometimes|string',
+            'sess' => 'sometimes|string',
+            'ip' => 'sometimes|string',
+            'limit' => 'sometimes|integer',
+            'page' => 'sometimes|integer',
+            'next' => 'sometimes|string',
+            'previous' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
