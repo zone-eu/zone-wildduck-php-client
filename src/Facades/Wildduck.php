@@ -16,6 +16,8 @@ use Wildduck\Api\Users;
 use Wildduck\Client;
 
 /**
+ * @method static Client instance()
+ *
  * @method static Addresses addresses()
  * @method static ApplicationPasswords applicationPasswords()
  * @method static Authentication authentication()
