@@ -112,6 +112,8 @@ class Request
                     if (isset($data['code']) && $data['code'] === self::CODE_INPUT_VALIDATION_ERROR) {
                         throw new InvalidRequestException($data['error']);
                     }
+
+                    throw new RequestFailedException($data['error']);
                 };
 
                 if (isset($data['success'])) {
