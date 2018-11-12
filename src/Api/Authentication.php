@@ -58,7 +58,7 @@ class Authentication
             throw new InvalidRequestException($validator);
         }
 
-        return Request::get(Uri::get('authentication.listEvents', $params));
+        return Request::get(Uri::get('authentication.listEvents'), $params);
     }
 
     /**
