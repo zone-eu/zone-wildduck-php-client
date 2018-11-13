@@ -78,6 +78,6 @@ class Autoreplies
             throw new InvalidRequestException($validator);
         }
 
-        return Request::get(Uri::get('autoreplies.delete', $params));
+        return Request::delete(Uri::get('autoreplies.delete', $params));
     }
 }
