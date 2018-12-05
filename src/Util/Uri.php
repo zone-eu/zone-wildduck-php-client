@@ -50,6 +50,8 @@ class Uri
         'messages.events' => '/users/:user/mailboxes/:mailbox/messages/:message/events',
         'messages.source' => '/users/:user/mailboxes/:mailbox/messages/:message/message.eml',
         'messages.search' => '/users/:user/search',
+        'messages.submit' => '/users/:user/mailboxes/:mailbox/messages/:message/submit',
+        'messages.upload' => '/users/:user/mailboxes/:mailbox/messages',
 
         'submission.submit' => '/users/:user/submit',
 

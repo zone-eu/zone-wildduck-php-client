@@ -234,4 +234,69 @@ class Messages
 
         return Request::get(Uri::get('messages.search', $args), $params);
     }
+
+    public function submit(array $params)
+    {
+        /** @var  \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required|string',
+            'mailbox' => 'required|string',
+            'message' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        return Request::post(Uri::get('messages.submit', $params));
+    }
+
+    public function upload(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required|string',
+            'mailbox' => 'required|string',
+            'unseen' => 'boolean',
+            'draft' => 'boolean',
+            'flagged' => 'boolean',
+            'raw' => 'string',
+            'from.name' => 'string',
+            'from.address' => 'string',
+            'to.*.name' => 'string',
+            'to.*.address' => 'string',
+            'cc.*.name' => 'string',
+            'cc.*.address' => 'string',
+            'bcc.*.name' => 'string',
+            'bcc.*.address' => 'string',
+            'subject' => 'string',
+            'text' => 'string',
+            'html' => 'string',
+            'headers.*.key' => 'string',
+            'headers.*.value' => 'string',
+            'attachments.*.content' => 'string',
+            'attachments.*.filename' => 'string',
+            'attachments.*.contentType' => 'string',
+            'attachments.*.cid' => 'string',
+            'metaData' => 'string',
+            'reference.mailbox' => 'string',
+            'reference.id' => 'integer',
+            'reference.action' => 'string',
+            'reference.attachments' => 'boolean',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        $args = [
+            'user' => $params['user'],
+            'mailbox' => $params['mailbox'],
+        ];
+
+        unset($params['user']);
+        unset($params['mailbox']);
+
+        return Request::post(Uri::get('messages.upload', $args), $params);
+    }
 }
