@@ -82,7 +82,7 @@ class Request
     {
         $client = new Client([
             'base_uri' => WildduckClient::instance()->getHost(),
-            'timeout' => 2.0,
+            'timeout' => config('wildduck.request_timeout'),
         ]);
         
         $opts = [
