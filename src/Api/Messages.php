@@ -241,7 +241,7 @@ class Messages
         $validator = app()['validator']->make($params, [
             'user' => 'required|string',
             'mailbox' => 'required|string',
-            'message' => 'required|string',
+            'message' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
