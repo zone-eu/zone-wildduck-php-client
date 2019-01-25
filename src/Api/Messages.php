@@ -218,8 +218,8 @@ class Messages
             'searchable' => 'sometimes|boolean',
             'limit' => 'sometimes|integer',
             'page' => 'sometimes|integer',
-            'next' => 'sometimes|integer',
-            'previous' => 'sometimes|integer',
+            'next' => 'sometimes|string',
+            'previous' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
