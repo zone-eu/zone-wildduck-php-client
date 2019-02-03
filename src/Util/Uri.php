@@ -33,9 +33,6 @@ class Uri
         'filters.get' => '/users/:user/filters/:filter',
         'filters.update' => '/users/:user/filters/:filter',
 
-        'two-factor.enable' => '/users/:user/2fa/custom',
-        'two-factor.disable' => '/users/:user/2fa/custom',
-
         'mailboxes.create' => '/users/:user/mailboxes',
         'mailboxes.delete' => '/users/:user/mailboxes/:mailbox',
         'mailboxes.list' => '/users/:user/mailboxes',
@@ -54,6 +51,19 @@ class Uri
         'messages.upload' => '/users/:user/mailboxes/:mailbox/messages',
 
         'submission.submit' => '/users/:user/submit',
+
+        'two-factor.enable.custom' => '/users/:user/2fa/custom',
+        'two-factor.enable.totp' => '/users/:user/2fa/totp/enable',
+        'two-factor.disable' => '/users/:user/2fa',
+        'two-factor.disable.custom' => '/users/:user/2fa/custom',
+        'two-factor.disable.totp' => '/users/:user/2fa/totp',
+        'two-factor.generate.totp' => '/users/:user/2fa/totp/setup',
+        'two-factor.validate.totp' => '/users/:user/2fa/totp/check',
+        'two-factor.generate.u2f' => '/users/:user/2fa/u2f/setup',
+        'two-factor.enable.u2f' => '/users/:user/2fa/u2f/enable',
+        'two-factor.disable.u2f' => '/users/:user/2fa/u2f',
+        'two-factor.start.u2f' => '/users/:user/2fa/u2f/start',
+        'two-factor.validate.u2f' => '/users/:user/2fa/u2f/check',
 
         'users.get' => '/users/:id',
         'users.create' => '/users',
