@@ -3,8 +3,16 @@
 namespace Wildduck\Exceptions;
 
 class RequestFailedException extends \Exception {
-    public function __construct($message = 'Request failed', $code = 0, \Exception $previous = null)
+    private $errorCode = null;
+
+    public function __construct($message = 'Request failed', $code = null, \Exception $previous = null)
     {
-        parent::__construct($message, $code, $previous);
+        $this->errorCode = $code;
+        parent::__construct($message, 0, $previous);
+    }
+
+    public function getErrorCode()
+    {
+        return $this->errorCode;
     }
 };
