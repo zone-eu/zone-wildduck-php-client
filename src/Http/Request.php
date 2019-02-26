@@ -113,7 +113,7 @@ class Request
                         throw new InvalidRequestException($data['error']);
                     }
 
-                    throw new RequestFailedException($data['error'], $data['code']);
+                    throw new RequestFailedException($data['error']);
                 };
 
                 if (isset($data['success'])) {
