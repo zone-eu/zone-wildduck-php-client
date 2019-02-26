@@ -109,8 +109,13 @@ class Request
                 $data = json_decode($res->getBody()->getContents(), true);
 
                 if (isset($data['error'])) {
-                    if (isset($data['code']) && $data['code'] === self::CODE_INPUT_VALIDATION_ERROR) {
-                        throw new InvalidRequestException($data['error']);
+                    if (isset($data['code'])) {
+                        switch ($data['code']) {
+                            case self::CODE_INPUT_VALIDATION_ERROR:
+                                throw new InvalidRequestException($data['error']);
+                            default:
+                                throw new RequestFailedException($data['error'], $data['code']);
+                        }
                     }
 
                     throw new RequestFailedException($data['error']);
