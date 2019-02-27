@@ -282,7 +282,7 @@ class Messages
             'reference.mailbox' => 'string',
             'reference.id' => 'integer',
             'reference.action' => 'string',
-            'reference.attachments' => 'boolean',
+//            'reference.attachments' => 'boolean|array',
         ]);
 
         if ($validator->fails()) {
