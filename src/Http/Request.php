@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use function GuzzleHttp\Psr7\parse_header;
+use Psr\Http\Message\ResponseInterface;
 use Wildduck\Client as WildduckClient;
 use Wildduck\Exceptions\InvalidRequestException;
 use Wildduck\Exceptions\RequestFailedException;
@@ -73,7 +74,7 @@ class Request
      * @param string $method
      * @param string $uri
      * @param array $params
-     * @return array|string
+     * @return array|string|ResponseInterface
      * @throws RequestFailedException
      * @throws InvalidRequestException
      * @throws \ErrorException
@@ -103,6 +104,10 @@ class Request
 
         try {
             $res = $client->request($method, $uri, $opts);
+            if (WildduckClient::instance()->isRaw()) {
+                return $res;
+            }
+
             $contentType = parse_header($res->getHeader('Content-Type'))[0][0];
 
             if ($contentType === 'application/json') {

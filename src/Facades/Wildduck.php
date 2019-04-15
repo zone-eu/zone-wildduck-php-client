@@ -18,6 +18,7 @@ use Wildduck\Client;
 /**
  * @method static Client instance()
  *
+ * @method static Client raw()
  * @method static Addresses addresses()
  * @method static ApplicationPasswords applicationPasswords()
  * @method static Authentication authentication()

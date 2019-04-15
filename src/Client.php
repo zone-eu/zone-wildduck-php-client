@@ -59,6 +59,12 @@ class Client
     private $accessToken = null;
 
     /**
+     * Return raw GuzzleResponse instance instead of the parsed results
+     * @var bool $raw
+     */
+    private $raw = false;
+
+    /**
      * Get or create a singleton instance.
      *
      * @return Client
@@ -135,6 +141,24 @@ class Client
     }
 
     /**
+     * @return bool
+     */
+    public function isRaw()
+    {
+        return $this->raw;
+    }
+
+    /**
+     * @param bool $raw
+     * @return Client
+     */
+    public function setRaw(bool $raw): Client
+    {
+        $this->raw = $raw;
+        return $this;
+    }
+
+    /**
      * @param string $name
      * @param array $arguments
      * @return mixed
@@ -142,6 +166,10 @@ class Client
      */
     public static function __callStatic(string $name, array $arguments = [])
     {
+        if (strtolower($name) === 'raw') {
+            return self::$client->setRaw(true);
+        }
+
         $class = "Wildduck\\Api\\" . ucfirst($name);
         if (!class_exists($class)) {
             throw new ApiClassNotFoundException("API class $class not found");
