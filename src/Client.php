@@ -19,16 +19,16 @@ use Wildduck\Exceptions\ApiClassNotFoundException;
  *
  * @package Wildduck
  *
- * @method static Addresses addresses()
- * @method static ApplicationPasswords applicationPasswords()
- * @method static Authentication authentication()
- * @method static Autoreplies autoreplies()
- * @method static Filters filters()
- * @method static Mailboxes mailboxes()
- * @method static Messages messages()
- * @method static Submission submission()
- * @method static TwoFactorAuth twoFactorAuth()
- * @method static Users users()
+ * @method Addresses addresses()
+ * @method ApplicationPasswords applicationPasswords()
+ * @method Authentication authentication()
+ * @method Autoreplies autoreplies()
+ * @method Filters filters()
+ * @method Mailboxes mailboxes()
+ * @method Messages messages()
+ * @method Submission submission()
+ * @method TwoFactorAuth twoFactorAuth()
+ * @method Users users()
  */
 class Client
 {
@@ -186,6 +186,10 @@ class Client
      */
     public function __call(string $name, array $arguments = [])
     {
+        if (strtolower($name) === 'raw') {
+            return self::$client->setRaw(true);
+        }
+
         $class = "Wildduck\\Api\\" . ucfirst($name);
         if (!class_exists($class)) {
             throw new ApiClassNotFoundException("API class $class not found");
