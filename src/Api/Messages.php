@@ -261,7 +261,7 @@ class Messages
             'draft' => 'boolean',
             'flagged' => 'boolean',
             'raw' => 'string',
-            'from.name' => 'required|string',
+            'from.name' => 'required',
             'from.address' => 'required|string',
             'to.*.name' => 'string',
             'to.*.address' => 'string',
