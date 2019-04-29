@@ -46,6 +46,29 @@ class Messages
 
     /**
      * @param array $params
+     * @return array|string
+     * @throws InvalidRequestException
+     * @throws \ErrorException
+     * @throws \Wildduck\Exceptions\RequestFailedException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function empty(array $params)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = app()['validator']->make($params, [
+            'user' => 'required|string',
+            'mailbox' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidRequestException($validator);
+        }
+
+        return Request::delete(Uri::get('messages.empty', $params));
+    }
+
+    /**
+     * @param array $params
      * @return array
      * @throws InvalidRequestException
      * @throws \Wildduck\Exceptions\UriNotFoundException

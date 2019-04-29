@@ -40,6 +40,7 @@ class Uri
         'mailboxes.update' => '/users/:user/mailboxes/:mailbox',
 
         'messages.list' => '/users/:user/mailboxes/:mailbox/messages',
+        'messages.empty' => '/users/:user/mailboxes/:mailbox/messages',
         'messages.update' => '/users/:user/mailboxes/:mailbox/messages',
         'messages.get' => '/users/:user/mailboxes/:mailbox/messages/:message',
         'messages.delete' => '/users/:user/mailboxes/:mailbox/messages/:message',
