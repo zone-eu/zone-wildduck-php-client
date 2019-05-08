@@ -199,6 +199,10 @@ class Client
             return self::$client->setRaw(true);
         }
 
+        if (strtolower($name) === 'token') {
+            return self::$client->setUserToken($arguments[0]);
+        }
+
         $class = "Wildduck\\Api\\" . ucfirst($name);
         if (!class_exists($class)) {
             throw new ApiClassNotFoundException("API class $class not found");
