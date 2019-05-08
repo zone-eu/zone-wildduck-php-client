@@ -59,6 +59,12 @@ class Client
     private $accessToken = null;
 
     /**
+     * Wildduck User authentication token
+     * @var string $userToken
+     */
+    private $userToken = null;
+
+    /**
      * Return raw GuzzleResponse instance instead of the parsed results
      * @var bool $raw
      */
@@ -141,6 +147,29 @@ class Client
     }
 
     /**
+     * @return string
+     */
+    public function getUserToken()
+    {
+        return $this->userToken;
+    }
+
+    /**
+     * @param string|null $userToken
+     * @return Client
+     */
+    public function setUserToken(string $userToken = null): Client
+    {
+        if ($userToken === '') {
+            $this->userToken = null;
+            return $this;
+        }
+
+        $this->userToken = $userToken;
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isRaw()
@@ -188,6 +217,10 @@ class Client
     {
         if (strtolower($name) === 'raw') {
             return self::$client->setRaw(true);
+        }
+
+        if (strtolower($name) === 'token') {
+            return self::$client->setUserToken($arguments[0]);
         }
 
         $class = "Wildduck\\Api\\" . ucfirst($name);

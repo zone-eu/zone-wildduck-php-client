@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use function GuzzleHttp\Psr7\parse_header;
 use Psr\Http\Message\ResponseInterface;
 use Wildduck\Client as WildduckClient;
+use Wildduck\Exceptions\AuthenticationFailedException;
 use Wildduck\Exceptions\InvalidRequestException;
 use Wildduck\Exceptions\RequestFailedException;
 
@@ -17,6 +18,7 @@ class Request
     const HTTP_ERROR = 1;
 
     const CODE_INPUT_VALIDATION_ERROR = 'InputValidationError';
+    const CODE_INVALID_TOKEN = 'InvalidToken';
 
     /**
      * @param string $uri
@@ -78,6 +80,7 @@ class Request
      * @throws RequestFailedException
      * @throws InvalidRequestException
      * @throws \ErrorException
+     * @throws AuthenticationFailedException
      */
     public static function request(string $method, string $uri, array $params = [])
     {
@@ -85,7 +88,7 @@ class Request
             'base_uri' => WildduckClient::instance()->getHost(),
             'timeout' => config('wildduck.request_timeout'),
         ]);
-        
+
         $opts = [
             'query' => [],
         ];
@@ -100,6 +103,12 @@ class Request
 
         if (null !== $accessToken = WildduckClient::instance()->getAccessToken()) {
             $opts['query']['accessToken'] = $accessToken;
+        }
+
+        if (null !== $userToken = WildduckClient::instance()->getUserToken()) {
+            $opts['headers'] = [
+                'X-Access-Token' => $userToken,
+            ];
         }
 
         try {
@@ -118,6 +127,8 @@ class Request
                         switch ($data['code']) {
                             case self::CODE_INPUT_VALIDATION_ERROR:
                                 throw new InvalidRequestException($data['error']);
+                            case self::CODE_INVALID_TOKEN:
+                                throw new AuthenticationFailedException($data['error']);
                             default:
                                 throw new RequestFailedException($data['error'], $data['code']);
                         }

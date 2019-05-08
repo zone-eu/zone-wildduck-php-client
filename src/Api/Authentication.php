@@ -23,6 +23,7 @@ class Authentication
             'password' => 'required|string',
             'protocol' => 'sometimes|string',
             'scope' => 'sometimes|in:master,imap,smtp,pop3',
+            'token' => 'sometimes|boolean',
             'sess' => 'sometimes|string',
             'ip' => 'sometimes|string',
         ]);
@@ -32,6 +33,18 @@ class Authentication
         }
 
         return Request::post(Uri::get('authentication.authenticate'), $params);
+    }
+
+    /**
+     * @return array|string
+     * @throws InvalidRequestException
+     * @throws \ErrorException
+     * @throws \Wildduck\Exceptions\RequestFailedException
+     * @throws \Wildduck\Exceptions\UriNotFoundException
+     */
+    public function invalidateToken()
+    {
+        return Request::delete(Uri::get('authentication.invalidate'));
     }
 
     /**
