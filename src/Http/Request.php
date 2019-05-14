@@ -147,6 +147,16 @@ class Request
             // Non-JSON response
             return $res->getBody()->getContents();
         } catch (BadResponseException $e) {
+            if ($e->getResponse() !== null) {
+                $body = json_decode($e->getResponse()->getBody()->getContents(), true);
+                if (isset($body['code'])) {
+                    switch ($body['code']) {
+                        case self::CODE_INVALID_TOKEN:
+                            throw new AuthenticationFailedException($body['error']);
+                    }
+                }
+            }
+
             throw $e;
         } catch (GuzzleException $e) {
             $message = $e->getMessage();
