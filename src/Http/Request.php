@@ -101,15 +101,14 @@ class Request
             }
         }
 
-        if (null !== $accessToken = WildduckClient::instance()->getAccessToken()) {
-            $opts['query']['accessToken'] = $accessToken;
+        $accessToken = WildduckClient::instance()->getUserToken();
+        if (null === $accessToken) {
+            $accessToken = WildduckClient::instance()->getAccessToken();
         }
 
-        if (null !== $userToken = WildduckClient::instance()->getUserToken()) {
-            $opts['headers'] = [
-                'X-Access-Token' => $userToken,
-            ];
-        }
+        $opts['headers'] = [
+            'X-Access-Token' => $accessToken,
+        ];
 
         try {
             $res = $client->request($method, $uri, $opts);
