@@ -221,7 +221,7 @@ class Client
         }
 
         if (strtolower($name) === 'request') {
-            return new Request;
+            return Request::class;
         }
 
         $class = "Wildduck\\Api\\" . ucfirst($name);
