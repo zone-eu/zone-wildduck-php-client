@@ -14,12 +14,14 @@ use Wildduck\Api\Submission;
 use Wildduck\Api\TwoFactorAuth;
 use Wildduck\Api\Users;
 use Wildduck\Client;
+use Wildduck\Http\Request;
 
 /**
  * @method static Client instance()
  *
  * @method static Client raw()
  * @method static Client token(string $token)
+ * @method static Request request()
  * @method static Addresses addresses()
  * @method static ApplicationPasswords applicationPasswords()
  * @method static Authentication authentication()

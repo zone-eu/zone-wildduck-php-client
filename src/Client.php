@@ -13,6 +13,7 @@ use Wildduck\Api\Submission;
 use Wildduck\Api\TwoFactorAuth;
 use Wildduck\Api\Users;
 use Wildduck\Exceptions\ApiClassNotFoundException;
+use Wildduck\Http\Request;
 
 /**
  * Main wrapper for Wildduck API Client.
@@ -203,6 +204,10 @@ class Client
             return self::$client->setUserToken($arguments[0]);
         }
 
+        if (strtolower($name) === 'request') {
+            return new Request;
+        }
+
         $class = "Wildduck\\Api\\" . ucfirst($name);
         if (!class_exists($class)) {
             throw new ApiClassNotFoundException("API class $class not found");
@@ -225,6 +230,10 @@ class Client
 
         if (strtolower($name) === 'token') {
             return self::$client->setUserToken($arguments[0]);
+        }
+
+        if (strtolower($name) === 'request') {
+            return new Request;
         }
 
         $class = "Wildduck\\Api\\" . ucfirst($name);
