@@ -13,7 +13,9 @@ use Wildduck\Api\Submission;
 use Wildduck\Api\TwoFactorAuth;
 use Wildduck\Api\Users;
 use Wildduck\Exceptions\ApiClassNotFoundException;
+use Wildduck\Exceptions\UriNotFoundException;
 use Wildduck\Http\Request;
+use Wildduck\Util\Uri;
 
 /**
  * Main wrapper for Wildduck API Client.
@@ -168,6 +170,20 @@ class Client
 
         $this->userToken = $userToken;
         return $this;
+    }
+
+    /**
+     * @param string $keyword
+     * @param array $data
+     * @return string|null
+     */
+    public function resolveUri(string $keyword, array $data)
+    {
+        try {
+            return Uri::get($keyword, $data);
+        } catch (UriNotFoundException $e) {
+            return null;
+        }
     }
 
     /**
