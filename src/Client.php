@@ -68,6 +68,18 @@ class Client
     private $userToken = null;
 
     /**
+     * Session identifier that is passed to requests
+     * @var string $session
+     */
+    private $session = null;
+
+    /**
+     * IP request originates from
+     * @var string $ip
+     */
+    private $ip = null;
+
+    /**
      * Return raw GuzzleResponse instance instead of the parsed results
      * @var bool $raw
      */
@@ -85,6 +97,17 @@ class Client
         }
 
         return self::$client;
+    }
+
+    public function __construct()
+    {
+        if (config('wildduck.session.use_cookie', false)) {
+            $this->session = request()->cookie(config('session.cookie'), null);
+        } else {
+            $this->session = session()->get(config('wildduck.session.name'), null);
+        }
+
+        $this->ip = request()->ip();
     }
 
     /**
@@ -169,6 +192,36 @@ class Client
         }
 
         $this->userToken = $userToken;
+        return $this;
+    }
+
+    public function getSession()
+    {
+        return $this->session;
+    }
+
+    public function setSession(string $session = null): Client
+    {
+        if ($session === '') {
+            $session = null;
+        }
+
+        $this->session = $session;
+        return $this;
+    }
+
+    public function getIp()
+    {
+        return $this->ip;
+    }
+
+    public function setIp(string $ip = null): Client
+    {
+        if ($ip === '') {
+            $ip = null;
+        }
+
+        $this->ip = $ip;
         return $this;
     }
 

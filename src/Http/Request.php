@@ -97,6 +97,15 @@ class Request
             if ($method === 'get') {
                 $opts['query'] = $params;
             } else {
+                // Add session and IP to POST/PUT/PATCH/DELETE requests
+                if (null !== $session = WildduckClient::instance()->getSession()) {
+                    $params['sess'] = $session;
+                }
+
+                if (null !== $ip = WildduckClient::instance()->getIp()) {
+                    $params['ip'] = $ip;
+                }
+
                 $opts['json'] = $params;
             }
         }
