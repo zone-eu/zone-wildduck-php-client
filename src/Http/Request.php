@@ -163,6 +163,8 @@ class Request
                             throw new AuthenticationFailedException($body['error']);
                     }
                 }
+
+                throw new RequestFailedException($body['error'], $body['code']);
             }
 
             throw $e;
