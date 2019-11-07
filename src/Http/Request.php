@@ -3,7 +3,7 @@
 namespace Wildduck\Http;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use function GuzzleHttp\Psr7\parse_header;
 use Psr\Http\Message\ResponseInterface;
@@ -154,7 +154,7 @@ class Request
 
             // Non-JSON response
             return $res->getBody()->getContents();
-        } catch (BadResponseException $e) {
+        } catch (ClientException $e) {
             if ($e->getResponse() !== null) {
                 $body = json_decode($e->getResponse()->getBody()->getContents(), true);
                 if (isset($body['code'])) {
