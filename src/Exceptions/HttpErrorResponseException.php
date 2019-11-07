@@ -12,7 +12,9 @@ class HttpErrorResponseException extends \Exception
     {
         parent::__construct($message, $code, $previous);
 
-        $this->response = $response;
+        if (null === $this->response = json_decode($response->getBody()->getContents(), true)) {
+            $this->response = $response->getBody()->getContents();
+        }
     }
 
     public function getResponse()
