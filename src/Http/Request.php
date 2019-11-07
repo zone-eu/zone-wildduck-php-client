@@ -4,9 +4,7 @@ namespace Wildduck\Http;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use Wildduck\Exceptions\HttpErrorResponseException;
 use function GuzzleHttp\Psr7\parse_header;
 use Psr\Http\Message\ResponseInterface;
 use Wildduck\Client as WildduckClient;
@@ -83,7 +81,6 @@ class Request
      * @throws InvalidRequestException
      * @throws \ErrorException
      * @throws AuthenticationFailedException
-     * @throws HttpErrorResponseException
      */
     public static function request(string $method, string $uri, array $params = [])
     {
@@ -166,8 +163,6 @@ class Request
                             throw new AuthenticationFailedException($body['error']);
                     }
                 }
-
-                throw new HttpErrorResponseException($e->getResponse()->getReasonPhrase(), $e->getResponse()->getStatusCode(), $e->getPrevious(), $e->getResponse());
             }
 
             throw $e;
