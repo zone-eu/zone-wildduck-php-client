@@ -102,10 +102,11 @@ class Request
                     $params['sess'] = $session;
                 }
 
-                if (null === $ip = WildduckClient::instance()->getIp()) {
-                    $ip = $_SERVER['REMOTE_ADDR'];
-                    // HEADER_X_FORWARDED_FOR? Maybe?
-                }
+                $ip = request()->ip();
+//                if (null === $ip = WildduckClient::instance()->getIp()) {
+//                    $ip = $_SERVER['REMOTE_ADDR'];
+//                    // HEADER_X_FORWARDED_FOR? Maybe?
+//                }
 
                 $params['ip'] = $ip;
 
