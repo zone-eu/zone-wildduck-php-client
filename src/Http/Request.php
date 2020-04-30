@@ -166,9 +166,11 @@ class Request
                         case self::CODE_INVALID_TOKEN:
                             throw new AuthenticationFailedException($body['error']);
                     }
+
+                    throw new RequestFailedException($body['error'], $body['code']);
                 }
 
-                throw new RequestFailedException($body['error'], $body['code']);
+                throw new RequestFailedException($body['error'], 500);
             }
 
             throw $e;
