@@ -170,7 +170,7 @@ class Request
                     throw new RequestFailedException($body['error'], $body['code']);
                 }
 
-                throw new RequestFailedException($body['error'], 500);
+                throw new RequestFailedException($body['error']);
             }
 
             throw $e;
