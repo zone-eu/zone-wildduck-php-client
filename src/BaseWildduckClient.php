@@ -56,7 +56,7 @@ class BaseWildduckClient implements WildduckClientInterface
         }
 
         if (count($config)) {
-            self::$_instance->validateConfig($config);
+            self::$_instance->validateConfig($config, array_keys($config) === ['access_token']);
             self::$_instance->updateConfig($config);
         }
 
@@ -167,10 +167,11 @@ class BaseWildduckClient implements WildduckClientInterface
 
     /**
      * @param array<string, mixed> $config
+     * @param bool $tokenOnly
      *
      * @throws \Zone\Wildduck\Exception\InvalidArgumentException
      */
-    private function validateConfig($config)
+    private function validateConfig($config, $tokenOnly = false)
     {
         // access_token
         if (null !== $config['access_token'] && !\is_string($config['access_token'])) {
@@ -178,10 +179,12 @@ class BaseWildduckClient implements WildduckClientInterface
         }
 
         if (null !== $config['access_token'] && ('' === $config['access_token'])) {
-            $msg = 'api_key cannot be the empty string';
+            $msg = 'access_token cannot be an empty string';
 
             throw new \Zone\Wildduck\Exception\InvalidArgumentException($msg);
         }
+
+        if ($tokenOnly) return;
 
         // api_base
         if (!\is_string($config['api_base'])) {
