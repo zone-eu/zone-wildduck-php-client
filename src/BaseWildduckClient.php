@@ -55,7 +55,17 @@ class BaseWildduckClient implements WildduckClientInterface
             self::$_instance = new static($config);
         }
 
+        if (count($config)) {
+            self::$_instance->validateConfig($config);
+            self::$_instance->updateConfig($config);
+        }
+
         return self::$_instance;
+    }
+
+    public static function token($token)
+    {
+        return self::instance(['access_token' => $token]);
     }
 
     /**
@@ -182,6 +192,12 @@ class BaseWildduckClient implements WildduckClientInterface
         $extraConfigKeys = \array_diff(\array_keys($config), \array_keys($this->getDefaultConfig()));
         if (!empty($extraConfigKeys)) {
             throw new \Zone\Wildduck\Exception\InvalidArgumentException('Found unknown key(s) in configuration array: ' . \implode(',', $extraConfigKeys));
+        }
+    }
+
+    private function updateConfig($config): void {
+        foreach ($config as $k => $v) {
+            $this->config[$k] = $v;
         }
     }
 }
