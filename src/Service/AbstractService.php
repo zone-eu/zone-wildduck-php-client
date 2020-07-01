@@ -56,7 +56,9 @@ abstract class AbstractService
 
     protected function request($method, $path, $params, $opts)
     {
-        $opts['object'] = $this->getObjectName();
+        if (null !== $object = $this->getObjectName()) {
+            $opts['object'] = $object;
+        }
         return $this->getClient()->request($method, $path, static::formatParams($params), $opts);
     }
 
@@ -89,6 +91,10 @@ abstract class AbstractService
         $parts = explode('\\', get_called_class());
         $service = $parts[count($parts) - 1];
         $entityClass = implode('\\', [$parts[0], $parts[1]]) . '\\' . explode('Service', $service)[0];
-        return $entityClass::OBJECT_NAME;
+        if (class_exists($entityClass)) {
+            return $entityClass::OBJECT_NAME;
+        }
+
+        return null;
     }
 }
