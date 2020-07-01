@@ -39,4 +39,29 @@ class TwoFactorAuthenticationService extends AbstractService
     {
         return $this->request('post', $this->buildPath('/users/%s/2fa/totp/check', $user), $params, $opts);
     }
+
+    public function generateU2F(string $user, $params = null, $opts = null)
+    {
+        return $this->request('post', $this->buildPath('/users/%s/2fa/u2f/setup', $user), $params, $opts);
+    }
+
+    public function enableU2F(string $user, $params = null, $opts = null)
+    {
+        return $this->request('post', $this->buildPath('/users/%s/2fa/u2f/enable', $user), $params, $opts);
+    }
+
+    public function disableU2F(string $user, $params = null, $opts = null)
+    {
+        return $this->request('delete', $this->buildPath('/users/%s/2fa/u2f', $user), $params, $opts);
+    }
+
+    public function startU2F(string $user, $params = null, $opts = null)
+    {
+        return $this->request('post', $this->buildPath('/users/%s/2fa/u2f/start', $user), $params, $opts);
+    }
+
+    public function validateU2F(string $user, $params = null, $opts = null)
+    {
+        return $this->request('post', $this->buildPath('/users/%s/2fa/u2f/check', $user), $params, $opts);
+    }
 }
