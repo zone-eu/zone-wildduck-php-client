@@ -2,6 +2,10 @@
 
 namespace Zone\Wildduck;
 
+use Zone\Wildduck\Exception\AuthenticationFailedException;
+use Zone\Wildduck\Exception\RequestFailedException;
+use Zone\Wildduck\Exception\ValidationException;
+
 /**
  * Class ApiRequestor.
  */
@@ -101,8 +105,9 @@ class ApiRequestor
      * @param array $rheaders
      * @param array $resp
      *
-     * @throws Exception\UnexpectedValueException
-     * @throws Exception\ApiErrorException
+     * @throws AuthenticationFailedException
+     * @throws RequestFailedException
+     * @throws ValidationException
      */
     public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
     {
@@ -125,13 +130,11 @@ class ApiRequestor
     /**
      * @static
      *
-     * @param string $rbody
-     * @param int    $rcode
-     * @param array  $rheaders
-     * @param array  $resp
-     * @param array  $errorData
-     *
-     * @return Exception\ApiErrorException
+     * @param $code
+     * @param $error
+     * @throws AuthenticationFailedException
+     * @throws RequestFailedException
+     * @throws ValidationException
      */
     private static function _specificAPIError($code, $error)
     {
