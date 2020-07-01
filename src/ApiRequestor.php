@@ -3,6 +3,7 @@
 namespace Zone\Wildduck;
 
 use Zone\Wildduck\Exception\AuthenticationFailedException;
+use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
 
@@ -14,6 +15,7 @@ class ApiRequestor
 
     const CODE_INPUT_VALIDATION_ERROR = 'InputValidationError';
     const CODE_INVALID_TOKEN = 'InvalidToken';
+    const CODE_AUTH_FAILED = 'AuthFailed';
 
     /**
      * @var null|string
@@ -108,6 +110,7 @@ class ApiRequestor
      * @throws AuthenticationFailedException
      * @throws RequestFailedException
      * @throws ValidationException
+     * @throws InvalidAccessTokenException
      */
     public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
     {
@@ -135,12 +138,15 @@ class ApiRequestor
      * @throws AuthenticationFailedException
      * @throws RequestFailedException
      * @throws ValidationException
+     * @throws InvalidAccessTokenException
      */
     private static function _specificAPIError($code, $error)
     {
         switch ($code) {
             case static::CODE_INVALID_TOKEN:
-                throw new AuthenticationFailedException('Invalid token');
+                throw new InvalidAccessTokenException('Access token used for request was invalid');
+            case static::CODE_AUTH_FAILED:
+                throw new AuthenticationFailedException($error);
             case static::CODE_INPUT_VALIDATION_ERROR:
                 throw new ValidationException($error);
         }
