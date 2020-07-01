@@ -7,6 +7,8 @@ class BaseWildduckClient implements WildduckClientInterface
     /** @var string default base URL for Wildduck API */
     const DEFAULT_API_BASE = 'https://localhost:8080';
 
+    private static $_instance = null;
+
     /** @var array<string, mixed> */
     private $config;
 
@@ -45,6 +47,15 @@ class BaseWildduckClient implements WildduckClientInterface
         $this->config = $config;
 
         $this->defaultOpts = \Zone\Wildduck\Util\RequestOptions::parse([]);
+    }
+
+    public static function instance($config = [])
+    {
+        if (null === self::$_instance) {
+            self::$_instance = new static($config);
+        }
+
+        return self::$_instance;
     }
 
     /**
