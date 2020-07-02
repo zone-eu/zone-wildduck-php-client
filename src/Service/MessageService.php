@@ -26,16 +26,25 @@ class MessageService extends AbstractService
         return $this->request('get', $this->buildPath('/users/%s/mailboxes/%s/messages/%s/message.eml', $user, $mailbox, $message), $params, $opts);
     }
 
+    /**
+     * @return \Zone\Wildduck\Collection|\Zone\Wildduck\Message[]
+     */
     public function all(string $user, string $mailbox, $params = null, $opts = null)
     {
         return $this->requestCollection('get', $this->buildPath('/users/%s/mailboxes/%s/messages', $user, $mailbox), $params, $opts);
     }
 
+    /**
+     * @return \Zone\Wildduck\Message
+     */
     public function get(string $user, string $mailbox, string $message, $params = null, $opts = null)
     {
         return $this->request('get', $this->buildPath('/users/%s/mailboxes/%s/messages/%s', $user, $mailbox, $message), $params, $opts);
     }
 
+    /**
+     * @return \Zone\Wildduck\Collection|\Zone\Wildduck\Message[]
+     */
     public function search(string $user, $params = null, $opts = null)
     {
         return $this->requestCollection('get', $this->buildPath('/users/%s/search', $user), $params, $opts);
