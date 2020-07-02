@@ -5,9 +5,13 @@ namespace Zone\Wildduck\Service;
 class MailboxService extends AbstractService
 {
 
+    /**
+     * @return \Zone\Wildduck\Mailbox
+     */
     public function create($user, $params = null, $opts = null)
     {
-        return $this->request('post', $this->buildPath('/users/%s/mailboxes', $user), $params, $opts);
+        $res = $this->request('post', $this->buildPath('/users/%s/mailboxes', $user), $params, $opts);
+        return $this->get($user, $res->id, null, $opts);
     }
 
     public function delete($user, $mailbox, $params = null, $opts = null)
@@ -28,6 +32,9 @@ class MailboxService extends AbstractService
         return $this->requestCollection('get', $this->buildPath('/users/%s/mailboxes', $user), $params, $opts);
     }
 
+    /**
+     * @return \Zone\Wildduck\Mailbox
+     */
     public function get($user, $mailbox, $params = null, $opts = null)
     {
         return $this->request('get', $this->buildPath('/users/%s/mailboxes/%s', $user, $mailbox), $params, $opts);
