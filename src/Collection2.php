@@ -121,9 +121,8 @@ class Collection2 extends WildduckObject implements \Countable, \IteratorAggrega
             array_push($mapped, $i->toArray());
         }
 
-        $arr['results'] = $mapped;
-
         if ($this->_total !== null) {
+            $arr['results'] = $mapped;
             $paginationInfo = [
                 'total' => $this->_total,
                 'page' => $this->_page,
@@ -132,9 +131,10 @@ class Collection2 extends WildduckObject implements \Countable, \IteratorAggrega
             ];
 
             $arr = array_merge($paginationInfo, $arr);
+            return $arr;
         }
 
-        return $arr;
+        return $mapped;
     }
 
     public function toJSON(): string
