@@ -115,12 +115,26 @@ class Collection2 extends WildduckObject implements \Countable, \IteratorAggrega
 
     public function toArray(): array
     {
+        $arr = [];
         $mapped = [];
         foreach ($this->_results as $i) {
             array_push($mapped, $i->toArray());
         }
 
-        return $mapped;
+        $arr['results'] = $mapped;
+
+        if ($this->_total !== null) {
+            $paginationInfo = [
+                'total' => $this->_total,
+                'page' => $this->_page,
+                'nextCursor' => $this->_nextCursor,
+                'previousCursor' => $this->_previousCursor,
+            ];
+
+            $arr = array_merge($paginationInfo, $arr);
+        }
+
+        return $arr;
     }
 
     public function toJSON(): string
