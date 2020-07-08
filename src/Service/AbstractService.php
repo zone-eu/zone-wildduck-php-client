@@ -68,7 +68,7 @@ abstract class AbstractService
         return $this->getClient()->requestCollection($method, $path, static::formatParams($params), $opts);
     }
 
-    protected function stream(string $method, string $path, ?array $params, ?array $opts)
+    protected function stream(string $method, string $path, $params, $opts)
     {
         return $this->getClient()->stream($method, $path, static::formatParams($params), $opts);
     }

@@ -135,11 +135,11 @@ class BaseWildduckClient implements WildduckClientInterface
         return $obj;
     }
 
-    public function stream(string $method, string $path, ?array $params, ?array $opts = [])
+    public function stream(string $method, string $path, $params, $opts)
     {
         $baseUrl = $opts->apiBase ?? $this->getApiBase();
         $requestor = new StreamRequest($baseUrl, $this->accessTokenForRequest($opts));
-        return $requestor->stream($method, $path, $params, $opts['headers'] ?? []);
+        return $requestor->stream($method, $path, $params, $opts->headers ?? []);
     }
 
     /**
@@ -149,7 +149,7 @@ class BaseWildduckClient implements WildduckClientInterface
      */
     private function accessTokenForRequest($opts)
     {
-        return $opts->accessToken ?: $this->getAccessToken();
+        return $opts->accessToken ?? $this->getAccessToken();
     }
 
     /**
