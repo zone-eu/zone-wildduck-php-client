@@ -11,10 +11,8 @@ namespace Zone\Wildduck;
  * @property bool $related
  * @property int $sizeKb
  */
-class Attachment extends WildduckObject // TODO: ApiResource?
+class Attachment extends ApiResource
 {
 
     const OBJECT_NAME = 'attachment';
-
-    // TODO: download()
 }
