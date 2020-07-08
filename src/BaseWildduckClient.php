@@ -138,7 +138,7 @@ class BaseWildduckClient implements WildduckClientInterface
     public function stream(string $method, string $path, ?array $params, ?array $opts = [])
     {
         $baseUrl = $opts->apiBase ?? $this->getApiBase();
-        $requestor = new StreamRequest($baseUrl);
+        $requestor = new StreamRequest($baseUrl, $this->accessTokenForRequest($opts));
         return $requestor->stream($method, $path, $params, $opts['headers'] ?? []);
     }
 

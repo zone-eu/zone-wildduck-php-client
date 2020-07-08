@@ -22,31 +22,34 @@ class StreamRequest
     private static ResponseInterface $_response;
 
     private ?string $_apiBase;
+    private ?string $_accessToken;
     private ?string $_lastId = null;
     private ?int $_retry = self::RETRY_DEFAULT_MS;
 
-    public function __construct($apiBase, $opts = [])
+    public function __construct($apiBase, $accessToken, $opts = [])
     {
         if (!$apiBase) {
             $apiBase = Wildduck::getApiBase();
         }
 
+        if (!$accessToken) {
+            $accessToken = Wildduck::getAccessToken();
+        }
+
         $this->_apiBase = $apiBase;
+        $this->_accessToken = $accessToken;
         self::$_request = Request::createFromGlobals();
 
         if ($opts) {
             self::$_httpOptions = $opts;
         }
 
-        // TODO: User-specific access token
-        $accessToken = Wildduck::getAccessToken();
-
         self::$_httpClient = new Client([
             'base_uri' => $this->_apiBase,
             'headers' => [
                 'Accept' => 'text/event-stream',
                 'Cache-Control' => 'no-cache',
-                'X-Access-Token' => $accessToken,
+                'X-Access-Token' => $this->_accessToken,
             ]
         ]);
     }
