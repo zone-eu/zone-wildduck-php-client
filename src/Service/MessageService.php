@@ -21,6 +21,11 @@ class MessageService extends AbstractService
         return $this->request('post', $this->buildPath('/users/%s/mailboxes/%s/messages/%s/forward', $user, $mailbox, $message), $params, $opts);
     }
 
+    public function events(string $user, string $mailbox, string $message, $params = null, $opts = null)
+    {
+        return $this->request('get', $this->buildPath('/users/%s/mailboxes/%s/messages/%s/events', $user, $mailbox, $message), $params, $opts);
+    }
+
     public function source(string $user, string $mailbox, string $message, $params = null, $opts = null)
     {
         return $this->request('get', $this->buildPath('/users/%s/mailboxes/%s/messages/%s/message.eml', $user, $mailbox, $message), $params, $opts);
