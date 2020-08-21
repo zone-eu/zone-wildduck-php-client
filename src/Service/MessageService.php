@@ -12,7 +12,7 @@ class MessageService extends AbstractService
 
     public function downloadAttachment(string $user, string $mailbox, string $message, string $attachment, $params = null, $opts = null)
     {
-        $opts['raw'] = true;
+//        $opts['raw'] = true;
         return $this->request('get', $this->buildPath('/users/%s/mailboxes/%s/messages/%s/attachments/%s', $user, $mailbox, $message, $attachment), $params, $opts);
     }
 
