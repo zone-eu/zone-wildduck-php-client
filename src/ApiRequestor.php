@@ -82,12 +82,13 @@ class ApiRequestor
      * @param string     $url
      * @param null|array $params
      * @param null|array $headers
+     * @param bool       $raw
      *
      * @throws Exception\ApiErrorException
      *
      * @return array tuple containing (ApiResponse, API key)
      */
-    public function request($method, $url, $params = null, $headers = null)
+    public function request($method, $url, $params = null, $headers = null, $raw = false)
     {
         $params = $params ?: [];
         $headers = $headers ?: [];
@@ -95,7 +96,11 @@ class ApiRequestor
         list($rbody, $rcode, $rheaders, $myApiKey) =
             $this->_requestRaw($method, $url, $params, $headers);
 
-        $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
+        $json = null;
+        if (!$raw) {
+            $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
+        }
+
         $resp = new ApiResponse($rbody, $rcode, $rheaders, $json);
 
         return [$resp, $myApiKey];

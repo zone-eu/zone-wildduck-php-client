@@ -103,11 +103,11 @@ class BaseWildduckClient implements WildduckClientInterface
         $opts = $this->defaultOpts->merge($opts, true);
         $baseUrl = $opts->apiBase ?: $this->getApiBase();
         $requestor = new \Zone\Wildduck\ApiRequestor($this->accessTokenForRequest($opts), $baseUrl);
-        list($response, $opts->apiKey) = $requestor->request($method, $path, $params, $opts->headers);
+        list($response, $opts->apiKey) = $requestor->request($method, $path, $params, $opts->headers, $opts->raw);
         $opts->discardNonPersistentHeaders();
 
         if ($opts->raw) {
-            return $response->body;
+            return $response;
         }
 
         $obj = \Zone\Wildduck\Util\Util::convertToWildduckObject($response->json, $opts);
