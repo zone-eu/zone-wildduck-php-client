@@ -21,18 +21,23 @@ class RequestOptions
     /** @var null|string */
     public $object;
 
+    /** @var bool */
+    public $raw;
+
     /**
      * @param null|string $key
      * @param array<string, string> $headers
      * @param null|string $base
      * @param null|string $object
+     * @param bool $raw
      */
-    public function __construct($key = null, $headers = [], $base = null, $object = null)
+    public function __construct($key = null, $headers = [], $base = null, $object = null, $raw = false)
     {
         $this->accessToken = $key;
         $this->headers = $headers;
         $this->apiBase = $base;
         $this->object = $object;
+        $this->raw = $raw;
     }
 
     /**
@@ -118,6 +123,7 @@ class RequestOptions
             $key = null;
             $base = null;
             $object = null;
+            $raw = false;
 
             if (\array_key_exists('api_key', $options)) {
                 $key = $options['api_key'];
@@ -131,6 +137,10 @@ class RequestOptions
                 $object = $options['object'];
                 unset($options['object']);
             }
+            if (\array_key_exists('raw', $options)) {
+                $raw = $options['raw'];
+                unset($options['raw']);
+            }
 
             if ($strict && !empty($options)) {
                 $message = 'Got unexpected keys in options array: ' . \implode(', ', \array_keys($options));
@@ -138,7 +148,7 @@ class RequestOptions
                 throw new \Zone\Wildduck\Exception\InvalidArgumentException($message);
             }
 
-            return new RequestOptions($key, $headers, $base, $object);
+            return new RequestOptions($key, $headers, $base, $object, $raw);
         }
 
         $message = 'The second argument to Wildduck API method calls is an '

@@ -105,6 +105,11 @@ class BaseWildduckClient implements WildduckClientInterface
         $requestor = new \Zone\Wildduck\ApiRequestor($this->accessTokenForRequest($opts), $baseUrl);
         list($response, $opts->apiKey) = $requestor->request($method, $path, $params, $opts->headers);
         $opts->discardNonPersistentHeaders();
+
+        if ($opts->raw) {
+            return $response->body;
+        }
+
         $obj = \Zone\Wildduck\Util\Util::convertToWildduckObject($response->json, $opts);
         $obj->setLastResponse($response);
 
