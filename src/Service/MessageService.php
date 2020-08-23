@@ -28,6 +28,7 @@ class MessageService extends AbstractService
 
     public function source(string $user, string $mailbox, string $message, $params = null, $opts = null)
     {
+        $opts['raw'] = true;
         return $this->request('get', $this->buildPath('/users/%s/mailboxes/%s/messages/%s/message.eml', $user, $mailbox, $message), $params, $opts);
     }
 
