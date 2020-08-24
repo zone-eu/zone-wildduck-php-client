@@ -361,27 +361,16 @@ class CurlClient implements ClientInterface
             case \CURLE_COULDNT_CONNECT:
             case \CURLE_COULDNT_RESOLVE_HOST:
             case \CURLE_OPERATION_TIMEOUTED:
-                $msg = "Could not connect to Wildduck ({$url}).  Please check your "
-                 . 'internet connection and try again.  If this problem persists, '
-                 . "you should check Wildduck's service status at "
-                 . 'https://twitter.com/stripestatus, or';
-
+                $msg = "Could not connect to Wildduck ({$url})";
                 break;
             case \CURLE_SSL_CACERT:
             case \CURLE_SSL_PEER_CERTIFICATE:
-                $msg = "Could not verify Wildduck's SSL certificate.  Please make sure "
-                 . 'that your network is not intercepting certificates.  '
-                 . "(Try going to {$url} in your browser.)  "
-                 . 'If this problem persists,';
-
+                $msg = 'Could not verify Wildduck\'s SSL certificate';
                 break;
             default:
-                $msg = 'Unexpected error communicating with Wildduck.  '
-                 . 'If this problem persists,';
+                $msg = 'Unexpected error communicating with Wildduck.';
+                $msg .= "\n\n(Network error [errno {$errno}]: {$message})";
         }
-        $msg .= ' let us know at support@stripe.com.';
-
-        $msg .= "\n\n(Network error [errno {$errno}]: {$message})";
 
         if ($numRetries > 0) {
             $msg .= "\n\nRequest was retried {$numRetries} times.";
