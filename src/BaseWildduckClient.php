@@ -68,6 +68,12 @@ class BaseWildduckClient implements WildduckClientInterface
         return self::instance(['access_token' => $token]);
     }
 
+    public function resolve()
+    {
+        $this->config['resolve_uri'] = true;
+        return $this;
+    }
+
     /**
      * Gets the access token used by the client to send requests.
      *
@@ -96,10 +102,12 @@ class BaseWildduckClient implements WildduckClientInterface
      * @param array $params the parameters of the request
      * @param array|\Zone\Wildduck\Util\RequestOptions $opts the special modifiers of the request
      *
-     * @return \Zone\Wildduck\WildduckObject the object returned by Wildduck's API
+     * @return \Zone\Wildduck\WildduckObject|string the object returned by Wildduck's API
      */
     public function request($method, $path, $params, $opts)
     {
+        if ($this->config['resolve_uri']) return $path;
+
         $opts = $this->defaultOpts->merge($opts, true);
         $baseUrl = $opts->apiBase ?: $this->getApiBase();
         $requestor = new \Zone\Wildduck\ApiRequestor($this->accessTokenForRequest($opts), $baseUrl);
@@ -167,6 +175,7 @@ class BaseWildduckClient implements WildduckClientInterface
         return [
             'access_token' => null,
             'api_base' => self::DEFAULT_API_BASE,
+            'resolve_uri' => false,
         ];
     }
 
