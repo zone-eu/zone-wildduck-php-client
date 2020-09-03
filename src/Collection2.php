@@ -65,9 +65,14 @@ class Collection2 extends WildduckObject implements \Countable, \IteratorAggrega
         return new \ArrayIterator($this->_results);
     }
 
+//    public function map($fn)
+//    {
+//        $this->_results = array_map($fn, $this->_results);
+//    }
+
     public function map($fn)
     {
-        $this->_results = array_map($fn, $this->_results);
+        return array_map($fn, $this->_results);
     }
 
     public static function emptyCollection()
@@ -80,33 +85,33 @@ class Collection2 extends WildduckObject implements \Countable, \IteratorAggrega
         return empty($this->_results);
     }
 
-    public function nextPage()
-    {
-        if (null === $this->_nextCursor) {
-            return static::emptyCollection();
-        }
-
-        $params = [
-            'next' => $this->_nextCursor,
-            'page' => $this->_page + 1,
-        ];
-
-        return $this->all($params);
-    }
-
-    public function previousPage()
-    {
-        if (null === $this->_previousCursor) {
-            return static::emptyCollection();
-        }
-
-        $params = [
-            'previous' => $this->_previousCursor,
-            'page' => $this->_page - 1,
-        ];
-
-        return $this->all($params);
-    }
+//    public function nextPage()
+//    {
+//        if (null === $this->_nextCursor) {
+//            return static::emptyCollection();
+//        }
+//
+//        $params = [
+//            'next' => $this->_nextCursor,
+//            'page' => $this->_page + 1,
+//        ];
+//
+//        return $this->all($params);
+//    }
+//
+//    public function previousPage()
+//    {
+//        if (null === $this->_previousCursor) {
+//            return static::emptyCollection();
+//        }
+//
+//        $params = [
+//            'previous' => $this->_previousCursor,
+//            'page' => $this->_page - 1,
+//        ];
+//
+//        return $this->all($params);
+//    }
 
     public function getTotal()
     {

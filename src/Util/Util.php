@@ -48,7 +48,7 @@ abstract class Util
      *
      * @return array|Collection2|WildduckObject
      */
-    public static function convertToWildduckObject($resp, $opts)
+    public static function convertToWildduckObject($resp, $opts = null)
     {
         $types = \Zone\Wildduck\Util\ObjectTypes::mapping;
         if (self::isCollection($resp)) {
@@ -64,7 +64,7 @@ abstract class Util
             return $mapped;
         }
         if (\is_array($resp)) {
-            if ($opts->object) {
+            if ($opts && $opts->object) {
                 $class = $types[$opts->object];
             } else if (isset($resp['object']) && \is_string($resp['object']) && isset($types[$resp['object']])) {
                 $class = $types[$resp['object']];

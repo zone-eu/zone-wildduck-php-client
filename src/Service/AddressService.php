@@ -2,6 +2,8 @@
 
 namespace Zone\Wildduck\Service;
 
+use Zone\Wildduck\ForwardedAddress;
+
 class AddressService extends AbstractService
 {
 
@@ -18,6 +20,7 @@ class AddressService extends AbstractService
      */
     public function createForwarded($params = null, $opts = null)
     {
+        $opts['object'] = ForwardedAddress::OBJECT_NAME;
         return $this->request('post', '/addresses/forwarded', $params, $opts);
     }
 
@@ -28,6 +31,7 @@ class AddressService extends AbstractService
 
     public function deleteForwarded(string $address, $params = null, $opts = null)
     {
+        $opts['object'] = ForwardedAddress::OBJECT_NAME;
         return $this->request('delete', $this->buildPath('/addresses/forwarded/%s', $address), $params, $opts);
     }
 
@@ -70,6 +74,7 @@ class AddressService extends AbstractService
      */
     public function getForwarded(string $address, $params = null, $opts = null)
     {
+        $opts['object'] = ForwardedAddress::OBJECT_NAME;
         return $this->request('get', $this->buildPath('/addresses/forwarded/%s', $address), $params, $opts);
     }
 
@@ -80,6 +85,7 @@ class AddressService extends AbstractService
 
     public function updateForwarded(string $address, $params = null, $opts = null)
     {
+        $opts['object'] = ForwardedAddress::OBJECT_NAME;
         return $this->request('put', $this->buildPath('/addresses/forwarded/%s', $address), $params, $opts);
     }
 }

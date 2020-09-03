@@ -24,9 +24,9 @@ trait All
 
         list($response, $opts) = static::_staticRequest('get', $url, $params, $opts);
         $obj = \Zone\Wildduck\Util\Util::convertToWildduckObject($response->json, $opts);
-        if (!($obj instanceof \Zone\Wildduck\Collection)) {
+        if (!($obj instanceof \Zone\Wildduck\Collection2)) {
             throw new \Zone\Wildduck\Exception\UnexpectedValueException(
-                'Expected type ' . \Zone\Wildduck\Collection::class . ', got "' . \get_class($obj) . '" instead.'
+                'Expected type ' . \Zone\Wildduck\Collection2::class . ', got "' . \get_class($obj) . '" instead.'
             );
         }
         $obj->setLastResponse($response);
