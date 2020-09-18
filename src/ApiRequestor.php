@@ -59,12 +59,7 @@ class ApiRequestor
         if ($d instanceof ApiResource) {
             return Util\Util::utf8($d->id);
         }
-        if (true === $d) {
-            return 'true';
-        }
-        if (false === $d) {
-            return 'false';
-        }
+
         if (\is_array($d)) {
             $res = [];
             foreach ($d as $k => $v) {
@@ -268,7 +263,7 @@ class ApiRequestor
         if ($hasFile) {
             $defaultHeaders['Content-Type'] = 'multipart/form-data';
         } else {
-            $defaultHeaders['Content-Type'] = 'application/x-www-form-urlencoded';
+            $defaultHeaders['Content-Type'] = 'application/json';
         }
 
         $combinedHeaders = \array_merge($defaultHeaders, $headers);
@@ -281,6 +276,7 @@ class ApiRequestor
         list($rbody, $rcode, $rheaders) = $this->httpClient()->request(
             $method,
             $absUrl,
+//            $combinedHeaders,
             $rawHeaders,
             $params,
             $hasFile

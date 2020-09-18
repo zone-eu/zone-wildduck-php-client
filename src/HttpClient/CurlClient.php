@@ -222,14 +222,14 @@ class CurlClient implements ClientInterface
             }
         } elseif ('post' === $method) {
             $opts[\CURLOPT_POST] = 1;
-            $opts[\CURLOPT_POSTFIELDS] = $hasFile ? $params : Util\Util::encodeParameters($params);
+            $opts[\CURLOPT_POSTFIELDS] = $hasFile ? $params : \json_encode($params);
         } else if ('put' === $method) {
             $opts[\CURLOPT_CUSTOMREQUEST] = 'PUT';
-            $opts[\CURLOPT_POSTFIELDS] = $hasFile ? $params : Util\Util::encodeParameters($params);
+            $opts[\CURLOPT_POSTFIELDS] = $hasFile ? $params : \json_encode($params);
         } elseif ('delete' === $method) {
             $opts[\CURLOPT_CUSTOMREQUEST] = 'DELETE';
             if (\count($params) > 0) {
-                $encoded = Util\Util::encodeParameters($params);
+                $encoded = \json_encode($params);
                 $absUrl = "{$absUrl}?{$encoded}";
             }
         } else {

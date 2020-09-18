@@ -243,14 +243,19 @@ abstract class Util
      */
     public static function urlEncode($key)
     {
+        if (is_object($key)) $key = json_encode($key);
         $s = \urlencode((string) $key);
 
         // Don't use strict form encoding by changing the square bracket control
         // characters back to their literals. This is fine by the server, and
         // makes these parameter strings easier to read.
         $s = \str_replace('%5B', '[', $s);
+        $s = \str_replace('%5D', ']', $s);
 
-        return \str_replace('%5D', ']', $s);
+        $s = \str_replace('%7B', '{', $s);
+        $s = \str_replace('%7D', '}', $s);
+
+        return $s;
     }
 
     public static function normalizeId($id)
