@@ -221,9 +221,11 @@ class CurlClient implements ClientInterface
                 $absUrl = "{$absUrl}?{$encoded}";
             }
         } elseif ('post' === $method) {
+            if (!count($params)) $params = new \stdClass();
             $opts[\CURLOPT_POST] = 1;
             $opts[\CURLOPT_POSTFIELDS] = $hasFile ? $params : \json_encode($params);
         } else if ('put' === $method) {
+            if (!count($params)) $params = new \stdClass();
             $opts[\CURLOPT_CUSTOMREQUEST] = 'PUT';
             $opts[\CURLOPT_POSTFIELDS] = $hasFile ? $params : \json_encode($params);
         } elseif ('delete' === $method) {

@@ -16,6 +16,7 @@ class ApiRequestor
     const CODE_INPUT_VALIDATION_ERROR = 'InputValidationError';
     const CODE_INVALID_TOKEN = 'InvalidToken';
     const CODE_AUTH_FAILED = 'AuthFailed';
+    const CODE_INTERNAL_SERVER = 'InternalServer';
 
     /**
      * @var null|string
@@ -114,17 +115,15 @@ class ApiRequestor
      */
     public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
     {
-        if (!\is_array($resp) || !isset($resp['error'])) {
+        if (!\is_array($resp) || (!isset($resp['error']) && !isset($resp['code']))) {
             $msg = "Invalid response object from API: {$rbody} "
               . "(HTTP response code was {$rcode})";
 
             throw new Exception\UnexpectedValueException($msg);
         }
 
-        $errorData = $resp['error'];
-
         if (isset($resp['code'])) {
-            self::_specificAPIError($resp['code'], $resp['error']);
+            self::_specificAPIError($resp['code'], $resp['message'] ?? $resp['error'] ?? 'unknown error');
         }
 
         throw new RequestFailedException($resp['error']);
@@ -244,7 +243,7 @@ class ApiRequestor
         }
 
         $absUrl = $this->_apiBase . $url;
-        $params = self::_encodeObjects($params);
+//        $params = self::_encodeObjects($params);
         $defaultHeaders = $this->_defaultHeaders($myApiKey, $clientUAInfo);
         if (Wildduck::$apiVersion) {
             $defaultHeaders['Wildduck-Version'] = Wildduck::$apiVersion;
@@ -332,7 +331,7 @@ class ApiRequestor
             throw new Exception\UnexpectedValueException($msg, $rcode);
         }
 
-        if ($rcode < 200 || $rcode >= 300 || isset($resp['error'])) {
+        if ($rcode < 200 || $rcode >= 300 || isset($resp['error']) || isset($resp['code'])) {
             $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
         }
 
