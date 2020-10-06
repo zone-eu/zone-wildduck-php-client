@@ -13,6 +13,12 @@ class Wildduck
     /** @var string The base URL for the Wildduck API. */
     public static $apiBase = 'https://localhost:8080';
 
+    /** @var string|null Active session identifier */
+    public static $session = null;
+
+    /** @var string|null Originating request IP */
+    public static $ip = null;
+
     /** @var null|string The version of the Wildduck API to use for requests. */
     public static $apiVersion = null;
 
@@ -93,6 +99,26 @@ class Wildduck
     public static function setAccessToken($accessToken)
     {
         self::$accessToken = $accessToken;
+    }
+
+    /**
+     * Sets active session identifier
+     *
+     * @param string|null $session
+     */
+    public static function setSession($session)
+    {
+        self::$session = $session;
+    }
+
+    /**
+     * Sets originating request IP
+     *
+     * @param string|null $ip
+     */
+    public static function setIp($ip)
+    {
+        self::$ip = $ip;
     }
 
     /**

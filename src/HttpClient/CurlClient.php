@@ -210,6 +210,9 @@ class CurlClient implements ClientInterface
         $params = Util\Util::objectsToIds($params);
 
         if ('get' === $method) {
+            if (isset($params['sess'])) unset($params['sess']);
+            if (isset($params['ip'])) unset($params['ip']);
+
             if ($hasFile) {
                 throw new Exception\UnexpectedValueException(
                     'Issuing a GET request with a file parameter'

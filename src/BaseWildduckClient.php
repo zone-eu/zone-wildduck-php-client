@@ -4,8 +4,14 @@ namespace Zone\Wildduck;
 
 class BaseWildduckClient implements WildduckClientInterface
 {
-    /** @var string default base URL for Wildduck API */
-    const DEFAULT_API_BASE = 'https://localhost:8080';
+
+    private const DEFAULT_CONFIG = [
+        'access_token' => null,
+        'api_base' => 'https://localhost:8080',
+        'resolve_uri' => false,
+        'session' => null,
+        'ip' => null,
+    ];
 
     private static $_instance = null;
 
@@ -30,7 +36,7 @@ class BaseWildduckClient implements WildduckClientInterface
      * (only useful if you want to send requests to a mock server like stripe-mock):
      *
      * - api_base (string): the base URL for regular API requests. Defaults to
-     *   {@link DEFAULT_API_BASE}.
+     *   {@link DEFAULT_CONFIG}.
      *
      * @param array<string, mixed>|string $config the API key as a string, or an array containing
      *   the client configuration settings
@@ -41,7 +47,7 @@ class BaseWildduckClient implements WildduckClientInterface
             throw new \Zone\Wildduck\Exception\InvalidArgumentException('$config must be an array');
         }
 
-        $config = \array_merge($this->getDefaultConfig(), $config);
+        $config = \array_merge(self::DEFAULT_CONFIG, $config);
         $this->validateConfig($config);
 
         $this->config = $config;
@@ -109,6 +115,8 @@ class BaseWildduckClient implements WildduckClientInterface
         if ($this->config['resolve_uri']) return $path;
 
         $opts = $this->defaultOpts->merge($opts, true);
+        $params = $this->setIdentificationParams($params);
+
         $baseUrl = $opts->apiBase ?: $this->getApiBase();
         $requestor = new \Zone\Wildduck\ApiRequestor($this->accessTokenForRequest($opts), $baseUrl);
         list($response, $opts->apiKey) = $requestor->request($method, $path, $params, $opts->headers, $opts->raw);
@@ -166,20 +174,6 @@ class BaseWildduckClient implements WildduckClientInterface
     }
 
     /**
-     * TODO: replace this with a private constant when we drop support for PHP < 5.
-     *
-     * @return array<string, mixed>
-     */
-    private function getDefaultConfig()
-    {
-        return [
-            'access_token' => null,
-            'api_base' => self::DEFAULT_API_BASE,
-            'resolve_uri' => false,
-        ];
-    }
-
-    /**
      * @param array<string, mixed> $config
      * @param bool $tokenOnly
      *
@@ -206,7 +200,7 @@ class BaseWildduckClient implements WildduckClientInterface
         }
 
         // check absence of extra keys
-        $extraConfigKeys = \array_diff(\array_keys($config), \array_keys($this->getDefaultConfig()));
+        $extraConfigKeys = \array_diff(\array_keys($config), \array_keys(self::DEFAULT_CONFIG));
         if (!empty($extraConfigKeys)) {
             throw new \Zone\Wildduck\Exception\InvalidArgumentException('Found unknown key(s) in configuration array: ' . \implode(',', $extraConfigKeys));
         }
@@ -216,5 +210,12 @@ class BaseWildduckClient implements WildduckClientInterface
         foreach ($config as $k => $v) {
             $this->config[$k] = $v;
         }
+    }
+
+    private function setIdentificationParams($params)
+    {
+        if ($this->config['session']) $params['sess'] = $this->config['session'];
+        if ($this->config['ip']) $params['ip'] = $this->config['ip'];
+        return $params;
     }
 }
