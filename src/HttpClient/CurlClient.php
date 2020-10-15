@@ -234,7 +234,7 @@ class CurlClient implements ClientInterface
         } elseif ('delete' === $method) {
             $opts[\CURLOPT_CUSTOMREQUEST] = 'DELETE';
             if (\count($params) > 0) {
-                $encoded = \json_encode($params);
+                $encoded = \http_build_query($params);
                 $absUrl = "{$absUrl}?{$encoded}";
             }
         } else {
