@@ -1,31 +1,26 @@
-# Wildduck API Client
-[![Build Status](https://travis-ci.org/kurbar/wildduck-api-client.svg?branch=master)](https://travis-ci.org/kurbar/wildduck-api-client)
+# Wildduck API PHP Client
 
-##
-Requires a minimum of PHP 7 (library uses type hinting).
+A PHP client for the [Wildduck email server](https://github.com/nodemailer/wildduck)
+API to simplify communicating with the Wildduck e-mail server on PHP applications.
+
+Heavily inspired by [stripe/stripe-php](https://github.com/stripe/stripe-php).
+
+## Requirements
+
+* PHP 7.4 or newer
 
 ## Installation
 
+Require Wildduck PHP client via Composer
 ```bash
-composer install kurbar/wildduck-client
+composer require zone-eu/wildduck-php-client
 ```
 
-## Implemented endpoints
-- [ ] Addresses
-- [ ] Application Passwords
-- [ ] Archive
-- [ ] Authentication
-- [ ] Autoreplies
-- [ ] DKIM
-- [ ] DomainAliases
-- [ ] Filters
-- [X] Mailboxes
-- [ ] Messages
-- [ ] Submission
-- [ ] TwoFactorAuth
-- [ ] Users
+## Usage
+WIP
 
-## Roadmap
+## Contributing
+WIP
 
-- [ ] Entity objects
-- [ ] Remove Laravel dependency (standalone validation)
+## License
+WIP
