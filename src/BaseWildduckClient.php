@@ -107,19 +107,25 @@ class BaseWildduckClient implements WildduckClientInterface
      * @param string $path the path of the request
      * @param array $params the parameters of the request
      * @param array|\Zone\Wildduck\Util\RequestOptions $opts the special modifiers of the request
+     * @param bool $fileUpload
      *
      * @return \Zone\Wildduck\WildduckObject|string the object returned by Wildduck's API
      */
-    public function request($method, $path, $params, $opts)
+    public function request($method, $path, $params, $opts, $fileUpload = false)
     {
         if ($this->config['resolve_uri']) return $path;
 
         $opts = $this->defaultOpts->merge($opts, true);
-        $params = $this->setIdentificationParams($params);
+
+        if ($fileUpload) {
+            $path = $this->setIdentificationPath($path);
+        } else {
+            $params = $this->setIdentificationParams($params);
+        }
 
         $baseUrl = $opts->apiBase ?: $this->getApiBase();
-        $requestor = new \Zone\Wildduck\ApiRequestor($this->accessTokenForRequest($opts), $baseUrl);
-        list($response, $opts->apiKey) = $requestor->request($method, $path, $params, $opts->headers, $opts->raw);
+        $requestor = new ApiRequestor($this->accessTokenForRequest($opts), $baseUrl);
+        list($response, $opts->apiKey) = $requestor->request($method, $path, $params, $opts->headers, $opts->raw, $fileUpload);
         $opts->discardNonPersistentHeaders();
 
         if ($opts->raw) {
@@ -210,6 +216,25 @@ class BaseWildduckClient implements WildduckClientInterface
         foreach ($config as $k => $v) {
             $this->config[$k] = $v;
         }
+    }
+
+    private function setIdentificationPath($path)
+    {
+        $prefix = '?';
+        if (strpos($path, '?') !== false) {
+            $prefix = '&';
+        }
+
+        if ($this->config['session']) {
+            $path = sprintf('%s%ssess=%s', $path, $prefix, $this->config['session']);
+            $prefix = '&';
+        }
+
+        if ($this->config['ip']) {
+            $path = sprintf('%s%sip=%s', $path, $prefix, $this->config['ip']);
+        }
+
+        return $path;
     }
 
     private function setIdentificationParams($params)

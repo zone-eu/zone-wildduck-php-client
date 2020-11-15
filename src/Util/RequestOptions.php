@@ -141,6 +141,10 @@ class RequestOptions
                 $raw = $options['raw'];
                 unset($options['raw']);
             }
+            if (\array_key_exists('headers', $options)) {
+                $headers = $options['headers'];
+                unset($options['headers']);
+            }
 
             if ($strict && !empty($options)) {
                 $message = 'Got unexpected keys in options array: ' . \implode(', ', \array_keys($options));

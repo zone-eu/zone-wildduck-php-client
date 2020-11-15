@@ -45,6 +45,9 @@ abstract class AbstractService
         if (null === $params) {
             return null;
         }
+
+        if (is_resource($params)) return $params;
+
         \array_walk_recursive($params, function (&$value, $key) {
             if (null === $value) {
                 $value = '';
@@ -54,12 +57,18 @@ abstract class AbstractService
         return $params;
     }
 
-    protected function request($method, $path, $params, $opts)
+    protected function file($method, $path, $params, $opts)
+    {
+
+        return $this->getClient()->request($method, $path, $params, $opts, true);
+    }
+
+    protected function request($method, $path, $params, $opts, $fileUpload = false)
     {
         if (null !== $object = $this->getObjectName()) {
             $opts['object'] = $object;
         }
-        return $this->getClient()->request($method, $path, static::formatParams($params), $opts);
+        return $this->getClient()->request($method, $path, static::formatParams($params), $opts, $fileUpload);
     }
 
     protected function requestCollection($method, $path, $params, $opts)
