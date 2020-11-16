@@ -79,18 +79,19 @@ class ApiRequestor
      * @param null|array $params
      * @param null|array $headers
      * @param bool       $raw
+     * @param bool       $fileUpload
      *
      * @throws Exception\ApiErrorException
      *
      * @return array tuple containing (ApiResponse, API key)
      */
-    public function request($method, $url, $params = null, $headers = null, $raw = false)
+    public function request($method, $url, $params = null, $headers = null, $raw = false, $fileUpload = false)
     {
         $params = $params ?: [];
         $headers = $headers ?: [];
 
         list($rbody, $rcode, $rheaders, $myApiKey) =
-            $this->_requestRaw($method, $url, $params, $headers);
+            $this->_requestRaw($method, $url, $params, $headers, $fileUpload);
 
         $json = null;
         if (!$raw) {
@@ -227,7 +228,7 @@ class ApiRequestor
      *
      * @return array
      */
-    private function _requestRaw($method, $url, $params, $headers)
+    private function _requestRaw($method, $url, $params, $headers, $fileUpload)
     {
         $myApiKey = $this->_accessToken;
         if (!$myApiKey) {
@@ -250,16 +251,20 @@ class ApiRequestor
         }
 
         $hasFile = false;
-        foreach ($params as $k => $v) {
-            if (\is_resource($v)) {
-                $hasFile = true;
-                $params[$k] = self::_processResourceParam($v);
-            } elseif ($v instanceof \CURLFile) {
-                $hasFile = true;
+        if (!$fileUpload) {
+            foreach ($params as $k => $v) {
+                if (\is_resource($v)) {
+                    $hasFile = true;
+                    $params[$k] = self::_processResourceParam($v);
+                } elseif ($v instanceof \CURLFile) {
+                    $hasFile = true;
+                }
             }
         }
 
-        if ($hasFile) {
+        if ($fileUpload) {
+            $defaultHeaders['Content-Type'] = 'application/binary';
+        } else if ($hasFile) {
             $defaultHeaders['Content-Type'] = 'multipart/form-data';
         } else {
             $defaultHeaders['Content-Type'] = 'application/json';
@@ -278,7 +283,8 @@ class ApiRequestor
 //            $combinedHeaders,
             $rawHeaders,
             $params,
-            $hasFile
+            $hasFile,
+            $fileUpload,
         );
 
         return [$rbody, $rcode, $rheaders, $myApiKey];

@@ -35,8 +35,9 @@ interface WildduckClientInterface
      * @param string $path the path of the request
      * @param array $params the parameters of the request
      * @param array|\Zone\Wildduck\Util\RequestOptions $opts the special modifiers of the request
+     * @param bool $fileUpload
      *
      * @return \Zone\Wildduck\WildduckObject the object returned by Wildduck's API
      */
-    public function request($method, $path, $params, $opts);
+    public function request($method, $path, $params, $opts, $fileUpload = false);
 }

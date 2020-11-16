@@ -193,7 +193,7 @@ class CurlClient implements ClientInterface
 
     // END OF USER DEFINED TIMEOUTS
 
-    public function request($method, $absUrl, $headers, $params, $hasFile)
+    public function request($method, $absUrl, $headers, $params, $hasFile, $fileUpload = false)
     {
         $method = \strtolower($method);
 
@@ -224,9 +224,9 @@ class CurlClient implements ClientInterface
                 $absUrl = "{$absUrl}?{$encoded}";
             }
         } elseif ('post' === $method) {
-            if (!count($params)) $params = new \stdClass();
+            if (!$fileUpload && !count($params)) $params = new \stdClass();
             $opts[\CURLOPT_POST] = 1;
-            $opts[\CURLOPT_POSTFIELDS] = $hasFile ? $params : \json_encode($params);
+            $opts[\CURLOPT_POSTFIELDS] = $fileUpload || $hasFile ? $params : \json_encode($params);
         } else if ('put' === $method) {
             if (!count($params)) $params = new \stdClass();
             $opts[\CURLOPT_CUSTOMREQUEST] = 'PUT';
