@@ -88,4 +88,9 @@ class AddressService extends AbstractService
         $opts['object'] = ForwardedAddress::OBJECT_NAME;
         return $this->request('put', $this->buildPath('/addresses/forwarded/%s', $address), $params, $opts);
     }
+
+    public function listAddressRegister(string $user, $params = null, $opts = null)
+    {
+        return $this->requestCollection('get', $this->buildPath('/users/%s/addressregister', $user), $params, $opts);
+    }
 }
