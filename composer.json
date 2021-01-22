@@ -4,7 +4,7 @@
     "type": "library",
     "license": "EUPL-1.1",
     "require": {
-        "php": "7.4.*",
+        "php": "^7.4|^8.0",
         "ext-curl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
@@ -15,9 +15,14 @@
             "Zone\\Wildduck\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "require-dev": {
-        "codeception/codeception": "^4.1",
-        "codeception/module-phpbrowser": "^1.0.0",
-        "codeception/module-asserts": "^1.0.0"
+        "kurbar/wildduck-test-server": "^0.2.0",
+        "fzaninotto/faker": "^1.5",
+        "phpunit/phpunit": "^9.5"
     }
 }
