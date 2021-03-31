@@ -92,11 +92,9 @@ class StreamRequest
                     }
 
                     echo $rawMessage . "\n\n";
-                    echo str_pad('', 4096) . "\n\n";
                     @ob_flush();
                     @flush();
                 } else {
-                    echo str_pad('', 4096) . "\n\n";
                     @ob_flush();
                     @flush();
 
