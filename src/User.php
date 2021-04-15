@@ -21,7 +21,7 @@ namespace Zone\Wildduck;
  * @property int $spamLevel
  * @property UserLimits $limits
  * @property array $tags
- * @property string $fromWhitelist
+ * @property string[] $fromWhitelist
  * @property array $disabledScopes
  * @property bool $hasPasswordSet
  * @property bool $activated
