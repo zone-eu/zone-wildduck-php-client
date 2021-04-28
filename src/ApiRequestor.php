@@ -94,6 +94,15 @@ class ApiRequestor
             $this->_requestRaw($method, $url, $params, $headers, $fileUpload);
 
         $json = null;
+
+        if ($rcode < 200 || $rcode >= 300) {
+            $resp = \json_decode($rbody, true);
+            $jsonError = \json_last_error();
+            if ($resp && $jsonError === \JSON_ERROR_NONE) {
+                $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
+            }
+        }
+
         if (!$raw) {
             $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
         }
