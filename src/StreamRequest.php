@@ -71,6 +71,7 @@ class StreamRequest
                     sleep($this->_retry / 1000);
                     $this->connect($method, $path, $headers);
                     $buffer = '';
+                    $body = self::$_response->getBody();
                 }
 
                 $buffer .= $body->read(1);
