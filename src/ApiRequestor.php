@@ -133,7 +133,7 @@ class ApiRequestor
         }
 
         if (isset($resp['code'])) {
-            self::_specificAPIError($resp['code'], $resp['message'] ?? $resp['error'] ?? 'unknown error');
+            self::_specificAPIError($resp['code'], $resp['message'] ?? $resp['error'] ?? 'unknown error', $rcode);
         }
 
         throw new RequestFailedException($resp['error']);
@@ -144,12 +144,13 @@ class ApiRequestor
      *
      * @param $code
      * @param $error
+     * @param int $rCode - The wildduck http response code
      * @throws AuthenticationFailedException
      * @throws RequestFailedException
      * @throws ValidationException
      * @throws InvalidAccessTokenException
      */
-    private static function _specificAPIError($code, $error)
+    private static function _specificAPIError($code, $error, int $rCode = 0)
     {
         switch ($code) {
             case static::CODE_INVALID_TOKEN:
@@ -160,7 +161,7 @@ class ApiRequestor
                 throw new ValidationException($error);
         }
 
-        throw new RequestFailedException($error, $code);
+        throw new RequestFailedException($error, $code, $rCode);
     }
 
     /**
