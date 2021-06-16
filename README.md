@@ -23,4 +23,4 @@ WIP
 WIP
 
 ## License
-WIP
+[EUPL-1.2](https://github.com/zone-eu/zone-wildduck-php-client/blob/master/LICENCE)
