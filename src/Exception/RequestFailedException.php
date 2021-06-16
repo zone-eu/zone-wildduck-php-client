@@ -7,10 +7,10 @@ class RequestFailedException extends WildduckException
 
     private ?string $errorCode;
 
-    public function __construct(string $message, string $code = 'error.request')
+    public function __construct(string $message, string $code = 'internal', int $rCode = 0)
     {
         $this->errorCode = $code;
-        parent::__construct($message, 0);
+        parent::__construct($message, $rCode);
     }
 
     public function getErrorCode()

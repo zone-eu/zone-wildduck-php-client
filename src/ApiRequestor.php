@@ -94,6 +94,15 @@ class ApiRequestor
             $this->_requestRaw($method, $url, $params, $headers, $fileUpload);
 
         $json = null;
+
+        if ($rcode < 200 || $rcode >= 300) {
+            $resp = \json_decode($rbody, true);
+            $jsonError = \json_last_error();
+            if ($resp && $jsonError === \JSON_ERROR_NONE) {
+                $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
+            }
+        }
+
         if (!$raw) {
             $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
         }
@@ -124,7 +133,7 @@ class ApiRequestor
         }
 
         if (isset($resp['code'])) {
-            self::_specificAPIError($resp['code'], $resp['message'] ?? $resp['error'] ?? 'unknown error');
+            self::_specificAPIError($resp['code'], $resp['message'] ?? $resp['error'] ?? 'unknown error', $rcode);
         }
 
         throw new RequestFailedException($resp['error']);
@@ -135,12 +144,13 @@ class ApiRequestor
      *
      * @param $code
      * @param $error
+     * @param int $rCode - The wildduck http response code
      * @throws AuthenticationFailedException
      * @throws RequestFailedException
      * @throws ValidationException
      * @throws InvalidAccessTokenException
      */
-    private static function _specificAPIError($code, $error)
+    private static function _specificAPIError($code, $error, int $rCode = 0)
     {
         switch ($code) {
             case static::CODE_INVALID_TOKEN:
@@ -151,7 +161,7 @@ class ApiRequestor
                 throw new ValidationException($error);
         }
 
-        throw new RequestFailedException($error, $code);
+        throw new RequestFailedException($error, $code, $rCode);
     }
 
     /**

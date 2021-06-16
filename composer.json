@@ -1,23 +1,29 @@
 {
-    "name": "zone-webmail/wildduck-php-client",
-    "description": "",
-    "type": "library",
-    "license": "EUPL-1.1",
-    "require": {
-        "php": "7.4.*",
-        "ext-curl": "*",
-        "ext-json": "*",
-        "ext-mbstring": "*",
-        "symfony/http-foundation": "^5.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Zone\\Wildduck\\": "src/"
-        }
-    },
-    "require-dev": {
-        "codeception/codeception": "^4.1",
-        "codeception/module-phpbrowser": "^1.0.0",
-        "codeception/module-asserts": "^1.0.0"
+  "name": "zone-webmail/wildduck-php-client",
+  "description": "",
+  "type": "library",
+  "license": "EUPL-1.1",
+  "require": {
+    "php": "^7.4|^8.0",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "symfony/http-foundation": "^5.0",
+    "guzzlehttp/guzzle": "^7.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Zone\\Wildduck\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "kurbar/wildduck-test-server": "^0.2.0",
+    "fzaninotto/faker": "^1.5",
+    "phpunit/phpunit": "^9.5"
+  }
 }

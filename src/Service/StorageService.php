@@ -25,7 +25,7 @@ class StorageService extends AbstractService
 
     public function upload(string $user, $filename, $contentType, $content, $opts = null)
     {
-        return $this->file('post', $this->buildPath('/users/%s/storage?filename=%s&contentType=%', $user, $filename, $contentType), $content, $opts);
+        return $this->file('post', $this->buildPath('/users/%s/storage?filename=%s&contentType=%s', $user, $filename, $contentType), $content, $opts);
     }
 
     protected function getObjectName()
