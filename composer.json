@@ -23,7 +23,7 @@
     }
   },
   "require-dev": {
-    "kurbar/wildduck-test-server": "^0.5.0",
+    "kurbar/wildduck-test-server": "^0.2.0",
     "fzaninotto/faker": "^1.5",
     "phpunit/phpunit": "^9.5"
   }

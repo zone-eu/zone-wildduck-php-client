@@ -45,7 +45,7 @@ class WildduckClient extends BaseWildduckClient
     /**
      * @var CoreServiceFactory
      */
-    private CoreServiceFactory $coreServiceFactory;
+    private $coreServiceFactory;
 
     public function __get($name)
     {
