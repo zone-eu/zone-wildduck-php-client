@@ -2,37 +2,55 @@
 
 namespace Zone\Wildduck;
 
+use Zone\Wildduck\Service\AddressService;
+use Zone\Wildduck\Service\ApplicationPasswordService;
+use Zone\Wildduck\Service\ArchiveService;
+use Zone\Wildduck\Service\AuditService;
+use Zone\Wildduck\Service\AuthenticationService;
+use Zone\Wildduck\Service\AutoreplyService;
+use Zone\Wildduck\Service\CoreServiceFactory;
+use Zone\Wildduck\Service\DkimService;
+use Zone\Wildduck\Service\DomainAliasService;
+use Zone\Wildduck\Service\EventService;
+use Zone\Wildduck\Service\FilterService;
+use Zone\Wildduck\Service\MailboxService;
+use Zone\Wildduck\Service\MessageService;
+use Zone\Wildduck\Service\StorageService;
+use Zone\Wildduck\Service\SubmissionService;
+use Zone\Wildduck\Service\TwoFactorAuthenticationService;
+use Zone\Wildduck\Service\UserService;
+
 /**
  * Client used to send requests to Wildduck's API.
  *
- * @property \Zone\Wildduck\Service\AddressService $addresses
- * @property \Zone\Wildduck\Service\ApplicationPasswordService $applicationPasswords
- * @property \Zone\Wildduck\Service\ArchiveService $archives
- * @property \Zone\Wildduck\Service\AuditService $audits
- * @property \Zone\Wildduck\Service\AuthenticationService $authentication
- * @property \Zone\Wildduck\Service\AutoreplyService $autoreplies
- * @property \Zone\Wildduck\Service\DkimService $dkim
- * @property \Zone\Wildduck\Service\DomainAliasService $domainAliases
- * @property \Zone\Wildduck\Service\EventService $events
- * @property \Zone\Wildduck\Service\FilterService $filters
- * @property \Zone\Wildduck\Service\MailboxService $mailboxes
- * @property \Zone\Wildduck\Service\MessageService $messages
- * @property \Zone\Wildduck\Service\StorageService $storage
- * @property \Zone\Wildduck\Service\SubmissionService $submission
- * @property \Zone\Wildduck\Service\TwoFactorAuthenticationService $twoFactor
- * @property \Zone\Wildduck\Service\UserService $users
+ * @property AddressService $addresses
+ * @property ApplicationPasswordService $applicationPasswords
+ * @property ArchiveService $archives
+ * @property AuditService $audits
+ * @property AuthenticationService $authentication
+ * @property AutoreplyService $autoreplies
+ * @property DkimService $dkim
+ * @property DomainAliasService $domainAliases
+ * @property EventService $events
+ * @property FilterService $filters
+ * @property MailboxService $mailboxes
+ * @property MessageService $messages
+ * @property StorageService $storage
+ * @property SubmissionService $submission
+ * @property TwoFactorAuthenticationService $twoFactor
+ * @property UserService $users
  */
 class WildduckClient extends BaseWildduckClient
 {
     /**
-     * @var \Zone\Wildduck\Service\CoreServiceFactory
+     * @var CoreServiceFactory
      */
-    private $coreServiceFactory;
+    private CoreServiceFactory $coreServiceFactory;
 
     public function __get($name)
     {
         if (null === $this->coreServiceFactory) {
-            $this->coreServiceFactory = new \Zone\Wildduck\Service\CoreServiceFactory($this);
+            $this->coreServiceFactory = new CoreServiceFactory($this);
         }
 
         return $this->coreServiceFactory->__get($name);

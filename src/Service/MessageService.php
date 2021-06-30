@@ -10,6 +10,11 @@ class MessageService extends AbstractService
         return $this->request('delete', $this->buildPath('/users/%s/mailboxes/%s/messages/%s', $user, $mailbox, $message), $params, $opts);
     }
 
+    public function deleteOutbound(string $user, string $queueId, $params = null, $opts = null)
+    {
+        return $this->request('delete', $this->buildPath('/users/%s/outbound/%s', $user, $queueId), $params, $opts);
+    }
+
     public function downloadAttachment(string $user, string $mailbox, string $message, string $attachment, $params = null, $opts = null)
     {
 //        $opts['raw'] = true;

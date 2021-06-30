@@ -29,6 +29,7 @@ namespace Zone\Wildduck;
  * @property object $metaData
  * @property object $reference
  * @property File[] $files
+ * @property Outbound[] $outbound
  */
 class Message extends ApiResource
 {
