@@ -45,7 +45,7 @@ class CoreServiceFactory extends \Zone\Wildduck\Service\AbstractServiceFactory
         'submission' => SubmissionService::class,
         'twoFactor' => TwoFactorAuthenticationService::class,
         'users' => UserService::class,
-        'webhook' => WebhookService::class,
+        'webhooks' => WebhookService::class,
     ];
 
     protected function getServiceClass($name)
