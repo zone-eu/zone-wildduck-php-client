@@ -3,7 +3,7 @@
   "description": "",
   "type": "library",
   "license": "EUPL-1.1",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "require": {
     "php": "^7.4|^8.0",
     "ext-curl": "*",
@@ -23,7 +23,7 @@
     }
   },
   "require-dev": {
-    "kurbar/wildduck-test-server": "^0.2.0",
+    "kurbar/wildduck-test-server": "^0.7.0",
     "fzaninotto/faker": "^1.5",
     "phpunit/phpunit": "^9.5"
   }
