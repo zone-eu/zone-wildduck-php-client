@@ -2,15 +2,14 @@
 
 namespace Zone\Wildduck\Service;
 
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Zone\Wildduck\Collection;
-use Zone\Wildduck\User;
+use Zone\Wildduck\Service\Traits\RequiresGlobalToken;
 use Zone\Wildduck\Webhook;
 use Zone\Wildduck\WildduckObject;
 
 class WebhookService extends AbstractService
 {
-
+    use RequiresGlobalToken;
     /**
      * @return Collection|Webhook[]
      */
@@ -22,7 +21,7 @@ class WebhookService extends AbstractService
     /**
      * @param null $params
      * @param null $opts
-     * @return Webhook
+     * @return WildduckObject
      */
     public function create($params = null, $opts = null)
     {
