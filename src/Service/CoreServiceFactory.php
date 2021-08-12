@@ -21,6 +21,7 @@ namespace Zone\Wildduck\Service;
  * @property SubmissionService $submission
  * @property TwoFactorAuthenticationService $twoFactor
  * @property UserService $users
+ * @property WebhookService $webhooks
  */
 class CoreServiceFactory extends \Zone\Wildduck\Service\AbstractServiceFactory
 {
@@ -44,6 +45,7 @@ class CoreServiceFactory extends \Zone\Wildduck\Service\AbstractServiceFactory
         'submission' => SubmissionService::class,
         'twoFactor' => TwoFactorAuthenticationService::class,
         'users' => UserService::class,
+        'webhook' => WebhookService::class,
     ];
 
     protected function getServiceClass($name)

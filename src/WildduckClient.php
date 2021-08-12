@@ -19,6 +19,7 @@ use Zone\Wildduck\Service\StorageService;
 use Zone\Wildduck\Service\SubmissionService;
 use Zone\Wildduck\Service\TwoFactorAuthenticationService;
 use Zone\Wildduck\Service\UserService;
+use Zone\Wildduck\Service\WebhookService;
 
 /**
  * Client used to send requests to Wildduck's API.
@@ -39,6 +40,7 @@ use Zone\Wildduck\Service\UserService;
  * @property SubmissionService $submission
  * @property TwoFactorAuthenticationService $twoFactor
  * @property UserService $users
+ * @property WebhookService $webhooks
  */
 class WildduckClient extends BaseWildduckClient
 {
