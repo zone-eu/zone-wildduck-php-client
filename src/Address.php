@@ -6,6 +6,7 @@ namespace Zone\Wildduck;
  * @property string $id
  * @property string $name
  * @property string $address
+ * @property string[] $tags
  * @property string $user
  * @property bool $main
  * @property string $created
