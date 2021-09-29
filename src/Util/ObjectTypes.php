@@ -22,5 +22,6 @@ class ObjectTypes
         \Zone\Wildduck\Mailbox::OBJECT_NAME => \Zone\Wildduck\Mailbox::class,
         \Zone\Wildduck\Message::OBJECT_NAME => \Zone\Wildduck\Message::class,
         \Zone\Wildduck\User::OBJECT_NAME => \Zone\Wildduck\User::class,
+        \Zone\Wildduck\Webhook::OBJECT_NAME => \Zone\Wildduck\Webhook::class,
     ];
 }

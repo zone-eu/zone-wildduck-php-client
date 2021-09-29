@@ -16,6 +16,8 @@ class Webhook extends ApiResource
     use ApiOperations\Create;
     use ApiOperations\Delete;
 
+    const OBJECT_NAME = 'webhooks';
+
     const DKIM_CREATED = 'dkim.created';
     const DKIM_UPDATED = 'dkim.updated';
     const DKIM_DELETED = 'dkim.deleted';
