@@ -2,10 +2,30 @@
 
 namespace Zone\Wildduck;
 
+use CURLFile;
+use Exception;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
+
+use function array_merge;
+use function explode;
+use function get_resource_type;
+use function in_array;
+use function ini_get;
+use function is_array;
+use function is_resource;
+use function json_decode;
+use function json_encode;
+use function json_last_error;
+
+use function method_exists;
+use function php_uname;
+use function stream_get_meta_data;
+
+use const JSON_ERROR_NONE;
+use const PHP_VERSION;
 
 /**
  * Class ApiRequestor.
@@ -61,7 +81,7 @@ class ApiRequestor
             return Util\Util::utf8($d->id);
         }
 
-        if (\is_array($d)) {
+        if (is_array($d)) {
             $res = [];
             foreach ($d as $k => $v) {
                 $res[$k] = self::_encodeObjects($v);
@@ -90,15 +110,17 @@ class ApiRequestor
         $params = $params ?: [];
         $headers = $headers ?: [];
 
-        list($rbody, $rcode, $rheaders, $myApiKey) =
+        list(
+            $rbody, $rcode, $rheaders, $myApiKey
+            ) =
             $this->_requestRaw($method, $url, $params, $headers, $fileUpload);
 
         $json = null;
 
         if ($rcode < 200 || $rcode >= 300) {
-            $resp = \json_decode($rbody, true);
-            $jsonError = \json_last_error();
-            if ($resp && $jsonError === \JSON_ERROR_NONE) {
+            $resp = json_decode($rbody, true);
+            $jsonError = json_last_error();
+            if ($resp && $jsonError === JSON_ERROR_NONE) {
                 $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
             }
         }
@@ -125,7 +147,7 @@ class ApiRequestor
      */
     public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
     {
-        if (!\is_array($resp) || (!isset($resp['error']) && !isset($resp['code']))) {
+        if (!is_array($resp) || (!isset($resp['error']) && !isset($resp['code']))) {
             $msg = "Invalid response object from API: {$rbody} "
                 . "(HTTP response code was {$rcode})";
 
@@ -200,9 +222,9 @@ class ApiRequestor
     {
         $uaString = 'Wildduck/v1 PhpBindings/' . Wildduck::VERSION;
 
-        $langVersion = \PHP_VERSION;
-        $uname_disabled = \in_array('php_uname', \explode(',', \ini_get('disable_functions')), true);
-        $uname = $uname_disabled ? '(disabled)' : \php_uname();
+        $langVersion = PHP_VERSION;
+        $uname_disabled = in_array('php_uname', explode(',', ini_get('disable_functions')), true);
+        $uname = $uname_disabled ? '(disabled)' : php_uname();
 
         $appInfo = Wildduck::getAppInfo();
         $ua = [
@@ -213,7 +235,7 @@ class ApiRequestor
             'uname' => $uname,
         ];
         if ($clientInfo) {
-            $ua = \array_merge($clientInfo, $ua);
+            $ua = array_merge($clientInfo, $ua);
         }
         if (null !== $appInfo) {
             $uaString .= ' ' . self::_formatAppInfo($appInfo);
@@ -221,7 +243,7 @@ class ApiRequestor
         }
 
         return [
-            'X-Wildduck-Client-User-Agent' => \json_encode($ua),
+            'X-Wildduck-Client-User-Agent' => json_encode($ua),
             'User-Agent' => $uaString,
             'X-Access-Token' => $accessToken,
         ];
@@ -249,7 +271,7 @@ class ApiRequestor
         // X-Wildduck-Client-User-Agent header via the optional getUserAgentInfo()
         // method
         $clientUAInfo = null;
-        if (\method_exists($this->httpClient(), 'getUserAgentInfo')) {
+        if (method_exists($this->httpClient(), 'getUserAgentInfo')) {
             $clientUAInfo = $this->httpClient()->getUserAgentInfo();
         }
 
@@ -263,10 +285,10 @@ class ApiRequestor
         $hasFile = false;
         if (!$fileUpload) {
             foreach ($params as $k => $v) {
-                if (\is_resource($v)) {
+                if (is_resource($v)) {
                     $hasFile = true;
                     $params[$k] = self::_processResourceParam($v);
-                } elseif ($v instanceof \CURLFile) {
+                } elseif ($v instanceof CURLFile) {
                     $hasFile = true;
                 }
             }
@@ -274,28 +296,21 @@ class ApiRequestor
 
         if ($fileUpload) {
             $defaultHeaders['Content-Type'] = 'application/binary';
-        } else if ($hasFile) {
-            $defaultHeaders['Content-Type'] = 'multipart/form-data';
         } else {
-            $defaultHeaders['Content-Type'] = 'application/json';
+            if ($hasFile) {
+                $defaultHeaders['Content-Type'] = 'multipart/form-data';
+            } else {
+                $defaultHeaders['Content-Type'] = 'application/json';
+            }
         }
 
-        $combinedHeaders = \array_merge($defaultHeaders, $headers);
+        $combinedHeaders = array_merge($defaultHeaders, $headers);
         $rawHeaders = [];
 
         foreach ($combinedHeaders as $header => $value) {
             $rawHeaders[] = $header . ': ' . $value;
         }
 
-        if (getenv('WDPC_REQUEST_LOGGING') === "true") {
-            $this->logRequest($method,
-                              $absUrl,
-                              $rawHeaders,
-                              $params,
-                              $hasFile,
-                              $fileUpload
-            );
-        }
         list($rbody, $rcode, $rheaders) = $this->httpClient()->request(
             $method,
             $absUrl,
@@ -306,21 +321,37 @@ class ApiRequestor
             $fileUpload,
         );
 
+        if (getenv('WDPC_REQUEST_LOGGING') === "true") {
+            $this->logRequest(
+                $method,
+                $absUrl,
+                $rawHeaders,
+                $params,
+                $hasFile,
+                $fileUpload,
+                [
+                    'body' => $rbody,
+                    'code' => $rcode,
+                    'headers' => $rheaders
+                ]
+            );
+        }
         return [$rbody, $rcode, $rheaders, $myApiKey];
     }
 
     private function logRequest(
         string $method,
         string $absUrl,
-        array  $headers,
+        array $headers,
         $params,
-        bool   $hasFile,
-        bool   $fileUpload
-    )
-    {
-
+        bool $hasFile,
+        bool $fileUpload,
+        array $response
+    ) {
         try {
-            if (!preg_match(getenv("WDPC_REQUEST_LOGGING_PATTERN"), $absUrl)) return false; // Only log things that the regex catches
+            if (!preg_match(getenv("WDPC_REQUEST_LOGGING_PATTERN"), $absUrl)) {
+                return false;
+            } // Only log things that the regex catches
 
 
             /**
@@ -341,7 +372,9 @@ class ApiRequestor
                 $createdDirectory = mkdir($fullDirectory, $permissions, true);
 
                 if (!$createdDirectory) {
-                    error_log("Wildduck php client tried to create a directory, but was unable to. Directory path: '$fullDirectory'");
+                    error_log(
+                        "Wildduck php client tried to create a directory, but was unable to. Directory path: '$fullDirectory'"
+                    );
                     return false;
                 }
             }
@@ -371,6 +404,7 @@ class ApiRequestor
                 'hasFile' => $hasFile,
                 'isFileUpload' => $fileUpload,
                 'headers' => $headers,
+                'response' => $response,
             ];
 
             if (json_encode($params)) {
@@ -378,7 +412,7 @@ class ApiRequestor
             }
 
             // Write data to our opened file.
-            if (fwrite($handle, json_encode($data)) === FALSE) {
+            if (fwrite($handle, json_encode($data)) === false) {
                 error_log("Wildduck php client cannot write data to file: $fullDirectory$filename");
                 fclose($handle);
                 return false;
@@ -386,8 +420,7 @@ class ApiRequestor
             fclose($handle);
 
             return true;
-
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             echo $e->getMessage();
             error_log($e->getMessage());
             return false;
@@ -397,19 +430,19 @@ class ApiRequestor
     /**
      * @param resource $resource
      *
-     * @return \CURLFile|string
+     * @return CURLFile|string
      * @throws Exception\InvalidArgumentException
      *
      */
     private function _processResourceParam($resource)
     {
-        if ('stream' !== \get_resource_type($resource)) {
+        if ('stream' !== get_resource_type($resource)) {
             throw new Exception\InvalidArgumentException(
                 'Attempted to upload a resource that is not a stream'
             );
         }
 
-        $metaData = \stream_get_meta_data($resource);
+        $metaData = stream_get_meta_data($resource);
         if ('plainfile' !== $metaData['wrapper_type']) {
             throw new Exception\InvalidArgumentException(
                 'Only plainfile resource streams are supported'
@@ -417,7 +450,7 @@ class ApiRequestor
         }
 
         // We don't have the filename or mimetype, but the API doesn't care
-        return new \CURLFile($metaData['uri']);
+        return new CURLFile($metaData['uri']);
     }
 
     /**
@@ -432,9 +465,9 @@ class ApiRequestor
      */
     private function _interpretResponse($rbody, $rcode, $rheaders)
     {
-        $resp = \json_decode($rbody, true);
-        $jsonError = \json_last_error();
-        if (null === $resp && \JSON_ERROR_NONE !== $jsonError) {
+        $resp = json_decode($rbody, true);
+        $jsonError = json_last_error();
+        if (null === $resp && JSON_ERROR_NONE !== $jsonError) {
             $msg = "Invalid response body from API: {$rbody} "
                 . "(HTTP response code was {$rcode}, json_last_error() was {$jsonError})";
 
