@@ -74,16 +74,16 @@ class ApiRequestor
     }
 
     /**
-     * @param string     $method
-     * @param string     $url
+     * @param string $method
+     * @param string $url
      * @param null|array $params
      * @param null|array $headers
-     * @param bool       $raw
-     * @param bool       $fileUpload
-     *
-     * @throws Exception\ApiErrorException
+     * @param bool $raw
+     * @param bool $fileUpload
      *
      * @return array tuple containing (ApiResponse, API key)
+     * @throws Exception\ApiErrorException
+     *
      */
     public function request($method, $url, $params = null, $headers = null, $raw = false, $fileUpload = false)
     {
@@ -127,7 +127,7 @@ class ApiRequestor
     {
         if (!\is_array($resp) || (!isset($resp['error']) && !isset($resp['code']))) {
             $msg = "Invalid response object from API: {$rbody} "
-              . "(HTTP response code was {$rcode})";
+                . "(HTTP response code was {$rcode})";
 
             throw new Exception\UnexpectedValueException($msg);
         }
@@ -192,7 +192,7 @@ class ApiRequestor
      * @static
      *
      * @param string $accessToken
-     * @param null   $clientInfo
+     * @param null $clientInfo
      *
      * @return array
      */
@@ -233,10 +233,10 @@ class ApiRequestor
      * @param array $params
      * @param array $headers
      *
-     * @throws Exception\AuthenticationException
+     * @return array
      * @throws Exception\ApiConnectionException
      *
-     * @return array
+     * @throws Exception\AuthenticationException
      */
     private function _requestRaw($method, $url, $params, $headers, $fileUpload)
     {
@@ -287,6 +287,15 @@ class ApiRequestor
             $rawHeaders[] = $header . ': ' . $value;
         }
 
+        if (getenv('WDPC_REQUEST_LOGGING') === "true") {
+            $this->logRequest($method,
+                              $absUrl,
+                              $rawHeaders,
+                              $params,
+                              $hasFile,
+                              $fileUpload
+            );
+        }
         list($rbody, $rcode, $rheaders) = $this->httpClient()->request(
             $method,
             $absUrl,
@@ -300,12 +309,97 @@ class ApiRequestor
         return [$rbody, $rcode, $rheaders, $myApiKey];
     }
 
+    private function logRequest(
+        string $method,
+        string $absUrl,
+        array  $headers,
+        $params,
+        bool   $hasFile,
+        bool   $fileUpload
+    )
+    {
+
+        try {
+            if (!preg_match(getenv("WDPC_REQUEST_LOGGING_PATTERN"), $absUrl)) return false; // Only log things that the regex catches
+
+
+            /**
+             * Set up the directory.
+             *  Create if it doesn't exist
+             */
+            $directory = rtrim(getenv("WDPC_REQUEST_LOGGING_DIRECTORY"), "/");
+            if (!$directory) {
+                error_log("Wildduck php client tried to log a request, but no directory was set.");
+                return false;
+            }
+
+            $subDirectory = date('Y-m-d-H');
+            $fullDirectory = "$directory/$subDirectory/";
+            if (!is_dir($fullDirectory)) {
+                $permissions = getenv('WDPC_REQUEST_LOGGING_FOLDER_PERMISSIONS');
+                $permissions = !$permissions ? 0755 : $permissions;
+                $createdDirectory = mkdir($fullDirectory, $permissions, true);
+
+                if (!$createdDirectory) {
+                    error_log("Wildduck php client tried to create a directory, but was unable to. Directory path: '$fullDirectory'");
+                    return false;
+                }
+            }
+
+
+            /**
+             * Create file.
+             */
+            $userId = 'noUserIdRequest';
+            preg_match("/\/users\/([a-z0-9]*)/", $absUrl, $matches);
+            if (isset($matches[1]) && $matches[1]) {
+                $userId = $matches[1];
+            }
+
+            $randString = uniqid();
+            $filename = "$method-$userId-$randString.json";
+
+            if (!$handle = fopen($fullDirectory . $filename, 'w')) {
+                error_log("Wildduck php client cannot open file ($fullDirectory$filename)");
+                return false;
+            }
+
+            // Set up the data to be saved
+            $data = [
+                'method' => $method,
+                'absUrl' => $absUrl,
+                'hasFile' => $hasFile,
+                'isFileUpload' => $fileUpload,
+                'headers' => $headers,
+            ];
+
+            if (json_encode($params)) {
+                $data['params'] = $params;
+            }
+
+            // Write data to our opened file.
+            if (fwrite($handle, json_encode($data)) === FALSE) {
+                error_log("Wildduck php client cannot write data to file: $fullDirectory$filename");
+                fclose($handle);
+                return false;
+            }
+            fclose($handle);
+
+            return true;
+
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+
     /**
      * @param resource $resource
      *
+     * @return \CURLFile|string
      * @throws Exception\InvalidArgumentException
      *
-     * @return \CURLFile|string
      */
     private function _processResourceParam($resource)
     {
@@ -328,13 +422,13 @@ class ApiRequestor
 
     /**
      * @param string $rbody
-     * @param int    $rcode
-     * @param array  $rheaders
-     *
-     * @throws Exception\UnexpectedValueException
-     * @throws Exception\ApiErrorException
+     * @param int $rcode
+     * @param array $rheaders
      *
      * @return array
+     * @throws Exception\ApiErrorException
+     *
+     * @throws Exception\UnexpectedValueException
      */
     private function _interpretResponse($rbody, $rcode, $rheaders)
     {
@@ -342,7 +436,7 @@ class ApiRequestor
         $jsonError = \json_last_error();
         if (null === $resp && \JSON_ERROR_NONE !== $jsonError) {
             $msg = "Invalid response body from API: {$rbody} "
-              . "(HTTP response code was {$rcode}, json_last_error() was {$jsonError})";
+                . "(HTTP response code was {$rcode}, json_last_error() was {$jsonError})";
 
             throw new Exception\UnexpectedValueException($msg, $rcode);
         }
@@ -375,4 +469,6 @@ class ApiRequestor
 
         return self::$_httpClient;
     }
+
+
 }

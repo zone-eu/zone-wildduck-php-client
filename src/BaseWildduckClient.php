@@ -124,6 +124,8 @@ class BaseWildduckClient implements WildduckClientInterface
         }
 
         $baseUrl = $opts->apiBase ?: $this->getApiBase();
+
+
         $requestor = new ApiRequestor($this->accessTokenForRequest($opts), $baseUrl);
         list($response, $opts->apiKey) = $requestor->request($method, $path, $params, $opts->headers, $opts->raw, $fileUpload);
         $opts->discardNonPersistentHeaders();
@@ -243,4 +245,36 @@ class BaseWildduckClient implements WildduckClientInterface
         if ($this->config['ip']) $params['ip'] = $this->config['ip'];
         return $params;
     }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
