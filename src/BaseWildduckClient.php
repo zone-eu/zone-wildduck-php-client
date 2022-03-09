@@ -5,6 +5,7 @@ namespace Zone\Wildduck;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
+use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\ValidationException;
@@ -126,6 +127,7 @@ class BaseWildduckClient implements WildduckClientInterface
      * @throws RequestFailedException
      * @throws ValidationException
      * @throws InvalidAccessTokenException
+     * @throws InvalidDatabaseException
      */
     public function request($method, $path, $params, $opts, $fileUpload = false)
     {

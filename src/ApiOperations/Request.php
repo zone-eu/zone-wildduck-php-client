@@ -6,6 +6,7 @@ use Zone\Wildduck\ApiRequestor;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
+use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\ValidationException;
@@ -70,6 +71,7 @@ trait Request
      * @throws RequestFailedException
      * @throws ValidationException
      * @throws InvalidAccessTokenException
+     * @throws InvalidDatabaseException
      */
     protected static function _staticRequest($method, $url, $params, $options): array
     {

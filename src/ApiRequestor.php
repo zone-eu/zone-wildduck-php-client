@@ -114,6 +114,7 @@ class ApiRequestor
      * @throws RequestFailedException
      * @throws ValidationException
      * @throws InvalidAccessTokenException
+     * @throws InvalidDatabaseException
      *
      */
     public function request($method, $url, $params = null, $headers = null, $raw = false, $fileUpload = false): array
@@ -155,6 +156,7 @@ class ApiRequestor
      * @throws RequestFailedException
      * @throws ValidationException
      * @throws InvalidAccessTokenException
+     * @throws InvalidDatabaseException
      */
     public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
     {
@@ -362,10 +364,10 @@ class ApiRequestor
         bool $hasFile,
         bool $fileUpload,
         array $response
-    ): bool {
+    ): void {
         try {
             if (!preg_match(getenv("WDPC_REQUEST_LOGGING_PATTERN"), $absUrl)) {
-                return false;
+                return;
             } // Only log things that the regex catches
 
 
@@ -376,7 +378,7 @@ class ApiRequestor
             $directory = rtrim(getenv("WDPC_REQUEST_LOGGING_DIRECTORY"), "/");
             if (!$directory) {
                 error_log("Wildduck php client tried to log a request, but no directory was set.");
-                return false;
+                return;
             }
 
             $subDirectory = date('Y-m-d-H');
@@ -390,7 +392,7 @@ class ApiRequestor
                     error_log(
                         "Wildduck php client tried to create a directory, but was unable to. Directory path: '$fullDirectory'"
                     );
-                    return false;
+                    return;
                 }
             }
 
@@ -409,7 +411,7 @@ class ApiRequestor
 
             if (!$handle = fopen($fullDirectory . $filename, 'w')) {
                 error_log("Wildduck php client cannot open file ($fullDirectory$filename)");
-                return false;
+                return;
             }
 
             // Set up the data to be saved
@@ -430,15 +432,15 @@ class ApiRequestor
             if (fwrite($handle, json_encode($data)) === false) {
                 error_log("Wildduck php client cannot write data to file: $fullDirectory$filename");
                 fclose($handle);
-                return false;
+                return;
             }
             fclose($handle);
 
-            return true;
+            return;
         } catch (Exception $e) {
             echo $e->getMessage();
             error_log($e->getMessage());
-            return false;
+            return;
         }
     }
 
@@ -480,8 +482,9 @@ class ApiRequestor
      * @throws RequestFailedException
      * @throws ValidationException
      * @throws InvalidAccessTokenException
+     * @throws InvalidDatabaseException
      */
-    private function _interpretResponse($rbody, $rcode, $rheaders)
+    private function _interpretResponse($rbody, $rcode, $rheaders): array
     {
         $resp = json_decode($rbody, true);
         $jsonError = json_last_error();

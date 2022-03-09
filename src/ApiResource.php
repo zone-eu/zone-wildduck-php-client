@@ -5,6 +5,7 @@ namespace Zone\Wildduck;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
+use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\ValidationException;
@@ -54,14 +55,14 @@ abstract class ApiResource extends WildduckObject
     }
 
     /**
-     * @throws ApiConnectionException
+     * @return ApiResource the refreshed resource
      * @throws UnexpectedValueException
      * @throws AuthenticationFailedException
      * @throws RequestFailedException
      * @throws ValidationException
      * @throws InvalidAccessTokenException
-     *
-     * @return ApiResource the refreshed resource
+     * @throws InvalidDatabaseException
+     * @throws ApiConnectionException
      */
     public function refresh(): ApiResource
     {
