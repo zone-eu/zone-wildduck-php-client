@@ -9,6 +9,7 @@ use Zone\Wildduck\Exception\InvalidArgumentException;
 use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
+use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
 
@@ -40,6 +41,7 @@ class ApiRequestor
     const CODE_INVALID_TOKEN = 'InvalidToken';
     const CODE_AUTH_FAILED = 'AuthFailed';
     const CODE_INTERNAL_SERVER = 'InternalServer';
+    const CODE_INVALID_DATABASE = 'InternalDatabaseError';
 
     /**
      * @var null|string
@@ -180,6 +182,7 @@ class ApiRequestor
      * @throws AuthenticationFailedException
      * @throws ValidationException
      * @throws RequestFailedException
+     * @throws InvalidDatabaseException
      */
     private static function _specificAPIError($code, $error, int $rCode = 0)
     {
@@ -190,6 +193,8 @@ class ApiRequestor
                 throw new AuthenticationFailedException($error);
             case static::CODE_INPUT_VALIDATION_ERROR:
                 throw new ValidationException($error);
+            case static::CODE_INVALID_DATABASE;
+                throw new InvalidDatabaseException($error);
         }
 
         throw new RequestFailedException($error, $code, $rCode);
