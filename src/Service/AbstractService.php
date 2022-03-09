@@ -2,20 +2,30 @@
 
 namespace Zone\Wildduck\Service;
 
+use Zone\Wildduck\Collection2;
+use Zone\Wildduck\Exception\ApiConnectionException;
+use Zone\Wildduck\Exception\AuthenticationFailedException;
+use Zone\Wildduck\Exception\InvalidAccessTokenException;
+use Zone\Wildduck\Exception\InvalidArgumentException;
+use Zone\Wildduck\Exception\RequestFailedException;
+use Zone\Wildduck\Exception\UnexpectedValueException;
+use Zone\Wildduck\Exception\ValidationException;
+use Zone\Wildduck\WildduckClientInterface;
+
 /**
  * Abstract base class for all services.
  */
 abstract class AbstractService
 {
     /**
-     * @var \Zone\Wildduck\WildduckClientInterface
+     * @var WildduckClientInterface
      */
     protected $client;
 
     /**
      * Initializes a new instance of the {@link AbstractService} class.
      *
-     * @param \Zone\Wildduck\WildduckClientInterface $client
+     * @param WildduckClientInterface $client
      */
     public function __construct($client)
     {
@@ -25,9 +35,9 @@ abstract class AbstractService
     /**
      * Gets the client used by this service to send requests.
      *
-     * @return \Zone\Wildduck\WildduckClientInterface
+     * @return WildduckClientInterface
      */
-    public function getClient()
+    public function getClient(): WildduckClientInterface
     {
         return $this->client;
     }
@@ -57,12 +67,26 @@ abstract class AbstractService
         return $params;
     }
 
+    /**
+     * @throws RequestFailedException
+     * @throws InvalidAccessTokenException
+     * @throws AuthenticationFailedException
+     * @throws ApiConnectionException
+     * @throws ValidationException
+     */
     protected function file($method, $path, $params, $opts)
     {
 
         return $this->getClient()->request($method, $path, $params, $opts, true);
     }
 
+    /**
+     * @throws RequestFailedException
+     * @throws InvalidAccessTokenException
+     * @throws AuthenticationFailedException
+     * @throws ApiConnectionException
+     * @throws ValidationException
+     */
     protected function request($method, $path, $params, $opts, $fileUpload = false)
     {
         if (null !== $object = $this->getObjectName()) {
@@ -71,24 +95,39 @@ abstract class AbstractService
         return $this->getClient()->request($method, $path, static::formatParams($params), $opts, $fileUpload);
     }
 
-    protected function requestCollection($method, $path, $params, $opts)
+    /**
+     * @throws ApiConnectionException
+     * @throws UnexpectedValueException
+     * @throws AuthenticationFailedException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     * @throws InvalidAccessTokenException
+     */
+    protected function requestCollection($method, $path, $params, $opts): Collection2
     {
         $opts['object'] = $this->getObjectName();
         return $this->getClient()->requestCollection($method, $path, static::formatParams($params), $opts);
     }
 
-    protected function stream(string $method, string $path, $params, $opts)
+    protected function stream(string $method, string $path, $params, $opts): \Symfony\Component\HttpFoundation\StreamedResponse
     {
         return $this->getClient()->stream($method, $path, static::formatParams($params), $opts);
     }
 
-    protected function buildPath($basePath, ...$ids)
+    /**
+     * @param string $basePath The string for sprintf
+     * @param mixed $ids params to be replaced
+     * @return string
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function buildPath($basePath, ...$ids): string
     {
         foreach ($ids as $id) {
             if (null === $id || '' === \trim($id)) {
                 $msg = 'The resource ID cannot be null or whitespace.';
 
-                throw new \Zone\Wildduck\Exception\InvalidArgumentException($msg);
+                throw new InvalidArgumentException($msg);
             }
         }
 

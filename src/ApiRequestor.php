@@ -4,6 +4,9 @@ namespace Zone\Wildduck;
 
 use CURLFile;
 use Exception;
+use Zone\Wildduck\Exception\ApiConnectionException;
+use Zone\Wildduck\Exception\InvalidArgumentException;
+use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\RequestFailedException;
@@ -102,34 +105,39 @@ class ApiRequestor
      * @param bool $fileUpload
      *
      * @return array tuple containing (ApiResponse, API key)
-     * @throws Exception\ApiErrorException
+     *
+     * @throws ApiConnectionException
+     * @throws UnexpectedValueException
+     * @throws AuthenticationFailedException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     * @throws InvalidAccessTokenException
      *
      */
-    public function request($method, $url, $params = null, $headers = null, $raw = false, $fileUpload = false)
+    public function request($method, $url, $params = null, $headers = null, $raw = false, $fileUpload = false): array
     {
         $params = $params ?: [];
         $headers = $headers ?: [];
 
         list(
-            $rbody, $rcode, $rheaders, $myApiKey
-            ) =
-            $this->_requestRaw($method, $url, $params, $headers, $fileUpload);
+            $rBody, $rCode, $rHeaders, $myApiKey
+        ) = $this->_requestRaw($method, $url, $params, $headers, $fileUpload);
 
         $json = null;
 
-        if ($rcode < 200 || $rcode >= 300) {
-            $resp = json_decode($rbody, true);
+        if ($rCode < 200 || $rCode >= 300) {
+            $resp = json_decode($rBody, true);
             $jsonError = json_last_error();
             if ($resp && $jsonError === JSON_ERROR_NONE) {
-                $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
+                $this->handleErrorResponse($rBody, $rCode, $rHeaders, $resp);
             }
         }
 
         if (!$raw) {
-            $json = $this->_interpretResponse($rbody, $rcode, $rheaders);
+            $json = $this->_interpretResponse($rBody, $rCode, $rHeaders);
         }
 
-        $resp = new ApiResponse($rbody, $rcode, $rheaders, $json);
+        $resp = new ApiResponse($rBody, $rCode, $rHeaders, $json);
 
         return [$resp, $myApiKey];
     }
@@ -140,6 +148,7 @@ class ApiRequestor
      * @param array $rheaders
      * @param array $resp
      *
+     * @throws UnexpectedValueException
      * @throws AuthenticationFailedException
      * @throws RequestFailedException
      * @throws ValidationException
@@ -151,7 +160,7 @@ class ApiRequestor
             $msg = "Invalid response object from API: {$rbody} "
                 . "(HTTP response code was {$rcode})";
 
-            throw new Exception\UnexpectedValueException($msg);
+            throw new UnexpectedValueException($msg);
         }
 
         if (isset($resp['code'])) {
@@ -167,10 +176,10 @@ class ApiRequestor
      * @param $code
      * @param $error
      * @param int $rCode - The wildduck http response code
-     * @throws AuthenticationFailedException
-     * @throws RequestFailedException
-     * @throws ValidationException
      * @throws InvalidAccessTokenException
+     * @throws AuthenticationFailedException
+     * @throws ValidationException
+     * @throws RequestFailedException
      */
     private static function _specificAPIError($code, $error, int $rCode = 0)
     {
@@ -254,13 +263,14 @@ class ApiRequestor
      * @param string $url
      * @param array $params
      * @param array $headers
+     * @param $fileUpload
      *
      * @return array
-     * @throws Exception\ApiConnectionException
      *
-     * @throws Exception\AuthenticationException
+     * @throws UnexpectedValueException
+     * @throws ApiConnectionException
      */
-    private function _requestRaw($method, $url, $params, $headers, $fileUpload)
+    private function _requestRaw($method, $url, $params, $headers, $fileUpload): array
     {
         $myApiKey = $this->_accessToken;
         if (!$myApiKey) {
@@ -311,7 +321,7 @@ class ApiRequestor
             $rawHeaders[] = $header . ': ' . $value;
         }
 
-        list($rbody, $rcode, $rheaders) = $this->httpClient()->request(
+        list($rBody, $rCode, $rHeaders) = $this->httpClient()->request(
             $method,
             $absUrl,
 //            $combinedHeaders,
@@ -330,13 +340,13 @@ class ApiRequestor
                 $hasFile,
                 $fileUpload,
                 [
-                    'body' => $rbody,
-                    'code' => $rcode,
-                    'headers' => $rheaders
+                    'body' => $rBody,
+                    'code' => $rCode,
+                    'headers' => $rHeaders
                 ]
             );
         }
-        return [$rbody, $rcode, $rheaders, $myApiKey];
+        return [$rBody, $rCode, $rHeaders, $myApiKey];
     }
 
     private function logRequest(
@@ -347,7 +357,7 @@ class ApiRequestor
         bool $hasFile,
         bool $fileUpload,
         array $response
-    ) {
+    ): bool {
         try {
             if (!preg_match(getenv("WDPC_REQUEST_LOGGING_PATTERN"), $absUrl)) {
                 return false;
@@ -431,20 +441,20 @@ class ApiRequestor
      * @param resource $resource
      *
      * @return CURLFile|string
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      */
     private function _processResourceParam($resource)
     {
         if ('stream' !== get_resource_type($resource)) {
-            throw new Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Attempted to upload a resource that is not a stream'
             );
         }
 
         $metaData = stream_get_meta_data($resource);
         if ('plainfile' !== $metaData['wrapper_type']) {
-            throw new Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Only plainfile resource streams are supported'
             );
         }
@@ -459,9 +469,12 @@ class ApiRequestor
      * @param array $rheaders
      *
      * @return array
-     * @throws Exception\ApiErrorException
      *
-     * @throws Exception\UnexpectedValueException
+     * @throws UnexpectedValueException
+     * @throws AuthenticationFailedException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     * @throws InvalidAccessTokenException
      */
     private function _interpretResponse($rbody, $rcode, $rheaders)
     {
@@ -471,7 +484,7 @@ class ApiRequestor
             $msg = "Invalid response body from API: {$rbody} "
                 . "(HTTP response code was {$rcode}, json_last_error() was {$jsonError})";
 
-            throw new Exception\UnexpectedValueException($msg, $rcode);
+            throw new UnexpectedValueException($msg, $rcode);
         }
 
         if ($rcode < 200 || $rcode >= 300 || isset($resp['error']) || isset($resp['code'])) {

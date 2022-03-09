@@ -2,6 +2,15 @@
 
 namespace Zone\Wildduck;
 
+use Zone\Wildduck\Exception\ApiConnectionException;
+use Zone\Wildduck\Exception\AuthenticationFailedException;
+use Zone\Wildduck\Exception\InvalidAccessTokenException;
+use Zone\Wildduck\Exception\RequestFailedException;
+use Zone\Wildduck\Exception\UnexpectedValueException;
+use Zone\Wildduck\Exception\ValidationException;
+use Zone\Wildduck\Util\RequestOptions;
+use Zone\Wildduck\Util\Util;
+
 class BaseWildduckClient implements WildduckClientInterface
 {
 
@@ -18,7 +27,7 @@ class BaseWildduckClient implements WildduckClientInterface
     /** @var array<string, mixed> */
     private $config;
 
-    /** @var \Zone\Wildduck\Util\RequestOptions */
+    /** @var RequestOptions */
     private $defaultOpts;
 
     /**
@@ -52,7 +61,7 @@ class BaseWildduckClient implements WildduckClientInterface
 
         $this->config = $config;
 
-        $this->defaultOpts = \Zone\Wildduck\Util\RequestOptions::parse([]);
+        $this->defaultOpts = RequestOptions::parse([]);
     }
 
     public static function instance($config = [])
@@ -106,10 +115,17 @@ class BaseWildduckClient implements WildduckClientInterface
      * @param string $method the HTTP method
      * @param string $path the path of the request
      * @param array $params the parameters of the request
-     * @param array|\Zone\Wildduck\Util\RequestOptions $opts the special modifiers of the request
+     * @param array|RequestOptions $opts the special modifiers of the request
      * @param bool $fileUpload
      *
-     * @return \Zone\Wildduck\WildduckObject|string the object returned by Wildduck's API
+     * @return WildduckObject|string the object returned by Wildduck's API
+     *
+     * @throws ApiConnectionException
+     * @throws UnexpectedValueException
+     * @throws AuthenticationFailedException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     * @throws InvalidAccessTokenException
      */
     public function request($method, $path, $params, $opts, $fileUpload = false)
     {
@@ -134,7 +150,7 @@ class BaseWildduckClient implements WildduckClientInterface
             return $response;
         }
 
-        $obj = \Zone\Wildduck\Util\Util::convertToWildduckObject($response->json, $opts);
+        $obj = Util::convertToWildduckObject($response->json, $opts);
         $obj->setLastResponse($response);
 
         return $obj;
@@ -146,18 +162,25 @@ class BaseWildduckClient implements WildduckClientInterface
      * @param string $method the HTTP method
      * @param string $path the path of the request
      * @param array $params the parameters of the request
-     * @param array|\Zone\Wildduck\Util\RequestOptions $opts the special modifiers of the request
+     * @param array|RequestOptions $opts the special modifiers of the request
      *
-     * @return \Zone\Wildduck\Collection of ApiResources
+     * @return Collection2 of ApiResources
+     *
+     * @throws ApiConnectionException
+     * @throws UnexpectedValueException
+     * @throws AuthenticationFailedException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     * @throws InvalidAccessTokenException
      */
     public function requestCollection($method, $path, $params, $opts)
     {
         $obj = $this->request($method, $path, $params, $opts);
-        if (!($obj instanceof \Zone\Wildduck\Collection2)) {
+        if (!($obj instanceof Collection2)) {
             $received_class = \get_class($obj);
-            $msg = "Expected to receive `Zone\Wildduck\\Collection2` object from Wildduck API. Instead received `{$received_class}`.";
+            $msg = "Expected to receive `Zone\Wildduck\Collection2` object from Wildduck API. Instead received `{$received_class}`.";
 
-            throw new \Zone\Wildduck\Exception\UnexpectedValueException($msg);
+            throw new UnexpectedValueException($msg);
         }
         $obj->setFilters($params);
 
@@ -172,7 +195,7 @@ class BaseWildduckClient implements WildduckClientInterface
     }
 
     /**
-     * @param \Zone\Wildduck\Util\RequestOptions $opts
+     * @param RequestOptions $opts
      *
      * @return string
      */

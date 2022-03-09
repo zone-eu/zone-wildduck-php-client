@@ -2,7 +2,9 @@
 
 namespace Zone\Wildduck\HttpClient;
 
-use Zone\Wildduck\Exception;
+use Zone\Wildduck\Exception\ApiConnectionException;
+use Zone\Wildduck\Exception\UnexpectedValueException;
+use Zone\Wildduck\Util\CaseInsensitiveArray;
 use Zone\Wildduck\Wildduck;
 use Zone\Wildduck\Util;
 
@@ -193,7 +195,19 @@ class CurlClient implements ClientInterface
 
     // END OF USER DEFINED TIMEOUTS
 
-    public function request($method, $absUrl, $headers, $params, $hasFile, $fileUpload = false)
+    /**
+     * @param string $method
+     * @param string $absUrl
+     * @param array $headers
+     * @param array $params
+     * @param bool $hasFile
+     * @param bool $fileUpload
+     * @return array
+     *
+     * @throws UnexpectedValueException
+     * @throws ApiConnectionException
+     */
+    public function request($method, $absUrl, $headers, $params, $hasFile, $fileUpload = false): array
     {
         $method = \strtolower($method);
 
@@ -201,7 +215,7 @@ class CurlClient implements ClientInterface
         if (\is_callable($this->defaultOptions)) { // call defaultOptions callback, set options to return value
             $opts = \call_user_func_array($this->defaultOptions, \func_get_args());
             if (!\is_array($opts)) {
-                throw new Exception\UnexpectedValueException('Non-array value returned by defaultOptions CurlClient callback');
+                throw new UnexpectedValueException('Non-array value returned by defaultOptions CurlClient callback');
             }
         } elseif (\is_array($this->defaultOptions)) { // set default curlopts from array
             $opts = $this->defaultOptions;
@@ -214,7 +228,7 @@ class CurlClient implements ClientInterface
             if (isset($params['ip'])) unset($params['ip']);
 
             if ($hasFile) {
-                throw new Exception\UnexpectedValueException(
+                throw new UnexpectedValueException(
                     'Issuing a GET request with a file parameter'
                 );
             }
@@ -238,7 +252,7 @@ class CurlClient implements ClientInterface
                 $absUrl = "{$absUrl}?{$encoded}";
             }
         } else {
-            throw new Exception\UnexpectedValueException("Unrecognized method {$method}");
+            throw new UnexpectedValueException("Unrecognized method {$method}");
         }
 
         // It is only safe to retry network failures on POST requests if we
@@ -280,34 +294,33 @@ class CurlClient implements ClientInterface
             $opts[\CURLOPT_HTTP_VERSION] = \CURL_HTTP_VERSION_2TLS;
         }
 
-        list($rbody, $rcode, $rheaders) = $this->executeRequestWithRetries($opts, $absUrl);
-
-        return [$rbody, $rcode, $rheaders];
+        return $this->executeRequestWithRetries($opts, $absUrl);
     }
 
     /**
      * @param array $opts cURL options
      * @param string $absUrl
+     * @throws ApiConnectionException
      */
-    private function executeRequestWithRetries($opts, $absUrl)
+    private function executeRequestWithRetries($opts, $absUrl): array
     {
         $numRetries = 0;
-        $isPost = \array_key_exists(\CURLOPT_POST, $opts) && 1 === $opts[\CURLOPT_POST];
+        // $isPost = \array_key_exists(\CURLOPT_POST, $opts) && 1 === $opts[\CURLOPT_POST];
 
         while (true) {
-            $rcode = 0;
+            $rCode = 0;
             $errno = 0;
             $message = null;
 
             // Create a callback to capture HTTP headers for the response
-            $rheaders = new Util\CaseInsensitiveArray();
-            $headerCallback = function ($curl, $header_line) use (&$rheaders) {
+            $rHeaders = new CaseInsensitiveArray();
+            $headerCallback = function ($curl, $header_line) use (&$rHeaders) {
                 // Ignore the HTTP request line (HTTP/1.1 200 OK)
                 if (false === \strpos($header_line, ':')) {
                     return \strlen($header_line);
                 }
                 list($key, $value) = \explode(':', \trim($header_line), 2);
-                $rheaders[\trim($key)] = \trim($value);
+                $rHeaders[\trim($key)] = \trim($value);
 
                 return \strlen($header_line);
             };
@@ -315,41 +328,41 @@ class CurlClient implements ClientInterface
 
             $this->resetCurlHandle();
             \curl_setopt_array($this->curlHandle, $opts);
-            $rbody = \curl_exec($this->curlHandle);
+            $rBody = \curl_exec($this->curlHandle);
 
-            if (false === $rbody) {
+            if (false === $rBody) {
                 $errno = \curl_errno($this->curlHandle);
                 $message = \curl_error($this->curlHandle);
             } else {
-                $rcode = \curl_getinfo($this->curlHandle, \CURLINFO_HTTP_CODE);
+                $rCode = \curl_getinfo($this->curlHandle, \CURLINFO_HTTP_CODE);
             }
             if (!$this->getEnablePersistentConnections()) {
                 $this->closeCurlHandle();
             }
 
-            $shouldRetry = $this->shouldRetry($errno, $rcode, $rheaders, $numRetries);
+            $shouldRetry = $this->shouldRetry($errno, $rCode, $rHeaders, $numRetries);
 
             if (\is_callable($this->getRequestStatusCallback())) {
                 \call_user_func_array(
                     $this->getRequestStatusCallback(),
-                    [$rbody, $rcode, $rheaders, $errno, $message, $shouldRetry, $numRetries]
+                    [$rBody, $rCode, $rHeaders, $errno, $message, $shouldRetry, $numRetries]
                 );
             }
 
             if ($shouldRetry) {
                 ++$numRetries;
-                $sleepSeconds = $this->sleepTime($numRetries, $rheaders);
+                $sleepSeconds = $this->sleepTime($numRetries, $rHeaders);
                 \usleep((int) ($sleepSeconds * 1000000));
             } else {
                 break;
             }
         }
 
-        if (false === $rbody) {
+        if (false === $rBody) {
             $this->handleCurlError($absUrl, $errno, $message, $numRetries);
         }
 
-        return [$rbody, $rcode, $rheaders];
+        return [$rBody, $rCode, $rHeaders];
     }
 
     /**
@@ -358,7 +371,7 @@ class CurlClient implements ClientInterface
      * @param string $message
      * @param int $numRetries
      *
-     * @throws Exception\ApiConnectionException
+     * @throws ApiConnectionException
      */
     private function handleCurlError($url, $errno, $message, $numRetries)
     {
@@ -381,7 +394,7 @@ class CurlClient implements ClientInterface
             $msg .= "\n\nRequest was retried {$numRetries} times.";
         }
 
-        throw new Exception\ApiConnectionException($msg);
+        throw new ApiConnectionException($msg);
     }
 
     /**
@@ -391,12 +404,12 @@ class CurlClient implements ClientInterface
      *
      * @param int $errno
      * @param int $rcode
-     * @param array|\Zone\Wildduck\Util\CaseInsensitiveArray $rheaders
+     * @param array|CaseInsensitiveArray $rheaders
      * @param int $numRetries
      *
      * @return bool
      */
-    private function shouldRetry($errno, $rcode, $rheaders, $numRetries)
+    private function shouldRetry($errno, $rcode, $rheaders, $numRetries): bool
     {
         if ($numRetries >= Wildduck::getMaxNetworkRetries()) {
             return false;
@@ -446,7 +459,7 @@ class CurlClient implements ClientInterface
      * Provides the number of seconds to wait before retrying a request.
      *
      * @param int $numRetries
-     * @param array|\Zone\Wildduck\Util\CaseInsensitiveArray $rheaders
+     * @param array|CaseInsensitiveArray $rheaders
      *
      * @return int
      */

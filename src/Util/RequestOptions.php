@@ -2,6 +2,8 @@
 
 namespace Zone\Wildduck\Util;
 
+use Zone\Wildduck\Exception\InvalidArgumentException;
+
 class RequestOptions
 {
     /**
@@ -23,6 +25,10 @@ class RequestOptions
 
     /** @var bool */
     public $raw;
+    /**
+     * @var null|string
+     */
+    public ?string $apiKey;
 
     /**
      * @param null|string $key
@@ -93,7 +99,7 @@ class RequestOptions
      * @param null|array|RequestOptions|string $options a key => value array
      * @param bool $strict when true, forbid string form and arbitrary keys in array form
      *
-     * @throws \Zone\Wildduck\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return RequestOptions
      */
@@ -112,7 +118,7 @@ class RequestOptions
                 $message = 'Do not pass a string for request options. If you want to set the '
                     . 'API key, pass an array like ["api_key" => <apiKey>] instead.';
 
-                throw new \Zone\Wildduck\Exception\InvalidArgumentException($message);
+                throw new InvalidArgumentException($message);
             }
 
             return new RequestOptions($options, [], null);
@@ -149,7 +155,7 @@ class RequestOptions
             if ($strict && !empty($options)) {
                 $message = 'Got unexpected keys in options array: ' . \implode(', ', \array_keys($options));
 
-                throw new \Zone\Wildduck\Exception\InvalidArgumentException($message);
+                throw new InvalidArgumentException($message);
             }
 
             return new RequestOptions($key, $headers, $base, $object, $raw);
@@ -160,7 +166,7 @@ class RequestOptions
            . 'per-request options, which must be an array. (HINT: you can set '
            . 'a global apiKey by "Wildduck::setAccessToken(<accessToken>)")';
 
-        throw new \Zone\Wildduck\Exception\InvalidArgumentException($message);
+        throw new InvalidArgumentException($message);
     }
 
     private function redactedApiKey()

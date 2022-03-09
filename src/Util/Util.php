@@ -2,7 +2,6 @@
 
 namespace Zone\Wildduck\Util;
 
-use Zone\Wildduck\Collection;
 use Zone\Wildduck\Collection2;
 use Zone\Wildduck\WildduckObject;
 
@@ -44,13 +43,13 @@ abstract class Util
      * Converts a response from the Wildduck API to the corresponding PHP object.
      *
      * @param array $resp the response from the Wildduck API
-     * @param array $opts
+     * @param array|RequestOptions $opts
      *
      * @return array|Collection2|WildduckObject
      */
     public static function convertToWildduckObject($resp, $opts = null)
     {
-        $types = \Zone\Wildduck\Util\ObjectTypes::mapping;
+        $types = ObjectTypes::mapping;
         if (self::isCollection($resp)) {
             return new Collection2($resp, $opts);
         }
@@ -69,7 +68,7 @@ abstract class Util
             } else if (isset($resp['object']) && \is_string($resp['object']) && isset($types[$resp['object']])) {
                 $class = $types[$resp['object']];
             } else {
-                $class = \Zone\Wildduck\WildduckObject::class;
+                $class = WildduckObject::class;
             }
 
             return $class::constructFrom($resp, $opts);

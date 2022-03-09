@@ -2,6 +2,15 @@
 
 namespace Zone\Wildduck\ApiOperations;
 
+use Zone\Wildduck\ApiRequestor;
+use Zone\Wildduck\Exception\ApiConnectionException;
+use Zone\Wildduck\Exception\AuthenticationFailedException;
+use Zone\Wildduck\Exception\InvalidAccessTokenException;
+use Zone\Wildduck\Exception\RequestFailedException;
+use Zone\Wildduck\Exception\UnexpectedValueException;
+use Zone\Wildduck\Exception\ValidationException;
+use Zone\Wildduck\Util\RequestOptions;
+
 /**
  * Trait for resources that need to make API requests.
  *
@@ -27,13 +36,18 @@ trait Request
      * @param string $method HTTP method ('get', 'post', etc.)
      * @param string $url URL for the request
      * @param array $params list of parameters for the request
-     * @param null|array|string $options
+     * @param null|array|string|RequestOptions $options
      *
-     * @throws \Zone\Wildduck\Exception\ApiErrorException if the request fails
+     * @throws ApiConnectionException
+     * @throws UnexpectedValueException
+     * @throws AuthenticationFailedException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     * @throws InvalidAccessTokenException
      *
      * @return array tuple containing (the JSON response, $options)
      */
-    protected function _request($method, $url, $params = [], $options = null)
+    protected function _request($method, $url, $params = [], $options = null): array
     {
         $opts = $this->_opts->merge($options);
         list($resp, $options) = static::_staticRequest($method, $url, $params, $opts);
@@ -46,17 +60,22 @@ trait Request
      * @param string $method HTTP method ('get', 'post', etc.)
      * @param string $url URL for the request
      * @param array $params list of parameters for the request
-     * @param null|array|string $options
+     * @param null|array|string|RequestOptions $options
      *
-     * @throws \Zone\Wildduck\Exception\ApiErrorException if the request fails
+     * @return array tuple containing (the response, $options)
      *
-     * @return array tuple containing (the JSON response, $options)
+     * @throws ApiConnectionException
+     * @throws UnexpectedValueException
+     * @throws AuthenticationFailedException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     * @throws InvalidAccessTokenException
      */
-    protected static function _staticRequest($method, $url, $params, $options)
+    protected static function _staticRequest($method, $url, $params, $options): array
     {
-        $opts = \Zone\Wildduck\Util\RequestOptions::parse($options);
-        $baseUrl = isset($opts->apiBase) ? $opts->apiBase : static::baseUrl();
-        $requestor = new \Zone\Wildduck\ApiRequestor($opts->accessToken, $baseUrl);
+        $opts = RequestOptions::parse($options);
+        $baseUrl = $opts->apiBase ?? static::baseUrl();
+        $requestor = new ApiRequestor($opts->accessToken, $baseUrl);
         list($response, $opts->apiKey) = $requestor->request($method, $url, $params, $opts->headers);
         $opts->discardNonPersistentHeaders();
 

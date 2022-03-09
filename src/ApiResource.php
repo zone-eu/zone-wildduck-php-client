@@ -2,6 +2,12 @@
 
 namespace Zone\Wildduck;
 
+use Zone\Wildduck\Exception\ApiConnectionException;
+use Zone\Wildduck\Exception\AuthenticationFailedException;
+use Zone\Wildduck\Exception\InvalidAccessTokenException;
+use Zone\Wildduck\Exception\RequestFailedException;
+use Zone\Wildduck\Exception\UnexpectedValueException;
+use Zone\Wildduck\Exception\ValidationException;
 use Zone\Wildduck\Util\Str;
 
 /**
@@ -48,11 +54,16 @@ abstract class ApiResource extends WildduckObject
     }
 
     /**
-     * @throws Exception\ApiErrorException
+     * @throws ApiConnectionException
+     * @throws UnexpectedValueException
+     * @throws AuthenticationFailedException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     * @throws InvalidAccessTokenException
      *
      * @return ApiResource the refreshed resource
      */
-    public function refresh()
+    public function refresh(): ApiResource
     {
         $requestor = new ApiRequestor($this->_opts->apiKey, static::baseUrl());
         $url = $this->instanceUrl();

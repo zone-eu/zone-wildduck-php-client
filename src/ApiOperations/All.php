@@ -2,6 +2,10 @@
 
 namespace Zone\Wildduck\ApiOperations;
 
+use Zone\Wildduck\Collection2;
+use Zone\Wildduck\Exception\UnexpectedValueException;
+use Zone\Wildduck\Util\Util;
+
 /**
  * Trait for listable resources. Adds a `all()` static method to the class.
  *
@@ -13,9 +17,9 @@ trait All
      * @param null|array $params
      * @param null|array|string $opts
      *
-     * @throws \Zone\Wildduck\Exception\ApiErrorException if the request fails
+     * @return Collection2 of ApiResources
      *
-     * @return \Zone\Wildduck\Collection of ApiResources
+     * @throws UnexpectedValueException
      */
     public static function all($params = null, $opts = null)
     {
@@ -23,10 +27,10 @@ trait All
         $url = static::classUrl();
 
         list($response, $opts) = static::_staticRequest('get', $url, $params, $opts);
-        $obj = \Zone\Wildduck\Util\Util::convertToWildduckObject($response->json, $opts);
-        if (!($obj instanceof \Zone\Wildduck\Collection2)) {
-            throw new \Zone\Wildduck\Exception\UnexpectedValueException(
-                'Expected type ' . \Zone\Wildduck\Collection2::class . ', got "' . \get_class($obj) . '" instead.'
+        $obj = Util::convertToWildduckObject($response->json, $opts);
+        if (!($obj instanceof Collection2)) {
+            throw new UnexpectedValueException(
+                'Expected type ' . Collection2::class . ', got "' . \get_class($obj) . '" instead.'
             );
         }
         $obj->setLastResponse($response);
