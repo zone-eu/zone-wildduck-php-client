@@ -59,7 +59,11 @@ class StreamRequest
         $params ??= [];
         $headers ??= [];
 
-        $this->init();
+
+        $min_ob_level = (int)$params['min_ob_level'] ?? 0;
+        unset($params['min_ob_level']);
+
+        $this->init($min_ob_level);
         $this->connect($method, $path, $headers);
 
         $callback = function () use ($method, $path, $headers) {
@@ -122,7 +126,7 @@ class StreamRequest
         return $response;
     }
 
-    private function init()
+    private function init($min_ob_level)
     {
         @set_time_limit(0); // Disable time limit
 
@@ -134,7 +138,7 @@ class StreamRequest
         @ini_set('zlib.output_compression', 0);
         @ini_set('implicit_flush', 1);
 
-        while (ob_get_level() != 0) {
+        while (ob_get_level() != $min_ob_level) {
             ob_end_flush();
         }
 
