@@ -11,7 +11,7 @@ class Collection2 extends WildduckObject implements \Countable, \IteratorAggrega
     use ApiOperations\Request;
 
     /** @var array */
-    protected $filters = [];
+    protected array $filters = [];
 
     protected ?int $_total = null;
     protected ?int $_page = null;
@@ -24,7 +24,7 @@ class Collection2 extends WildduckObject implements \Countable, \IteratorAggrega
      *
      * @return array the filters
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return $this->filters;
     }
@@ -55,12 +55,12 @@ class Collection2 extends WildduckObject implements \Countable, \IteratorAggrega
         $this->_results = Util::convertToWildduckObject($resp['results'], $opts);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->_results);
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->_results);
     }

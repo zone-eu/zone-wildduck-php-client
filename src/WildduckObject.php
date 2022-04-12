@@ -199,7 +199,7 @@ class WildduckObject implements \ArrayAccess, \Countable, \JsonSerializable
         $this->{$k} = $v;
     }
 
-    public function offsetExists($k)
+    public function offsetExists($k): bool
     {
         return \array_key_exists($k, $this->_values);
     }
@@ -215,17 +215,17 @@ class WildduckObject implements \ArrayAccess, \Countable, \JsonSerializable
     }
 
     // Countable method
-    public function count()
+    public function count(): int
     {
         return \count($this->_values);
     }
 
-    public function keys()
+    public function keys(): array
     {
         return \array_keys($this->_values);
     }
 
-    public function values()
+    public function values(): array
     {
         return \array_values($this->_values);
     }

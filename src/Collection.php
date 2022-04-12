@@ -22,7 +22,7 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
     /**
      * @return string the base URL for the given class
      */
-    public static function baseUrl()
+    public static function baseUrl(): string
     {
         return Wildduck::$apiBase;
     }
@@ -32,7 +32,7 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
      *
      * @return array the filters
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return $this->filters;
     }
@@ -107,7 +107,7 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
     /**
      * @return int the number of objects in the current page
      */
-    public function count()
+    public function count(): int
     {
         return \count($this->data);
     }
@@ -116,7 +116,7 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
      * @return \ArrayIterator an iterator that can be used to iterate
      *    across objects in the current page
      */
-    public function getIterator()
+    public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->data);
     }
@@ -125,7 +125,7 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
      * @return \ArrayIterator an iterator that can be used to iterate
      *    backwards across objects in the current page
      */
-    public function getReverseIterator()
+    public function getReverseIterator(): \Traversable
     {
         return new \ArrayIterator(\array_reverse($this->data));
     }
