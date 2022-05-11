@@ -106,9 +106,9 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function webAuthNCredentials(string $user, $params = null, $opts = null): Collection2
+    public function webAuthNCredentials(string $user, $params = null, $opts = null): WildduckObject
     {
-        return $this->requestCollection('get', $this->buildPath('/users/%s/2fa/webauthn/credentials', $user), $params, $opts);
+        return $this->request('get', $this->buildPath('/users/%s/2fa/webauthn/credentials', $user), $params, $opts);
     }
 
     /**
