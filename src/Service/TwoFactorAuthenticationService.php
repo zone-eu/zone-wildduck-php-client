@@ -2,6 +2,7 @@
 
 namespace Zone\Wildduck\Service;
 
+use Zone\Wildduck\Collection2;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
@@ -105,7 +106,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function webAuthNCredentials(string $user, $params = null, $opts = null): WildduckObject
+    public function webAuthNCredentials(string $user, $params = null, $opts = null): Collection2
     {
         return $this->requestCollection('get', $this->buildPath('/users/%s/2fa/webauthn/credentials', $user), $params, $opts);
     }
