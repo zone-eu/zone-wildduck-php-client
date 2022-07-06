@@ -54,6 +54,9 @@ class StreamRequest
         ]);
     }
 
+    /**
+     * @throws \ErrorException
+     */
     public function stream(string $method, string $path, ?array $params = [], ?array $headers = [])
     {
         $params ??= [];
@@ -66,7 +69,7 @@ class StreamRequest
         $this->init($min_ob_level);
         $this->connect($method, $path, $headers);
 
-        $callback = function () use ($method, $path, $headers) {
+        $callback = function () use ($method, $path, $headers, $params) {
             $buffer = '';
             $body = self::$_response->getBody();
 
@@ -76,6 +79,13 @@ class StreamRequest
                     $this->connect($method, $path, $headers);
                     $buffer = '';
                     $body = self::$_response->getBody();
+
+                }
+
+                if (is_callable($params['isDisconnectedCallback'])) {
+                    if (call_user_func($params['isDisconnectedCallback'])) {
+                        break;
+                    }
                 }
 
                 $buffer .= $body->read(1);
