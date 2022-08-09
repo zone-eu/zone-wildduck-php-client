@@ -148,7 +148,7 @@ class StreamRequest
         @ini_set('zlib.output_compression', 0);
         @ini_set('implicit_flush', 1);
 
-        while (ob_get_level() != $min_ob_level) {
+        while (ob_get_level() > $min_ob_level) {
             ob_end_flush();
         }
 

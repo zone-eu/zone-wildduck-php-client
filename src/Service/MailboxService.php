@@ -2,6 +2,8 @@
 
 namespace Zone\Wildduck\Service;
 
+use Zone\Wildduck\WildduckObject;
+
 class MailboxService extends AbstractService
 {
 
@@ -25,7 +27,7 @@ class MailboxService extends AbstractService
     }
 
     /**
-     * @return \Zone\Wildduck\Collection|\Zone\Wildduck\Mailbox[]
+     * @return \Zone\Wildduck\Collection2
      */
     public function all($user, $params = null, $opts = null)
     {
@@ -33,7 +35,7 @@ class MailboxService extends AbstractService
     }
 
     /**
-     * @return \Zone\Wildduck\Mailbox
+     * @return WildduckObject
      */
     public function get($user, $mailbox, $params = null, $opts = null)
     {
