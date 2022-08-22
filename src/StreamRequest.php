@@ -124,7 +124,7 @@ class StreamRequest
             'Content-Type' => 'text/event-stream',
             'Cache-Control' => 'no-cache',
             'X-Accel-Buffering' => 'no', // Disable FastCGI Buffering on Nginx
-            'Transfer-Encoding' => 'identity',
+            'Transfer-Encoding' => 'chunked',
 
             // CORS - TODO: Make configurable
             'Access-Control-Allow-Origin' => '*',
