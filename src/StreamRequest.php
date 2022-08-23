@@ -79,11 +79,11 @@ class StreamRequest
                     $this->connect($method, $path, $headers);
                     $buffer = '';
                     $body = self::$_response->getBody();
-
                 }
 
                 if (is_callable($params['isDisconnectedCallback'])) {
                     if (call_user_func($params['isDisconnectedCallback'])) {
+                        $body->close();
                         break;
                     }
                 }
@@ -114,6 +114,7 @@ class StreamRequest
                     @flush();
 
                     if (connection_aborted()) {
+                        $body->close();
                         break;
                     }
                 }
