@@ -9,7 +9,7 @@
     "ext-curl": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
-    "symfony/http-foundation": "^6.0",
+    "symfony/http-foundation": "^7.0",
     "guzzlehttp/guzzle": "^7.3"
   },
   "autoload": {
