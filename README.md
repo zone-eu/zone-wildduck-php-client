@@ -7,13 +7,13 @@ Heavily inspired by [stripe/stripe-php](https://github.com/stripe/stripe-php).
 
 ## Requirements
 
-* PHP 7.4 or newer
+* PHP 8.3 or newer
 
 ## Installation
 
 Require Wildduck PHP client via Composer
 ```bash
-composer require zone-eu/wildduck-php-client
+composer require zone-webmail/wildduck-php-client
 ```
 
 
@@ -26,7 +26,7 @@ composer require zone-eu/wildduck-php-client
 - WDPC_REQUEST_LOGGING_DIRECTORY - The directory in which to save the logs.
   - This is the base directory absolute path and under it extra folders will be created
   - Subdirectory created will be "YYYY-MM-DD-HH"
-  - And under it every request will create a file 
+  - And under it every request will create a file
     - File naming scheme "the request type (GET, POST, etc.)"-"the users WD id"-"a random generated string"
 
 ## Usage
