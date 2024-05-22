@@ -2,26 +2,26 @@
 
 namespace Zone\Wildduck\ApiOperations;
 
+use Zone\Wildduck\Util\RequestOptions;
+
 /**
  * Trait for retrievable resources. Adds a `retrieve()` static method to the
  * class.
  *
  * This trait should only be applied to classes that derive from WildduckObject.
+ *
+ * @deprecated
  */
 trait Retrieve
 {
     /**
      * @param array|string $id the ID of the API resource to retrieve,
      *     or an options array containing an `id` key
-     * @param null|array|string $opts
      *
-     * @throws \Zone\Wildduck\Exception\ApiErrorException if the request fails
-     *
-     * @return static
      */
-    public static function retrieve($id, $opts = null)
+    public static function retrieve(array|string $id, array|null|RequestOptions|string $opts = null): static
     {
-        $opts = \Zone\Wildduck\Util\RequestOptions::parse($opts);
+        $opts = RequestOptions::parse($opts);
         $instance = new static($id, $opts);
         $instance->refresh();
 
