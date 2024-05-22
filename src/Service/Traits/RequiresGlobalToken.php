@@ -5,7 +5,6 @@ namespace Zone\Wildduck\Service\Traits;
 use Zone\Wildduck\Exception\MissingGlobalAccessTokenException;
 use Zone\Wildduck\WildduckClientInterface;
 
-
 /**
  * Trait to handle checking of global access token
  *
@@ -21,7 +20,7 @@ trait RequiresGlobalToken
     {
         if (!$client->getAccessToken()) {
             throw new MissingGlobalAccessTokenException(
-                'Global access token must be set for this resource: ' . get_called_class()
+                'Global access token must be set for this resource: ' . static::class
             );
         }
 

@@ -2,6 +2,8 @@
 
 namespace Zone\Wildduck\Service;
 
+use Zone\Wildduck\WildduckClientInterface;
+
 /**
  * Abstract base class for all service factories used to expose service
  * instances through {@link \Zone\Wildduck\WildduckClient}.
@@ -14,19 +16,14 @@ namespace Zone\Wildduck\Service;
  */
 abstract class AbstractServiceFactory
 {
-    /** @var \Zone\Wildduck\WildduckClientInterface */
-    private $client;
-
     /** @var array<string, AbstractService|AbstractServiceFactory> */
-    private $services;
+    private array $services = [];
 
     /**
-     * @param \Zone\Wildduck\WildduckClientInterface $client
+     * @param WildduckClientInterface $client
      */
-    public function __construct($client)
+    public function __construct(private readonly WildduckClientInterface $client)
     {
-        $this->client = $client;
-        $this->services = [];
     }
 
     /**
@@ -34,25 +31,23 @@ abstract class AbstractServiceFactory
      *
      * @return null|string
      */
-    abstract protected function getServiceClass($name);
+    abstract protected function getServiceClass(string $name):  null|string;
 
     /**
-     * @param string $name
-     *
      * @return null|AbstractService|AbstractServiceFactory
      */
-    public function __get($name)
+    public function __get(mixed $name)
     {
         $serviceClass = $this->getServiceClass($name);
         if (null !== $serviceClass) {
-            if (!\array_key_exists($name, $this->services)) {
+            if (!array_key_exists($name, $this->services)) {
                 $this->services[$name] = new $serviceClass($this->client);
             }
 
             return $this->services[$name];
         }
 
-        \trigger_error('Undefined property: ' . static::class . '::$' . $name);
+        trigger_error('Undefined property: ' . static::class . '::$' . $name);
 
         return null;
     }

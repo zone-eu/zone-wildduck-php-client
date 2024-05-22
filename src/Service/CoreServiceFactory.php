@@ -2,6 +2,8 @@
 
 namespace Zone\Wildduck\Service;
 
+use Override;
+
 /**
  * Service factory class for API resources in the root namespace.
  *
@@ -23,12 +25,13 @@ namespace Zone\Wildduck\Service;
  * @property UserService $users
  * @property WebhookService $webhooks
  */
-class CoreServiceFactory extends \Zone\Wildduck\Service\AbstractServiceFactory
+
+class CoreServiceFactory extends AbstractServiceFactory
 {
     /**
      * @var array<string, string>
      */
-    private static $classMap = [
+    private static array $classMap = [
         'addresses' => AddressService::class,
         'applicationPasswords' => ApplicationPasswordService::class,
         'archives' => ArchiveService::class,
@@ -48,8 +51,9 @@ class CoreServiceFactory extends \Zone\Wildduck\Service\AbstractServiceFactory
         'webhooks' => WebhookService::class,
     ];
 
-    protected function getServiceClass($name)
+    #[Override]
+    protected function getServiceClass($name): string|null
     {
-        return \array_key_exists($name, self::$classMap) ? self::$classMap[$name] : null;
+        return self::$classMap[$name] ?? null;
     }
 }
