@@ -1,6 +1,6 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
 
 /**
  * @property bool $status

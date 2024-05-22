@@ -1,9 +1,10 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
 
 use Override;
 use Zone\Wildduck\ApiOperations\Request;
+use Zone\Wildduck\ApiRequestor;
 use Zone\Wildduck\Util\Set;
 use Zone\Wildduck\Util\Util;
 use Zone\Wildduck\Exception\ApiConnectionException;
@@ -14,6 +15,8 @@ use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\ValidationException;
 use Zone\Wildduck\Util\Str;
+use Zone\Wildduck\Wildduck;
+use Zone\Wildduck\WildduckObject;
 
 /**
  * Class ApiResource.
@@ -128,7 +131,7 @@ abstract class ApiResource extends WildduckObject
     /**
      * @param null|string $id the ID of the resource
      *
-     * @throws Exception\UnexpectedValueException if $id is null
+     * @throws UnexpectedValueException if $id is null
      *
      * @return string the instance endpoint URL for the given class
      */

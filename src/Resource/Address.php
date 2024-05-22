@@ -1,6 +1,6 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
 
 use Zone\Wildduck\ApiOperations\All;
 use Zone\Wildduck\ApiOperations\Create;

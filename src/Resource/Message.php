@@ -1,6 +1,10 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
+
+use Zone\Wildduck\MailingList;
+use Zone\Wildduck\Outbound;
+use Zone\Wildduck\Recipient;
 
 /**
  * @property int $id

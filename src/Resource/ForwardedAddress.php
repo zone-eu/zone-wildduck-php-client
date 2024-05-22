@@ -1,6 +1,8 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
+
+use Zone\Wildduck\ForwardedAddressLimits;
 
 /**
  * @property string $id

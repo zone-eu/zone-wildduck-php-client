@@ -1,6 +1,9 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
+
+use Zone\Wildduck\FilterAction;
+use Zone\Wildduck\FilterQuery;
 
 /**
  * @property string $id

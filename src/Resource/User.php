@@ -1,6 +1,6 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
 
 use Zone\Wildduck\ApiOperations\All;
 use Zone\Wildduck\ApiOperations\Create;
@@ -8,6 +8,9 @@ use Zone\Wildduck\ApiOperations\Delete;
 use Zone\Wildduck\ApiOperations\NestedResource;
 use Zone\Wildduck\ApiOperations\Retrieve;
 use Zone\Wildduck\ApiOperations\Update;
+use Zone\Wildduck\KeyInfo;
+use Zone\Wildduck\UserLimits;
+use Zone\Wildduck\WildduckObject;
 
 /**
  * @property string $id
