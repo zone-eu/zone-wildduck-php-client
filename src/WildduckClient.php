@@ -45,9 +45,9 @@ use Zone\Wildduck\Service\WebhookService;
 class WildduckClient extends BaseWildduckClient
 {
     /**
-     * @var CoreServiceFactory
+     * @var CoreServiceFactory|null
      */
-    private $coreServiceFactory;
+    private ?CoreServiceFactory $coreServiceFactory;
 
     public function __get($name)
     {
@@ -56,5 +56,17 @@ class WildduckClient extends BaseWildduckClient
         }
 
         return $this->coreServiceFactory->__get($name);
+    }
+
+    public function __set($property, $value): void
+    {
+        if (property_exists($this, $property)) {
+            $this->$property = $value;
+        }
+    }
+
+    public function __isset($name): mixed
+    {
+        return $this->coreServiceFactory[$name];
     }
 }

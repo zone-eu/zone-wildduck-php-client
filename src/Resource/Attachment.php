@@ -13,6 +13,5 @@ namespace Zone\Wildduck;
  */
 class Attachment extends ApiResource
 {
-
-    const OBJECT_NAME = 'attachment';
+    public const string OBJECT_NAME = 'attachment';
 }

@@ -33,6 +33,5 @@ namespace Zone\Wildduck;
  */
 class Message extends ApiResource
 {
-
-    const OBJECT_NAME = 'message';
+    public const string OBJECT_NAME = 'message';
 }

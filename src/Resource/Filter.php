@@ -11,6 +11,5 @@ namespace Zone\Wildduck;
  */
 class Filter extends ApiResource
 {
-
-    const OBJECT_NAME = 'filter';
+    public const string OBJECT_NAME = 'filter';
 }

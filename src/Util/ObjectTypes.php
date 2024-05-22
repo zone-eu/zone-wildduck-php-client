@@ -2,26 +2,42 @@
 
 namespace Zone\Wildduck\Util;
 
+use Zone\Wildduck\Resource\Address;
+use Zone\Wildduck\Resource\ApplicationPassword;
+use Zone\Wildduck\Resource\Attachment;
+use Zone\Wildduck\Audit;
+use Zone\Wildduck\Resource\Autoreply;
+use Zone\Wildduck\Resource\Dkim;
+use Zone\Wildduck\Resource\DomainAlias;
+use Zone\Wildduck\Event;
+use Zone\Wildduck\Resource\File;
+use Zone\Wildduck\Resource\Filter;
+use Zone\Wildduck\Resource\ForwardedAddress;
+use Zone\Wildduck\Resource\Mailbox;
+use Zone\Wildduck\Resource\Message;
+use Zone\Wildduck\Resource\User;
+use Zone\Wildduck\Resource\Webhook;
+
 class ObjectTypes
 {
     /**
      * @var array Mapping from object types to resource classes
      */
-    const mapping = [
-        \Zone\Wildduck\Address::OBJECT_NAME => \Zone\Wildduck\Address::class,
-        \Zone\Wildduck\ApplicationPassword::OBJECT_NAME => \Zone\Wildduck\ApplicationPassword::class,
-        \Zone\Wildduck\Attachment::OBJECT_NAME => \Zone\Wildduck\Attachment::class,
-        \Zone\Wildduck\Audit::OBJECT_NAME => \Zone\Wildduck\Audit::class,
-        \Zone\Wildduck\Autoreply::OBJECT_NAME => \Zone\Wildduck\Autoreply::class,
-        \Zone\Wildduck\Dkim::OBJECT_NAME => \Zone\Wildduck\Dkim::class,
-        \Zone\Wildduck\DomainAlias::OBJECT_NAME => \Zone\Wildduck\DomainAlias::class,
-        \Zone\Wildduck\Event::OBJECT_NAME => \Zone\Wildduck\Event::class,
-        \Zone\Wildduck\File::OBJECT_NAME => \Zone\Wildduck\Mailbox::class,
-        \Zone\Wildduck\Filter::OBJECT_NAME => \Zone\Wildduck\Filter::class,
-        \Zone\Wildduck\ForwardedAddress::OBJECT_NAME => \Zone\Wildduck\ForwardedAddress::class,
-        \Zone\Wildduck\Mailbox::OBJECT_NAME => \Zone\Wildduck\Mailbox::class,
-        \Zone\Wildduck\Message::OBJECT_NAME => \Zone\Wildduck\Message::class,
-        \Zone\Wildduck\User::OBJECT_NAME => \Zone\Wildduck\User::class,
-        \Zone\Wildduck\Webhook::OBJECT_NAME => \Zone\Wildduck\Webhook::class,
+    public const array MAPPING = [
+        Address::OBJECT_NAME => Address::class,
+        ApplicationPassword::OBJECT_NAME => ApplicationPassword::class,
+        Attachment::OBJECT_NAME => Attachment::class,
+        Audit::OBJECT_NAME => Audit::class,
+        Autoreply::OBJECT_NAME => Autoreply::class,
+        Dkim::OBJECT_NAME => Dkim::class,
+        DomainAlias::OBJECT_NAME => DomainAlias::class,
+        Event::OBJECT_NAME => Event::class,
+        File::OBJECT_NAME => Mailbox::class,
+        Filter::OBJECT_NAME => Filter::class,
+        ForwardedAddress::OBJECT_NAME => ForwardedAddress::class,
+        Mailbox::OBJECT_NAME => Mailbox::class,
+        Message::OBJECT_NAME => Message::class,
+        User::OBJECT_NAME => User::class,
+        Webhook::OBJECT_NAME => Webhook::class,
     ];
 }

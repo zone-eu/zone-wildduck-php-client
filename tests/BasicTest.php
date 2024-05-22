@@ -2,9 +2,11 @@
 
 namespace Wildduck\Tests;
 
+use Orchestra\Testbench\TestCase;
+use Wildduck\Http\Request;
 use Wildduck;
 
-class BasicTest extends \Orchestra\Testbench\TestCase
+class BasicTest extends TestCase
 {
 
     protected function getEnvironmentSetUp($application)
@@ -34,7 +36,7 @@ class BasicTest extends \Orchestra\Testbench\TestCase
 
         var_export($r);
 
-        $this->assertTrue($r['code'] === Wildduck\Http\Request::HTTP_OK);
+        $this->assertTrue($r['code'] === Request::HTTP_OK);
         $this->assertArrayHasKey('data', $r);
         $this->assertTrue($r['data']['success']);
         $this->assertArrayHasKey('id', $r['data']);
@@ -42,7 +44,7 @@ class BasicTest extends \Orchestra\Testbench\TestCase
         return $r['data']['id'];
     }
 
-    public function testLogin()
+    public function testLogin(): void
     {
         $params = [
             'username' => 'ivan',
@@ -52,7 +54,7 @@ class BasicTest extends \Orchestra\Testbench\TestCase
         $r = Wildduck::authentication()->authenticate($params);
         var_export($r);
 
-        $this->assertTrue($r['code'] === Wildduck\Http\Request::HTTP_OK);
+        $this->assertTrue($r['code'] === Request::HTTP_OK);
         $this->assertArrayHasKey('data', $r);
         $this->assertTrue($r['data']['success']);
         $this->assertArrayHasKey('id', $r['data']);
@@ -62,14 +64,14 @@ class BasicTest extends \Orchestra\Testbench\TestCase
     /**
      * @depends testUserCreation
      */
-    public function testUserDeletion($id)
+    public function testUserDeletion($id): void
     {
         $r = Wildduck::users()->delete([
             'id' => $id,
         ]);
         var_export($r);
 
-        $this->assertTrue($r['code'] === Wildduck\Http\Request::HTTP_OK);
+        $this->assertTrue($r['code'] === Request::HTTP_OK);
         $this->assertArrayHasKey('data', $r);
         $this->assertTrue($r['data']['success']);
     }

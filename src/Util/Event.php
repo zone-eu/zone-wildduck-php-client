@@ -2,26 +2,33 @@
 
 namespace Zone\Wildduck\Util;
 
+use AllowDynamicProperties;
+use InvalidArgumentException;
+
+#[AllowDynamicProperties]
 class Event
 {
-    const END_OF_LINE = "/\r\n|\n|\r/";
+    public const string END_OF_LINE = "/\r\n|\n|\r/";
 
     /** @var string */
     private string $data;
+
     /** @var string */
     private string $eventType;
-    /** @var string */
-    private ?string $id;
-    /** @var int */
-    private ?int $retry;
+
+    /** @var string|null */
+    private string|null $id;
+
+    /** @var int|null */
+    private int|null $retry;
 
     /**
      * @param string $data
      * @param string $eventType
-     * @param null   $id
-     * @param null   $retry
+     * @param string|null $id
+     * @param int|null $retry
      */
-    public function __construct($data = '', $eventType = 'message', $id = null, $retry = null)
+    final public function __construct(string $data = '', string $eventType = 'message', string|null $id = null, int|null $retry = null)
     {
         $this->data = $data;
         $this->eventType = $eventType;
@@ -29,12 +36,11 @@ class Event
         $this->retry = $retry;
     }
 
-    /**
-     * @param $raw
-     *
-     * @return Event
-     */
-    public static function parse($raw)
+	/**
+	 * @param string $raw
+	 * @return static
+	 */
+    public static function parse(string $raw): static
     {
         $event = new static();
         $lines = preg_split(self::END_OF_LINE, $raw);
@@ -43,7 +49,7 @@ class Event
             $matched = preg_match('/(?P<name>[^:]*):?( ?(?P<value>.*))?/', $line, $matches);
 
             if (!$matched) {
-                throw new \InvalidArgumentException(sprintf('Invalid line %s', $line));
+                throw new InvalidArgumentException(sprintf('Invalid line %s', $line));
             }
 
             $name = $matches['name'];
@@ -59,7 +65,7 @@ class Event
                     $event->eventType = $value;
                     break;
                 case 'data':
-                    $event->data = empty($event->data) ? $value : "$event->data\n$value";
+                    $event->data = $event->data === '' || $event->data === '0' ? $value : $event->data . PHP_EOL . $value;
                     break;
                 case 'id':
                     $event->id = $value;
@@ -76,22 +82,22 @@ class Event
         return $event;
     }
 
-    public function getData()
+    public function getData(): string
     {
         return $this->data;
     }
 
-    public function getEventType()
+    public function getEventType(): string
     {
         return $this->eventType;
     }
 
-    public function getId()
+    public function getId(): string|null
     {
         return $this->id;
     }
 
-    public function getRetry()
+    public function getRetry(): int|null
     {
         return $this->retry;
     }

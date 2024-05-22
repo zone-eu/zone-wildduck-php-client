@@ -29,6 +29,7 @@ interface LoggerInterface
      * be logged and monitored.
      *
      * @param string $message
+     * @param array $context
      */
-    public function error($message, array $context = []);
+    public function error(string $message, array $context = []): void;
 }

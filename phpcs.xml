@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<ruleset name="ZWM Laravel PSR12">
+    <description>The Zone Wildduck PSR12 coding standard.</description>
+
+	<ini name="memory_limit" value="128M"/>
+
+    <arg name="extensions" value="php"/>
+
+    <file>src</file>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+
+    <!-- Code MUST follow rules outlined in PSR-12. -->
+    <rule ref="PSR12">
+        <exclude name="PSR12.Files.FileHeader.SpacingInsideBlock"/>
+    </rule>
+    <!-- Extra disallow dump/var_dump/var_export functions -->
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array"
+                      value="dump=>null,var_dump=>null,var_export=>null,eval=>null,sizeof=>count,print=>echo,create_function=>null"/>
+        </properties>
+    </rule>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="Generic.Formatting.SpaceAfterCast"/>
+	<rule ref="Generic.Files.LineLength">
+		<properties>
+			<property name="lineLimit" value="180"/> <!-- maximum line length -->
+		</properties>
+	</rule>
+
+	<!-- Methods MUST not be prefixed with an underscore -->
+	<rule ref="PSR2.Methods.MethodDeclaration.Underscore">
+		<severity>0</severity>
+	</rule>
+
+	<!-- Properties MUST not be prefixed with an underscore -->
+	<rule ref="PSR2.Classes.PropertyDeclaration.Underscore">
+		<severity>0</severity>
+	</rule>
+</ruleset>

@@ -11,6 +11,5 @@ namespace Zone\Wildduck;
  */
 class ApplicationPassword extends ApiResource
 {
-
-    const OBJECT_NAME = 'asp';
+    public const string OBJECT_NAME = 'asp';
 }

@@ -10,6 +10,5 @@ namespace Zone\Wildduck;
  */
 class DomainAlias extends ApiResource
 {
-
-    const OBJECT_NAME = 'domain_alias';
+    public const string OBJECT_NAME = 'domain_alias';
 }

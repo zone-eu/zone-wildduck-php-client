@@ -10,6 +10,5 @@ namespace Zone\Wildduck;
  */
 class File extends ApiResource
 {
-
-    const OBJECT_NAME = 'file';
+    public const string OBJECT_NAME = 'file';
 }

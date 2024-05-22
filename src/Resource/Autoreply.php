@@ -13,6 +13,5 @@ namespace Zone\Wildduck;
  */
 class Autoreply extends ApiResource
 {
-
-    const OBJECT_NAME = 'autoreply';
+    public const string OBJECT_NAME = 'autoreply';
 }

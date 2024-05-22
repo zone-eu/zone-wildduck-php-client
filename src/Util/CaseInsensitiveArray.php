@@ -2,6 +2,13 @@
 
 namespace Zone\Wildduck\Util;
 
+use AllowDynamicProperties;
+use Override;
+use ArrayAccess;
+use Countable;
+use IteratorAggregate;
+use ArrayIterator;
+
 /**
  * CaseInsensitiveArray is an array-like class that ignores case for keys.
  *
@@ -12,28 +19,32 @@ namespace Zone\Wildduck\Util;
  * In the context of stripe-php, this is useful because the API will return headers with different
  * case depending on whether HTTP/2 is used or not (with HTTP/2, headers are always in lowercase).
  */
-class CaseInsensitiveArray implements \ArrayAccess, \Countable, \IteratorAggregate
+#[AllowDynamicProperties]
+class CaseInsensitiveArray implements ArrayAccess, Countable, IteratorAggregate
 {
-    private $container = [];
+    private array $container;
 
-    public function __construct($initial_array = [])
+    public function __construct(array $initial_array = [])
     {
-        $this->container = \array_change_key_case($initial_array, \CASE_LOWER);
+        $this->container = array_change_key_case($initial_array, CASE_LOWER);
     }
 
-    public function count()
+    #[Override]
+    public function count(): int
     {
-        return \count($this->container);
+        return count($this->container);
     }
 
-    public function getIterator()
+    #[Override]
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->container);
+        return new ArrayIterator($this->container);
     }
 
-    public function offsetSet($offset, $value)
+    #[Override]
+    public function offsetSet(mixed $offset, mixed $value): void
     {
-        $offset = static::maybeLowercase($offset);
+        $offset = $this->maybeLowercase($offset);
         if (null === $offset) {
             $this->container[] = $value;
         } else {
@@ -41,30 +52,37 @@ class CaseInsensitiveArray implements \ArrayAccess, \Countable, \IteratorAggrega
         }
     }
 
-    public function offsetExists($offset)
+    #[Override]
+    public function offsetExists(mixed $offset): bool
     {
-        $offset = static::maybeLowercase($offset);
+        $offset = $this->maybeLowercase($offset);
 
         return isset($this->container[$offset]);
     }
 
-    public function offsetUnset($offset)
+    #[Override]
+    public function offsetUnset(mixed $offset): void
     {
-        $offset = static::maybeLowercase($offset);
+        $offset = $this->maybeLowercase($offset);
         unset($this->container[$offset]);
     }
 
-    public function offsetGet($offset)
+    #[Override]
+    public function offsetGet(mixed $offset): array|null
     {
-        $offset = static::maybeLowercase($offset);
+        $offset = $this->maybeLowercase($offset);
 
-        return isset($this->container[$offset]) ? $this->container[$offset] : null;
+        return $this->container[$offset] ?? null;
     }
 
-    private static function maybeLowercase($v)
+	/**
+	 * @param string|null $v
+	 * @return string|null
+	 */
+	private function maybeLowercase(string|null $v): string|null
     {
-        if (\is_string($v)) {
-            return \strtolower($v);
+        if (is_string($v)) {
+            return strtolower($v);
         }
 
         return $v;
