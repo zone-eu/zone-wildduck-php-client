@@ -2,6 +2,10 @@
 
 namespace Zone\Wildduck;
 
+use ErrorException;
+use Override;
+use Zone\Wildduck\Exception\InvalidArgumentException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
@@ -14,8 +18,7 @@ use Zone\Wildduck\Util\Util;
 
 class BaseWildduckClient implements WildduckClientInterface
 {
-
-    private const DEFAULT_CONFIG = [
+    private const array DEFAULT_CONFIG = [
         'access_token' => null,
         'api_base' => 'https://localhost:8080',
         'resolve_uri' => false,
@@ -23,13 +26,12 @@ class BaseWildduckClient implements WildduckClientInterface
         'ip' => null,
     ];
 
-    private static $_instance = null;
+    protected static null|WildduckClient $_instance = null;
 
     /** @var array<string, mixed> */
-    private $config;
+    private array $config;
 
-    /** @var RequestOptions */
-    private $defaultOpts;
+    private readonly RequestOptions $defaultOpts;
 
     /**
      * Initializes a new instance of the {@link BaseWildduckClient} class.
@@ -51,13 +53,13 @@ class BaseWildduckClient implements WildduckClientInterface
      * @param array<string, mixed>|string $config the API key as a string, or an array containing
      *   the client configuration settings
      */
-    public function __construct($config = [])
+	public function __construct(array|string $config = [])
     {
-        if (!\is_array($config)) {
-            throw new \Zone\Wildduck\Exception\InvalidArgumentException('$config must be an array');
+        if (!is_array($config)) {
+            throw new InvalidArgumentException('$config must be an array');
         }
 
-        $config = \array_merge(self::DEFAULT_CONFIG, $config);
+        $config = array_merge(self::DEFAULT_CONFIG, $config);
         $this->validateConfig($config);
 
         $this->config = $config;
@@ -65,26 +67,26 @@ class BaseWildduckClient implements WildduckClientInterface
         $this->defaultOpts = RequestOptions::parse([]);
     }
 
-    public static function instance($config = [])
+    public static function instance(array|string $config = []): WildduckClient
     {
-        if (null === self::$_instance) {
-            self::$_instance = new static($config);
+        if (!self::$_instance instanceof WildduckClient) {
+            self::$_instance = new WildduckClient($config);
         }
 
-        if (count($config)) {
+        if (is_countable($config) && $config !== []) {
             self::$_instance->validateConfig($config, array_keys($config) === ['access_token']);
             self::$_instance->updateConfig($config);
         }
 
-        return self::$_instance;
+        return WildduckClient::$_instance;
     }
 
-    public static function token($token)
+    public static function token(string $token): BaseWildduckClient
     {
         return self::instance(['access_token' => $token]);
     }
 
-    public function resolve()
+    public function resolve(): static
     {
         $this->config['resolve_uri'] = true;
         return $this;
@@ -95,7 +97,8 @@ class BaseWildduckClient implements WildduckClientInterface
      *
      * @return null|string the access token used by the client to send requests
      */
-    public function getAccessToken()
+    #[Override]
+    public function getAccessToken(): string|null
     {
         return $this->config['access_token'];
     }
@@ -105,7 +108,8 @@ class BaseWildduckClient implements WildduckClientInterface
      *
      * @return string the base URL for Wildduck's API
      */
-    public function getApiBase()
+    #[Override]
+    public function getApiBase(): string
     {
         return $this->config['api_base'];
     }
@@ -115,11 +119,11 @@ class BaseWildduckClient implements WildduckClientInterface
      *
      * @param string $method the HTTP method
      * @param string $path the path of the request
-     * @param array $params the parameters of the request
-     * @param array|RequestOptions $opts the special modifiers of the request
+     * @param array|null $params the parameters of the request
+     * @param array|RequestOptions|null $opts the special modifiers of the request
      * @param bool $fileUpload
      *
-     * @return WildduckObject|string the object returned by Wildduck's API
+     * @return mixed the object returned by Wildduck's API
      *
      * @throws ApiConnectionException
      * @throws UnexpectedValueException
@@ -129,9 +133,12 @@ class BaseWildduckClient implements WildduckClientInterface
      * @throws InvalidAccessTokenException
      * @throws InvalidDatabaseException
      */
-    public function request($method, $path, $params, $opts, $fileUpload = false)
+    #[Override]
+    public function request(string $method, string $path, array|null $params, array|null|RequestOptions $opts, bool $fileUpload = false): mixed
     {
-        if ($this->config['resolve_uri']) return $path;
+        if ($this->config['resolve_uri']) {
+            return $path;
+        }
 
         $opts = $this->defaultOpts->merge($opts, true);
 
@@ -145,7 +152,9 @@ class BaseWildduckClient implements WildduckClientInterface
 
 
         $requestor = new ApiRequestor($this->accessTokenForRequest($opts), $baseUrl);
-        list($response, $opts->apiKey) = $requestor->request($method, $path, $params, $opts->headers, $opts->raw, $fileUpload);
+        [$response, $opts->apiKey] = $requestor->request($method, $path, $params, $opts->headers, $opts->raw, $fileUpload);
+
+
         $opts->discardNonPersistentHeaders();
 
         if ($opts->raw) {
@@ -153,6 +162,7 @@ class BaseWildduckClient implements WildduckClientInterface
         }
 
         $obj = Util::convertToWildduckObject($response->json, $opts);
+
         $obj->setLastResponse($response);
 
         return $obj;
@@ -163,92 +173,97 @@ class BaseWildduckClient implements WildduckClientInterface
      *
      * @param string $method the HTTP method
      * @param string $path the path of the request
-     * @param array $params the parameters of the request
-     * @param array|RequestOptions $opts the special modifiers of the request
+     * @param array|null $params the parameters of the request
+     * @param array|null $opts the special modifiers of the request
      *
      * @return Collection2 of ApiResources
      *
      * @throws ApiConnectionException
-     * @throws UnexpectedValueException
      * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws InvalidDatabaseException
      * @throws RequestFailedException
      * @throws ValidationException
-     * @throws InvalidAccessTokenException
      */
-    public function requestCollection($method, $path, $params, $opts)
+    public function requestCollection(string $method, string $path, array|null $params, array|null $opts): Collection2
     {
         $obj = $this->request($method, $path, $params, $opts);
-        if (!($obj instanceof Collection2)) {
-            $received_class = \get_class($obj);
-            $msg = "Expected to receive `Zone\Wildduck\Collection2` object from Wildduck API. Instead received `{$received_class}`.";
+		if (!($obj instanceof Collection2)) {
+            $received_class = $obj::class;
+            $msg = sprintf('Expected to receive `Zone\Wildduck\Collection2` object from Wildduck API. Instead received `%s`.', $received_class);
 
             throw new UnexpectedValueException($msg);
         }
+
         $obj->setFilters($params);
 
         return $obj;
     }
 
-    public function stream(string $method, string $path, $params, $opts)
+	/**
+	 * @throws ErrorException
+	 */
+	public function stream(string $method, string $path, array|null $params, array|object|null $opts): StreamedResponse
     {
         $baseUrl = $opts->apiBase ?? $this->getApiBase();
-        $requestor = new StreamRequest($baseUrl, $this->accessTokenForRequest($opts));
-        return $requestor->stream($method, $path, $params, $opts->headers ?? []);
+        return (new StreamRequest($baseUrl, $this->accessTokenForRequest($opts)))->stream($method, $path, $params, $opts->headers ?? []);
     }
 
     /**
-     * @param RequestOptions $opts
+     * @param RequestOptions|array $opts
      *
-     * @return string
+     * @return null|string
      */
-    private function accessTokenForRequest($opts)
+    private function accessTokenForRequest(RequestOptions|array $opts): string|null
     {
         return $opts->accessToken ?? $this->getAccessToken();
     }
 
     /**
      * @param array<string, mixed> $config
-     * @param bool $tokenOnly
      *
-     * @throws \Zone\Wildduck\Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    private function validateConfig($config, $tokenOnly = false)
+    protected function validateConfig(array $config, bool $tokenOnly = false): void
     {
         // access_token
-        if (null !== $config['access_token'] && !\is_string($config['access_token'])) {
-            throw new \Zone\Wildduck\Exception\InvalidArgumentException('access_token must be null or a string');
+        if (null !== $config['access_token'] && !is_string($config['access_token'])) {
+            throw new InvalidArgumentException('access_token must be null or a string');
         }
 
-        if (null !== $config['access_token'] && ('' === $config['access_token'])) {
+        if ('' === $config['access_token']) {
             $msg = 'access_token cannot be an empty string';
 
-            throw new \Zone\Wildduck\Exception\InvalidArgumentException($msg);
+            throw new InvalidArgumentException($msg);
         }
 
-        if ($tokenOnly) return;
+        if ($tokenOnly) {
+            return;
+        }
 
         // api_base
-        if (!\is_string($config['api_base'])) {
-            throw new \Zone\Wildduck\Exception\InvalidArgumentException('api_base must be a string');
+        if (!is_string($config['api_base'])) {
+            throw new InvalidArgumentException('api_base must be a string');
         }
 
         // check absence of extra keys
-        $extraConfigKeys = \array_diff(\array_keys($config), \array_keys(self::DEFAULT_CONFIG));
-        if (!empty($extraConfigKeys)) {
-            throw new \Zone\Wildduck\Exception\InvalidArgumentException('Found unknown key(s) in configuration array: ' . \implode(',', $extraConfigKeys));
+        $extraConfigKeys = array_diff(array_keys($config), array_keys(self::DEFAULT_CONFIG));
+        if ($extraConfigKeys !== []) {
+            throw new InvalidArgumentException('Found unknown key(s) in configuration array: ' . implode(',', $extraConfigKeys));
         }
     }
 
-    private function updateConfig($config): void {
+    protected function updateConfig(string|array $config): void
+    {
         foreach ($config as $k => $v) {
             $this->config[$k] = $v;
         }
     }
 
-    private function setIdentificationPath($path)
+    private function setIdentificationPath(string $path): string
     {
         $prefix = '?';
-        if (strpos($path, '?') !== false) {
+        if (str_contains($path, '?')) {
             $prefix = '&';
         }
 
@@ -258,48 +273,26 @@ class BaseWildduckClient implements WildduckClientInterface
         }
 
         if ($this->config['ip']) {
-            $path = sprintf('%s%sip=%s', $path, $prefix, $this->config['ip']);
+            return sprintf('%s%sip=%s', $path, $prefix, $this->config['ip']);
         }
 
         return $path;
     }
 
-    private function setIdentificationParams($params)
+    /**
+     * @param array|null $params
+     * @return array
+     */
+    private function setIdentificationParams(array|null $params): array
     {
-        if ($this->config['session']) $params['sess'] = $this->config['session'];
-        if ($this->config['ip']) $params['ip'] = $this->config['ip'];
+        if ($this->config['session']) {
+            $params['sess'] = $this->config['session'];
+        }
+
+        if ($this->config['ip']) {
+            $params['ip'] = $this->config['ip'];
+        }
+
         return $params;
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

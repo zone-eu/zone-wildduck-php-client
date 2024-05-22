@@ -2,6 +2,11 @@
 
 namespace Zone\Wildduck;
 
+use Zone\Wildduck\HttpClient\ClientInterface;
+use Zone\Wildduck\Resource\ApiResource;
+use Zone\Wildduck\Util\CaseInsensitiveArray;
+use Zone\Wildduck\Util\Util;
+use Zone\Wildduck\HttpClient\CurlClient;
 use CURLFile;
 use Exception;
 use Zone\Wildduck\Exception\ApiConnectionException;
@@ -36,27 +41,21 @@ use const PHP_VERSION;
  */
 class ApiRequestor
 {
+    public const string CODE_INPUT_VALIDATION_ERROR = 'InputValidationError';
 
-    const CODE_INPUT_VALIDATION_ERROR = 'InputValidationError';
-    const CODE_INVALID_TOKEN = 'InvalidToken';
-    const CODE_AUTH_FAILED = 'AuthFailed';
-    const CODE_INTERNAL_SERVER = 'InternalServer';
-    const CODE_INVALID_DATABASE = 'InternalDatabaseError';
+    public const string CODE_INVALID_TOKEN = 'InvalidToken';
 
-    /**
-     * @var null|string
-     */
-    private ?string $_accessToken;
+    public const string CODE_AUTH_FAILED = 'AuthFailed';
 
-    /**
-     * @var string
-     */
-    private string $_apiBase;
+    public const string CODE_INTERNAL_SERVER = 'InternalServer';
 
-    /**
-     * @var HttpClient\ClientInterface
-     */
-    private static ?HttpClient\ClientInterface $_httpClient = null;
+    public const string CODE_INVALID_DATABASE = 'InternalDatabaseError';
+
+    private readonly string $_apiBase;
+
+	private readonly string|null $_accessToken;
+
+    private static ?ClientInterface $_httpClient = null;
 
     /**
      * ApiRequestor constructor.
@@ -64,12 +63,13 @@ class ApiRequestor
      * @param null|string $accessToken
      * @param null|string $apiBase
      */
-    public function __construct($accessToken = null, $apiBase = null)
+    public function __construct(string|null $accessToken = null, string $apiBase = null)
     {
-        $this->_accessToken = $accessToken;
+	    $this->_accessToken = $accessToken;
         if (!$apiBase) {
             $apiBase = Wildduck::$apiBase;
         }
+
         $this->_apiBase = $apiBase;
     }
 
@@ -80,10 +80,10 @@ class ApiRequestor
      *
      * @return ApiResource|array|mixed|string
      */
-    private static function _encodeObjects($d)
+    private static function _encodeObjects(mixed $d): mixed
     {
         if ($d instanceof ApiResource) {
-            return Util\Util::utf8($d->id);
+            return Util::utf8($d->id);
         }
 
         if (is_array($d)) {
@@ -95,41 +95,37 @@ class ApiRequestor
             return $res;
         }
 
-        return Util\Util::utf8($d);
+        return Util::utf8($d);
     }
 
     /**
      * @param string $method
      * @param string $url
-     * @param null|array $params
-     * @param null|array $headers
+     * @param array|null $params
+     * @param array|null $headers
      * @param bool $raw
      * @param bool $fileUpload
      *
      * @return array tuple containing (ApiResponse, API key)
      *
      * @throws ApiConnectionException
-     * @throws UnexpectedValueException
      * @throws AuthenticationFailedException
-     * @throws RequestFailedException
-     * @throws ValidationException
      * @throws InvalidAccessTokenException
      * @throws InvalidDatabaseException
-     *
+     * @throws RequestFailedException
+     * @throws ValidationException
      */
-    public function request($method, $url, $params = null, $headers = null, $raw = false, $fileUpload = false): array
+    public function request(string $method, string $url, array|null $params = null, array|null $headers = null, bool $raw = false, bool $fileUpload = false): array
     {
         $params = $params ?: [];
         $headers = $headers ?: [];
 
-        list(
-            $rBody, $rCode, $rHeaders, $myApiKey
-        ) = $this->_requestRaw($method, $url, $params, $headers, $fileUpload);
+        [$rBody, $rCode, $rHeaders, $myApiKey] = $this->_requestRaw($method, $url, $params, $headers, $fileUpload);
 
         $json = null;
 
         if ($rCode < 200 || $rCode >= 300) {
-            $resp = json_decode($rBody, true);
+            $resp = json_decode((string) $rBody, true);
             $jsonError = json_last_error();
             if ($resp && $jsonError === JSON_ERROR_NONE) {
                 $this->handleErrorResponse($rBody, $rCode, $rHeaders, $resp);
@@ -148,27 +144,26 @@ class ApiRequestor
     /**
      * @param string $rbody a JSON string
      * @param int $rcode
-     * @param array $rheaders
+     * @param CaseInsensitiveArray $rheaders
      * @param array $resp
      *
-     * @throws UnexpectedValueException
      * @throws AuthenticationFailedException
-     * @throws RequestFailedException
-     * @throws ValidationException
      * @throws InvalidAccessTokenException
      * @throws InvalidDatabaseException
+     * @throws RequestFailedException
+     * @throws ValidationException
      */
-    public function handleErrorResponse($rbody, $rcode, $rheaders, $resp)
+    public function handleErrorResponse(string $rbody, int $rcode, CaseInsensitiveArray $rheaders, array $resp): void
     {
-        if (!is_array($resp) || (!isset($resp['error']) && !isset($resp['code']))) {
-            $msg = "Invalid response object from API: {$rbody} "
-                . "(HTTP response code was {$rcode})";
+        if (!isset($resp['error']) && !isset($resp['code'])) {
+            $msg = sprintf('Invalid response object from API: %s ', $rbody)
+                . sprintf('(HTTP response code was %d)', $rcode);
 
             throw new UnexpectedValueException($msg);
         }
 
         if (isset($resp['code'])) {
-            self::_specificAPIError($resp['code'], $resp['message'] ?? $resp['error'] ?? 'unknown error', $rcode);
+            $this->_specificAPIError($resp['code'], $resp['message'] ?? $resp['error'] ?? 'unknown error', $rcode);
         }
 
         throw new RequestFailedException($resp['error']);
@@ -177,8 +172,8 @@ class ApiRequestor
     /**
      * @static
      *
-     * @param $code
-     * @param $error
+     * @param string $code
+     * @param string $error
      * @param int $rCode - The wildduck http response code
      * @throws InvalidAccessTokenException
      * @throws AuthenticationFailedException
@@ -186,7 +181,7 @@ class ApiRequestor
      * @throws RequestFailedException
      * @throws InvalidDatabaseException
      */
-    private static function _specificAPIError($code, $error, int $rCode = 0)
+    private function _specificAPIError(string $code, string $error, int $rCode = 0): void
     {
         switch ($code) {
             case static::CODE_INVALID_TOKEN:
@@ -195,7 +190,7 @@ class ApiRequestor
                 throw new AuthenticationFailedException($error);
             case static::CODE_INPUT_VALIDATION_ERROR:
                 throw new ValidationException($error);
-            case static::CODE_INVALID_DATABASE;
+            case static::CODE_INVALID_DATABASE:
                 throw new InvalidDatabaseException($error);
         }
 
@@ -204,12 +199,11 @@ class ApiRequestor
 
     /**
      * @static
-     *
-     * @param null|array $appInfo
+     * @param array|null $appInfo
      *
      * @return null|string
-     */
-    private static function _formatAppInfo($appInfo)
+ */
+    private function _formatAppInfo(array|null $appInfo): null|string
     {
         if (null !== $appInfo) {
             $string = $appInfo['name'];
@@ -228,13 +222,8 @@ class ApiRequestor
 
     /**
      * @static
-     *
-     * @param string $accessToken
-     * @param null $clientInfo
-     *
-     * @return array
      */
-    private static function _defaultHeaders($accessToken, $clientInfo = null)
+    private function _defaultHeaders(string $accessToken, array|null $clientInfo = null): array
     {
         $uaString = 'Wildduck/v1 PhpBindings/' . Wildduck::VERSION;
 
@@ -253,8 +242,9 @@ class ApiRequestor
         if ($clientInfo) {
             $ua = array_merge($clientInfo, $ua);
         }
+
         if (null !== $appInfo) {
-            $uaString .= ' ' . self::_formatAppInfo($appInfo);
+            $uaString .= ' ' . $this->_formatAppInfo($appInfo);
             $ua['application'] = $appInfo;
         }
 
@@ -265,19 +255,17 @@ class ApiRequestor
         ];
     }
 
-    /**
-     * @param string $method
-     * @param string $url
-     * @param array $params
-     * @param array $headers
-     * @param $fileUpload
-     *
-     * @return array
-     *
-     * @throws UnexpectedValueException
-     * @throws ApiConnectionException
-     */
-    private function _requestRaw($method, $url, $params, $headers, $fileUpload): array
+	/**
+	 * @param string $method
+	 * @param string $url
+	 * @param array $params
+	 * @param array $headers
+	 * @param bool $fileUpload
+	 * @return array
+	 *
+	 * @throws ApiConnectionException
+	 */
+    private function _requestRaw(string $method, string $url, array $params, array $headers, bool $fileUpload): array
     {
         $myApiKey = $this->_accessToken;
         if (!$myApiKey) {
@@ -293,7 +281,6 @@ class ApiRequestor
         }
 
         $absUrl = $this->_apiBase . $url;
-//        $params = self::_encodeObjects($params);
         $defaultHeaders = $this->_defaultHeaders($myApiKey, $clientUAInfo);
         if (Wildduck::$apiVersion) {
             $defaultHeaders['Wildduck-Version'] = Wildduck::$apiVersion;
@@ -304,7 +291,7 @@ class ApiRequestor
             foreach ($params as $k => $v) {
                 if (is_resource($v)) {
                     $hasFile = true;
-                    $params[$k] = self::_processResourceParam($v);
+                    $params[$k] = $this->_processResourceParam($v);
                 } elseif ($v instanceof CURLFile) {
                     $hasFile = true;
                 }
@@ -313,12 +300,10 @@ class ApiRequestor
 
         if ($fileUpload) {
             $defaultHeaders['Content-Type'] = 'application/binary';
+        } elseif ($hasFile) {
+            $defaultHeaders['Content-Type'] = 'multipart/form-data';
         } else {
-            if ($hasFile) {
-                $defaultHeaders['Content-Type'] = 'multipart/form-data';
-            } else {
-                $defaultHeaders['Content-Type'] = 'application/json';
-            }
+            $defaultHeaders['Content-Type'] = 'application/json';
         }
 
         $combinedHeaders = array_merge($defaultHeaders, $headers);
@@ -328,10 +313,9 @@ class ApiRequestor
             $rawHeaders[] = $header . ': ' . $value;
         }
 
-        list($rBody, $rCode, $rHeaders) = $this->httpClient()->request(
+        [$rBody, $rCode, $rHeaders] = $this->httpClient()->request(
             $method,
             $absUrl,
-//            $combinedHeaders,
             $rawHeaders,
             $params,
             $hasFile,
@@ -353,6 +337,7 @@ class ApiRequestor
                 ]
             );
         }
+
         return [$rBody, $rCode, $rHeaders, $myApiKey];
     }
 
@@ -360,7 +345,7 @@ class ApiRequestor
         string $method,
         string $absUrl,
         array $headers,
-        $params,
+        array $params,
         bool $hasFile,
         bool $fileUpload,
         array $response
@@ -376,21 +361,21 @@ class ApiRequestor
              *  Create if it doesn't exist
              */
             $directory = rtrim(getenv("WDPC_REQUEST_LOGGING_DIRECTORY"), "/");
-            if (!$directory) {
+            if ($directory === '' || $directory === '0') {
                 error_log("Wildduck php client tried to log a request, but no directory was set.");
                 return;
             }
 
             $subDirectory = date('Y-m-d-H');
-            $fullDirectory = "$directory/$subDirectory/";
+            $fullDirectory = sprintf('%s/%s/', $directory, $subDirectory);
             if (!is_dir($fullDirectory)) {
                 $permissions = getenv('WDPC_REQUEST_LOGGING_FOLDER_PERMISSIONS');
-                $permissions = !$permissions ? 0755 : $permissions;
+                $permissions = $permissions ?: 0755;
                 $createdDirectory = mkdir($fullDirectory, $permissions, true);
 
                 if (!$createdDirectory) {
                     error_log(
-                        "Wildduck php client tried to create a directory, but was unable to. Directory path: '$fullDirectory'"
+                        sprintf('Wildduck php client tried to create a directory, but was unable to. Directory path: \'%s\'', $fullDirectory)
                     );
                     return;
                 }
@@ -406,11 +391,11 @@ class ApiRequestor
                 $userId = $matches[1];
             }
 
-            $randString = uniqid();
-            $filename = "$method-$userId-$randString.json";
+            $randString = uniqid('', true);
+            $filename = sprintf('%s-%s-%s.json', $method, $userId, $randString);
 
-            if (!$handle = fopen($fullDirectory . $filename, 'w')) {
-                error_log("Wildduck php client cannot open file ($fullDirectory$filename)");
+            if (!$handle = fopen($fullDirectory . $filename, 'wb')) {
+                error_log(sprintf('Wildduck php client cannot open file (%s%s)', $fullDirectory, $filename));
                 return;
             }
 
@@ -430,16 +415,17 @@ class ApiRequestor
 
             // Write data to our opened file.
             if (fwrite($handle, json_encode($data)) === false) {
-                error_log("Wildduck php client cannot write data to file: $fullDirectory$filename");
+                error_log(sprintf('Wildduck php client cannot write data to file: %s%s', $fullDirectory, $filename));
                 fclose($handle);
                 return;
             }
+
             fclose($handle);
 
             return;
-        } catch (Exception $e) {
-            echo $e->getMessage();
-            error_log($e->getMessage());
+        } catch (Exception $exception) {
+            echo $exception->getMessage();
+            error_log($exception->getMessage());
             return;
         }
     }
@@ -447,11 +433,11 @@ class ApiRequestor
     /**
      * @param resource $resource
      *
-     * @return CURLFile|string
+     * @return CURLFile
      * @throws InvalidArgumentException
      *
      */
-    private function _processResourceParam($resource)
+    private function _processResourceParam($resource): CURLFile
     {
         if ('stream' !== get_resource_type($resource)) {
             throw new InvalidArgumentException(
@@ -473,24 +459,24 @@ class ApiRequestor
     /**
      * @param string $rbody
      * @param int $rcode
-     * @param array $rheaders
+     * @param CaseInsensitiveArray $rheaders
      *
      * @return array
      *
      * @throws UnexpectedValueException
      * @throws AuthenticationFailedException
-     * @throws RequestFailedException
-     * @throws ValidationException
      * @throws InvalidAccessTokenException
      * @throws InvalidDatabaseException
+     * @throws RequestFailedException
+     * @throws ValidationException
      */
-    private function _interpretResponse($rbody, $rcode, $rheaders): array
+    private function _interpretResponse(string $rbody, int $rcode, CaseInsensitiveArray $rheaders): array
     {
         $resp = json_decode($rbody, true);
         $jsonError = json_last_error();
         if (null === $resp && JSON_ERROR_NONE !== $jsonError) {
-            $msg = "Invalid response body from API: {$rbody} "
-                . "(HTTP response code was {$rcode}, json_last_error() was {$jsonError})";
+            $msg = sprintf('Invalid response body from API: %s ', $rbody)
+                . sprintf('(HTTP response code was %d, json_last_error() was %s)', $rcode, $jsonError);
 
             throw new UnexpectedValueException($msg, $rcode);
         }
@@ -507,22 +493,17 @@ class ApiRequestor
      *
      * @param HttpClient\ClientInterface $client
      */
-    public static function setHttpClient($client)
+    public static function setHttpClient(ClientInterface $client): void
     {
         self::$_httpClient = $client;
     }
 
-    /**
-     * @return HttpClient\ClientInterface
-     */
-    private function httpClient()
+    private function httpClient(): ClientInterface
     {
-        if (!self::$_httpClient) {
-            self::$_httpClient = HttpClient\CurlClient::instance();
+        if (!self::$_httpClient instanceof ClientInterface) {
+            self::$_httpClient = CurlClient::instance();
         }
 
         return self::$_httpClient;
     }
-
-
 }

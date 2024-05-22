@@ -9,5 +9,4 @@ namespace Zone\Wildduck;
  */
 class KeyInfo extends WildduckObject
 {
-
 }

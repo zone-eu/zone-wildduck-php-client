@@ -2,22 +2,32 @@
 
 namespace Zone\Wildduck;
 
+use Zone\Wildduck\Util\RequestOptions;
+use Override;
+use IteratorAggregate;
+use Zone\Wildduck\ApiOperations\Request;
+use Zone\Wildduck\Exception\InvalidArgumentException;
+use Zone\Wildduck\Util\Util;
+use Zone\Wildduck\Exception\UnexpectedValueException;
+use ArrayIterator;
+use Traversable;
+use Generator;
+
 /**
  * Class Collection.
  *
  * @property string $object
  * @property string $url
  * @property bool $has_more
- * @property \Zone\Wildduck\WildduckObject[] $data
+ * @property WildduckObject[] $data
  */
-class Collection extends WildduckObject implements \Countable, \IteratorAggregate
+class Collection extends WildduckObject implements IteratorAggregate
 {
-    const OBJECT_NAME = 'list';
+    use Request;
 
-    use ApiOperations\Request;
+    public const string OBJECT_NAME = 'list';
 
-    /** @var array */
-    protected $filters = [];
+    protected array $filters = [];
 
     /**
      * @return string the base URL for the given class
@@ -42,96 +52,124 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
      *
      * @param array $filters the filters
      */
-    public function setFilters($filters)
+    public function setFilters(array $filters): void
     {
         $this->filters = $filters;
     }
 
-    public function offsetGet($k)
+    /**
+     * @param mixed $offset
+     * @return string|null
+     */
+    #[Override]
+    public function offsetGet(mixed $offset): string|null
     {
-        if (\is_string($k)) {
-            return parent::offsetGet($k);
+        if (is_string($offset)) {
+            return parent::offsetGet($offset);
         }
-        $msg = "You tried to access the {$k} index, but Collection " .
+
+        $msg = sprintf('You tried to access the %s index, but Collection ', $offset) .
                    'types only support string keys. (HINT: List calls ' .
                    'return an object with a `data` (which is the data ' .
-                   "array). You likely want to call ->data[{$k}])";
+                   sprintf('array). You likely want to call ->data[%s])', $offset);
 
-        throw new Exception\InvalidArgumentException($msg);
+        throw new InvalidArgumentException($msg);
     }
 
-    public function all($params = null, $opts = null)
+    /**
+     * @param array|null $params
+     * @param array|null $opts
+     * @return WildduckObject|array
+     */
+    public function all(array|null $params = null, array|null $opts = null): WildduckObject|array
     {
         self::_validateParams($params);
-        list($url, $params) = $this->extractPathAndUpdateParams($params);
+        [$url, $params] = $this->extractPathAndUpdateParams($params);
 
-        list($response, $opts) = $this->_request('get', $url, $params, $opts);
-        $obj = Util\Util::convertToWildduckObject($response, $opts);
-        if (!($obj instanceof \Zone\Wildduck\Collection)) {
-            throw new \Zone\Wildduck\Exception\UnexpectedValueException(
-                'Expected type ' . \Zone\Wildduck\Collection::class . ', got "' . \get_class($obj) . '" instead.'
+        [
+            $response,
+            $opts
+        ] = $this->_request('get', $url, $params, $opts);
+        $obj = Util::convertToWildduckObject($response, $opts);
+        if (!($obj instanceof self)) {
+            throw new UnexpectedValueException(
+                'Expected type ' . self::class . ', got "' . $obj::class . '" instead.'
             );
         }
+
         $obj->setFilters($params);
 
         return $obj;
     }
 
-    public function create($params = null, $opts = null)
+    /**
+     * @param array|null $params
+     * @param array|null $opts
+     * @return WildduckObject|Collection2|array
+     */
+    public function create(array|null $params = null, array|null $opts = null): WildduckObject|Collection2|array
     {
         self::_validateParams($params);
-        list($url, $params) = $this->extractPathAndUpdateParams($params);
+        [$url, $params] = $this->extractPathAndUpdateParams($params);
 
-        list($response, $opts) = $this->_request('post', $url, $params, $opts);
+        [$response, $opts] = $this->_request('post', $url, $params, $opts);
 
-        return Util\Util::convertToWildduckObject($response, $opts);
+        return Util::convertToWildduckObject($response, $opts);
     }
 
-    public function retrieve($id, $params = null, $opts = null)
+    /**
+     * @param array|string|int $id
+     * @param array|null $params
+     * @param array|RequestOptions|null $opts
+     * @return array|WildduckObject
+     */
+    public function retrieve(array|string|int $id, array|null $params = null, array|RequestOptions|null $opts = null): array|WildduckObject
     {
         self::_validateParams($params);
-        list($url, $params) = $this->extractPathAndUpdateParams($params);
+        [$url, $params] = $this->extractPathAndUpdateParams($params);
 
-        $id = Util\Util::utf8($id);
-        $extn = \urlencode($id);
-        list($response, $opts) = $this->_request(
+        $id = Util::utf8($id);
+        $extn = urlencode((string) $id);
+        [$response, $opts] = $this->_request(
             'get',
-            "{$url}/{$extn}",
+            sprintf('%s/%s', $url, $extn),
             $params,
             $opts
         );
 
-        return Util\Util::convertToWildduckObject($response, $opts);
+        return Util::convertToWildduckObject($response, $opts);
     }
 
     /**
      * @return int the number of objects in the current page
      */
+    #[Override]
     public function count(): int
     {
-        return \count($this->data);
+        return count($this->data);
     }
 
     /**
-     * @return \ArrayIterator an iterator that can be used to iterate
+     * @return ArrayIterator an iterator that can be used to iterate
      *    across objects in the current page
      */
-    public function getIterator(): \Traversable
+    #[Override]
+    public function getIterator(): Traversable
     {
-        return new \ArrayIterator($this->data);
+        return new ArrayIterator($this->data);
     }
 
     /**
-     * @return \ArrayIterator an iterator that can be used to iterate
+     * @return ArrayIterator an iterator that can be used to iterate
      *    backwards across objects in the current page
      */
-    public function getReverseIterator(): \Traversable
+    public function getReverseIterator(): Traversable
     {
-        return new \ArrayIterator(\array_reverse($this->data));
+        return new ArrayIterator(array_reverse($this->data));
     }
 
     /**
-     * @return \Generator|WildduckObject[] A generator that can be used to
+     * @return Generator|WildduckObject[] A generator that can be used to
      *    iterate across all objects across all pages. As page boundaries are
      *    encountered, the next page will be fetched automatically for
      *    continued iteration.
@@ -142,16 +180,20 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
 
         while (true) {
             $filters = $this->filters ?: [];
-            if (\array_key_exists('ending_before', $filters) &&
-                !\array_key_exists('starting_after', $filters)) {
+            if (
+                array_key_exists('ending_before', $filters) &&
+                !array_key_exists('starting_after', $filters)
+            ) {
                 foreach ($page->getReverseIterator() as $item) {
                     yield $item;
                 }
+
                 $page = $page->previousPage();
             } else {
                 foreach ($page as $item) {
                     yield $item;
                 }
+
                 $page = $page->nextPage();
             }
 
@@ -166,21 +208,19 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
      * when we know that there isn't a next page in order to replicate the
      * behavior of the API when it attempts to return a page beyond the last.
      *
-     * @param null|array|string $opts
+     * @param array|null|RequestOptions|string $opts
      *
-     * @return Collection
+     * @return WildduckObject
      */
-    public static function emptyCollection($opts = null)
+    public static function emptyCollection(array|null|RequestOptions|string $opts = null): WildduckObject
     {
-        return Collection::constructFrom(['data' => []], $opts);
+        return self::constructFrom(['data' => []], $opts);
     }
 
     /**
      * Returns true if the page object contains no element.
-     *
-     * @return bool
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->data);
     }
@@ -191,20 +231,20 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
      * This method will try to respect the limit of the current page. If none
      * was given, the default limit will be fetched again.
      *
-     * @param null|array $params
-     * @param null|array|string $opts
      *
-     * @return Collection
+     * @param array|null $params
+     * @param array|string|null $opts
+     * @return WildduckObject|Collection
      */
-    public function nextPage($params = null, $opts = null)
+    public function nextPage(array|null $params = null, array|null|string $opts = null): WildduckObject|Collection
     {
         if (!$this->has_more) {
             return static::emptyCollection($opts);
         }
 
-        $lastId = \end($this->data)->id;
+        $lastId = end($this->data)->id;
 
-        $params = \array_merge(
+        $params = array_merge(
             $this->filters ?: [],
             ['starting_after' => $lastId],
             $params ?: []
@@ -219,12 +259,12 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
      * This method will try to respect the limit of the current page. If none
      * was given, the default limit will be fetched again.
      *
-     * @param null|array $params
-     * @param null|array|string $opts
+     * @param array|null $params
+     * @param array|null|string $opts
      *
-     * @return Collection
+     * @return WildduckObject|Collection
      */
-    public function previousPage($params = null, $opts = null)
+    public function previousPage(array|null $params = null, array|null|string $opts = null): WildduckObject|Collection
     {
         if (!$this->has_more) {
             return static::emptyCollection($opts);
@@ -232,7 +272,7 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
 
         $firstId = $this->data[0]->id;
 
-        $params = \array_merge(
+        $params = array_merge(
             $this->filters ?: [],
             ['ending_before' => $firstId],
             $params ?: []
@@ -241,19 +281,23 @@ class Collection extends WildduckObject implements \Countable, \IteratorAggregat
         return $this->all($params, $opts);
     }
 
-    private function extractPathAndUpdateParams($params)
+    /**
+     * @param array|null $params
+     * @return array
+     */
+    private function extractPathAndUpdateParams(array|null $params): array
     {
-        $url = \parse_url($this->url);
+        $url = parse_url($this->url);
         if (!isset($url['path'])) {
-            throw new Exception\UnexpectedValueException("Could not parse list url into parts: {$url}");
+            throw new UnexpectedValueException('Could not parse list url into parts: ' . $url);
         }
 
         if (isset($url['query'])) {
-            // If the URL contains a query param, parse it out into $params so they
+            // If the URL contains a query param, parse it out into $params, so they
             // don't interact weirdly with each other.
             $query = [];
-            \parse_str($url['query'], $query);
-            $params = \array_merge($params ?: [], $query);
+            parse_str($url['query'], $query);
+            $params = array_merge($params ?: [], $query);
         }
 
         return [$url['path'], $params];
