@@ -21,5 +21,5 @@ interface ClientInterface
      * @return array an array whose first element is raw request body, second
      *    element is HTTP status code and third array of HTTP headers
      */
-    public function request($method, $absUrl, $headers, $params, $hasFile): array;
+    public function request(string $method, string $absUrl, array $headers, array $params, bool $hasFile): array;
 }
