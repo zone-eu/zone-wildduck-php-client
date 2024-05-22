@@ -2,32 +2,34 @@
 
 namespace Wildduck\Tests;
 
+use AllowDynamicProperties;
 use Orchestra\Testbench\TestCase;
 use Wildduck\Http\Request;
 use Wildduck;
 
+#[AllowDynamicProperties]
 class BasicTest extends TestCase
 {
 
-    protected function getEnvironmentSetUp($application)
+    protected function getEnvironmentSetUp($application): void
     {
         $application['config']->set('wildduck.host', 'http://localhost:8080');
         $application['config']->set('wildduck.debug', false);
     }
 
-    protected function getPackageProviders($application)
+    protected function getPackageProviders($application): array
     {
         return ['Wildduck\ServiceProvider'];
     }
 
-    protected function getPackageAliases($application)
+    protected function getPackageAliases($application): array
     {
         return [
             'Wildduck' => 'Wildduck\Facades\Wildduck',
         ];
     }
 
-    public function testUserCreation()
+    public function testUserCreation(): array
     {
         $r = Wildduck::users()->create([
             'username' => 'ivan',

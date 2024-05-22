@@ -24,18 +24,17 @@
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
     <rule ref="Generic.Formatting.SpaceAfterCast"/>
 	<rule ref="Generic.Files.LineLength">
-		<properties>
-			<property name="lineLimit" value="180"/> <!-- maximum line length -->
-		</properties>
+		<severity>0</severity>
 	</rule>
-
 	<!-- Methods MUST not be prefixed with an underscore -->
 	<rule ref="PSR2.Methods.MethodDeclaration.Underscore">
 		<severity>0</severity>
 	</rule>
-
 	<!-- Properties MUST not be prefixed with an underscore -->
 	<rule ref="PSR2.Classes.PropertyDeclaration.Underscore">
+		<severity>0</severity>
+	</rule>
+	<rule ref="PSR12.Properties.ConstantVisibility.NotFound">
 		<severity>0</severity>
 	</rule>
 </ruleset>
