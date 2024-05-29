@@ -3,7 +3,6 @@
 namespace Zone\Wildduck\Util;
 
 use AllowDynamicProperties;
-use Illuminate\Support\Facades\Log;
 use Zone\Wildduck\Collection2;
 use Zone\Wildduck\WildduckObject;
 
@@ -176,8 +175,6 @@ abstract class Util
         $pieces = [];
         foreach ($flattenedParams as $param) {
             [$key, $value] = $param;
-	        Log::debug('$param' , [print_r(['key' => $key , 'value' => $value], true)]);
-
             $pieces[] = self::urlEncode($key) . '=' . self::urlEncode($value);
         }
 
