@@ -2,16 +2,16 @@
 
 namespace Zone\Wildduck\ApiOperations;
 
-use Zone\Wildduck\Address;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
-use Zone\Wildduck\Mailbox;
-use Zone\Wildduck\User;
-use Zone\Wildduck\Webhook;
+use Zone\Wildduck\Resource\Address;
+use Zone\Wildduck\Resource\Mailbox;
+use Zone\Wildduck\Resource\User;
+use Zone\Wildduck\Resource\Webhook;
 
 /**
  * Trait for deletable resources. Adds a `delete()` method to the class.

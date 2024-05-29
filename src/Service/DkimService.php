@@ -10,7 +10,6 @@ use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
-use Zone\Wildduck\WildduckObject;
 use Zone\Wildduck\Collection2;
 
 class DkimService extends AbstractService

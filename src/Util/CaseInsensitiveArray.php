@@ -68,7 +68,7 @@ class CaseInsensitiveArray implements ArrayAccess, Countable, IteratorAggregate
     }
 
     #[Override]
-    public function offsetGet(mixed $offset): array|null
+    public function offsetGet(mixed $offset): string|null
     {
         $offset = $this->maybeLowercase($offset);
 
@@ -76,15 +76,15 @@ class CaseInsensitiveArray implements ArrayAccess, Countable, IteratorAggregate
     }
 
 	/**
-	 * @param string|null $v
+	 * @param mixed $v
 	 * @return string|null
 	 */
-	private function maybeLowercase(string|null $v): string|null
+	private function maybeLowercase(mixed $v): string|null
     {
         if (is_string($v)) {
             return strtolower($v);
         }
 
-        return $v;
+        return null;
     }
 }

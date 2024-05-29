@@ -38,7 +38,7 @@ interface WildduckClientInterface
      * @param string $method the HTTP method
      * @param string $path the path of the request
      * @param array $params the parameters of the request
-     * @param array|RequestOptions $opts the special modifiers of the request
+     * @param array|RequestOptions|null $opts the special modifiers of the request
      * @param bool $fileUpload
      *
      * @throws ApiConnectionException
@@ -48,13 +48,13 @@ interface WildduckClientInterface
      * @throws ValidationException
      * @throws InvalidAccessTokenException
      */
-    public function request(string $method, string $path, array $params, array|RequestOptions $opts, bool $fileUpload = false): mixed;
+    public function request(string $method, string $path, array $params, array|RequestOptions|null $opts, bool $fileUpload = false): mixed;
 
 	/**
 	 * @param string $method
 	 * @param string $path
 	 * @param array|null $params
-	 * @param array|null $opts
+	 * @param array|RequestOptions|null $opts
 	 * @return mixed
 	 *
 	 * @throws ApiConnectionException
@@ -64,7 +64,7 @@ interface WildduckClientInterface
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function requestCollection(string $method, string $path, array|null $params, array|null $opts): mixed;
+	public function requestCollection(string $method, string $path, array|null $params, array|RequestOptions|null $opts): mixed;
 
 	/**
 	 * @param string $method

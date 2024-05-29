@@ -27,8 +27,6 @@ abstract class ApiResource extends WildduckObject
 
     public const string OBJECT_NAME = '';
 
-    //public string|array|int|null $id;
-
     /**
      * @return Set A list of fields that can be their own type of
      * API resource (say a nested card under an account for example), and if
@@ -57,23 +55,19 @@ abstract class ApiResource extends WildduckObject
 
     /**
      * @param mixed $name
-     * @param mixed $v
+     * @param mixed $value
      *
      * @return void
      */
     #[Override]
-    public function __set(mixed $name, mixed $v): void
+	public function __set(mixed $name, $value): void
     {
-        parent::__set($name, $v);
-        $v = $this->{$name};
-        if (!static::getSavedNestedResources()->includes($name)) {
-            return;
-        }
-        if (!$v instanceof self) {
-            return;
-        }
-        $v->saveWithParent = true;
-    }
+		parent::__set($name, $value);
+		$v = $this->{$name};
+		if (($v instanceof self) && (static::getSavedNestedResources()->includes($name))) {
+			$v->saveWithParent = true;
+		}
+	}
 
     /**
      * @return ApiResource the refreshed resource
@@ -96,6 +90,7 @@ abstract class ApiResource extends WildduckObject
             $this->_retrieveOptions,
             $this->_opts->headers
         );
+
         $this->setLastResponse($response);
         $this->refreshFrom($response->json, $this->_opts);
 

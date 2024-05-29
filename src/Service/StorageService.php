@@ -8,6 +8,7 @@ use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
+use Zone\Wildduck\Resource\Message;
 use Zone\Wildduck\WildduckObject;
 use Zone\Wildduck\Util\RequestOptions;
 use Override;
@@ -28,7 +29,7 @@ class StorageService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function delete(string $user, string $file, array|null $params = null, array|null $opts = null): File
+	public function delete(string $user, string $file, array|null $params = null, array|null $opts = null): Message
     {
         return $this->request('delete', $this->buildPath('/users/%s/storage/%s', $user, $file), $params, $opts);
     }
@@ -46,7 +47,7 @@ class StorageService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function download(string $user, string $file, array|null $params = null, array|null $opts = null): File
+	public function download(string $user, string $file, array|null $params = null, array|null $opts = null): Message
     {
         $opts['raw'] = true;
         return $this->request('get', $this->buildPath('/users/%s/storage/%s', $user, $file), $params, $opts);
@@ -74,17 +75,17 @@ class StorageService extends AbstractService
 	 * @param string $user
 	 * @param string $filename
 	 * @param string $contentType
-	 * @param array $content
-	 * @param array|RequestOptions|null $opts
+	 * @param array|null $content
+	 * @param array|null $opts
 	 *
-	 * @return WildduckObject|string
+	 * @return File
 	 * @throws ApiConnectionException
 	 * @throws AuthenticationFailedException
 	 * @throws InvalidAccessTokenException
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function upload(string $user, string $filename, string $contentType, array $content, array|RequestOptions|null $opts = null): WildduckObject|string
+	public function upload(string $user, string $filename, string $contentType, array $content = null, array|null $opts = null): Message
     {
         return $this->file('post', $this->buildPath('/users/%s/storage?filename=%s&contentType=%s', $user, $filename, $contentType), $content, $opts);
     }
@@ -92,6 +93,6 @@ class StorageService extends AbstractService
     #[Override]
     public function getObjectName(): string
     {
-        return File::OBJECT_NAME;
+        return Message::OBJECT_NAME;
     }
 }

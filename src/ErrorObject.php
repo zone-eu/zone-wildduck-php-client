@@ -224,13 +224,13 @@ class ErrorObject extends WildduckObject
 
     public const string CODE_URL_INVALID = 'url_invalid';
 
-    /**
-     * Refreshes this object using the provided values.
-     *
-     * @param array $values
-     * @param array|null|string|Util\RequestOptions $opts
-     * @param bool $partial defaults to false
-     */
+	/**
+	 * Refreshes this object using the provided values.
+	 *
+	 * @param array|object $values
+	 * @param array|null|string|RequestOptions $opts
+	 * @param bool $partial defaults to false
+	 */
     #[Override]
     public function refreshFrom(array|object $values, array|null|RequestOptions|string $opts, bool $partial = false): void
     {

@@ -2,21 +2,22 @@
 
 namespace Zone\Wildduck;
 
-
-use Stringable;
 use Override;
 use ArrayAccess;
 use Countable;
 use JsonSerializable;
+use Zone\Wildduck\Resource\ApiResource;
+use Zone\Wildduck\Resource\Message;
 use Zone\Wildduck\Util\Set;
 use Zone\Wildduck\Util\Util;
 use Zone\Wildduck\Util\RequestOptions;
 use Zone\Wildduck\Exception\InvalidArgumentException;
 
+
 /**
  * Class WildduckObject.
  */
-class WildduckObject implements ArrayAccess, Countable, JsonSerializable, Stringable
+class WildduckObject implements ArrayAccess, Countable, JsonSerializable
 {
     /** @var RequestOptions */
     protected RequestOptions $_opts;
@@ -34,7 +35,7 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
     protected Set $_transientValues;
 
     /** @var array|null */
-    protected mixed $_retrieveOptions;
+    protected array|null $_retrieveOptions;
 
     /** @var null|ApiResponse */
     protected ?ApiResponse $_lastResponse = null;
@@ -126,6 +127,27 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
         return $additiveParams;
     }
 
+	/**
+	 * @param string|array|null $values
+	 * @param array|RequestOptions|null $opts
+	 */
+	public function __construct(string|null|array $values, array|RequestOptions|null $opts = null)
+	{
+		$id = $values;
+		if(is_array($values)) {
+			[$id, $this->_retrieveOptions] = Util::normalizeId($values);
+		}
+
+		$this->_opts = RequestOptions::parse($opts);
+		$this->_originalValues = [];
+		$this->_values = [];
+		$this->_unsavedValues = new Set();
+		$this->_transientValues = new Set();
+		if (null !== $values) {
+			$this->_values['id'] = $id;
+			$this->id = $id;
+		}
+	}
 
 	/**
 	 * This unfortunately needs to be public to be used in Util\Util.
@@ -142,25 +164,14 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
 		return $obj;
 	}
 
-	public function __construct(string|null $id, array|RequestOptions $opts = null)
-	{
-		$this->_opts = RequestOptions::parse($opts);
-		$this->_unsavedValues = new Set();
-		$this->_transientValues = new Set();
-		if (null !== $id) {
-			$this->_values['id'] = $id;
-			$this->id = $id;
-		}
-	}
-
     /**
      * Standard accessor magic methods
      *
      * @param string $name
-     * @param string|array $v
+     * @param string|array|bool $value
      * @return void
      */
-    public function __set(mixed $name, string|array $v): void
+    public function __set(mixed $name, string|array|bool $value): void
     {
         if (static::getPermanentAttributes()->includes($name)) {
             throw new InvalidArgumentException(
@@ -169,7 +180,7 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
             );
         }
 
-        if ('' === $v) {
+        if ('' === $value) {
             throw new InvalidArgumentException(
                 "You cannot set '" . $name . "'to an empty string. "
                 . 'We interpret empty strings as NULL in requests. '
@@ -177,13 +188,13 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
             );
         }
 
-        $this->_values[$name] = Util::convertToWildduckObject($v, $this->_opts);
+        $this->_values[$name] = Util::convertToWildduckObject($value, $this->_opts);
         $this->dirtyValue($this->_values[$name]);
         $this->_unsavedValues->add($name);
     }
     public function __isset(mixed $name): bool
     {
-        return property_exists($this, $name);
+        return isset($this->_values[$name]);
     }
     public function __unset(mixed $name): void
     {
@@ -196,7 +207,7 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
      * @param mixed $name
      * @return string|null|array
      */
-    public function &__get(mixed $name): string|null|array
+    public function &__get(mixed $name): mixed
     {
         // function should return a reference, using $nullval to return a reference to null
         $nullval = null;
@@ -301,7 +312,6 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
     public function refreshFrom(array|object $values, array|null|RequestOptions|string $opts, bool $partial = false): void
     {
         $this->_opts = RequestOptions::parse($opts);
-
         $this->_originalValues = self::deepCopy($values);
 
         if ($values instanceof self) {
@@ -345,7 +355,6 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
             } else {
                 $this->_values[$k] = $v;
             }
-
 
             if ($dirty) {
                 $this->dirtyValue($this->_values[$k]);
@@ -400,9 +409,9 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
      * @param bool|null $unsaved
      * @param bool $force
      * @param string|null $key
-     * @return array|string|null
+     * @return array|string|null|ApiResource
      */
-    public function serializeParamsValue(string|object|array|null $value, string|object|array|null $original, null|bool $unsaved, bool $force, null|string $key = null): array|null|string
+    public function serializeParamsValue(string|object|array|null $value, string|object|array|null $original, null|bool $unsaved, bool $force, null|string $key = null): array|null|string|ApiResource
     {
         // The logic here is that essentially any object embedded in another
         // object that had a `type` is actually an API resource of a different
@@ -435,7 +444,7 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
                 return null;
             }
 
-            if (property_exists($value, 'id') && $value->id !== null) {
+            if (property_exists($value, 'id')) {
                 return $value;
             }
 
@@ -490,22 +499,20 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
     {
 
         $maybeToArray = static function ($value) {
-
             if (null === $value) {
                 return null;
             }
             return is_object($value) && method_exists($value, 'toArray') ? $value->toArray() : $value;
         };
 
-        return array_reduce(array_keys($this->_values), function (array $acc, $k) use ($maybeToArray) {
+        return array_reduce(array_keys($this->_values), function (array $acc, $key) use ($maybeToArray) {
 
-            if (str_starts_with((string) $k, '_')) {
+            if (str_starts_with((string) $key, '_')) {
                 return $acc;
             }
 
-            $v = $this->_values[$k];
-
-            $acc[$k] = Util::isList($v) ? array_map($maybeToArray, $v) : $maybeToArray($v);
+            $value = $this->_values[$key];
+            $acc[$key] = is_array($value) && Util::isList($value) ? array_map($maybeToArray, $value) : $maybeToArray($value);
 
             return $acc;
         }, []);
@@ -520,7 +527,6 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
     {
         return json_encode($this->toArray(), JSON_PRETTY_PRINT);
     }
-    #[Override]
     public function __toString(): string
     {
         $class = static::class;
@@ -541,11 +547,11 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
         }
     }
 
-    /**
-     * @param array|object|string $value
-     * @return void
-     */
-    private function dirtyValue(array|object|string $value): void
+	/**
+	 * @param array|object|string|null $value
+	 * @return void
+	 */
+    private function dirtyValue(array|object|string|null $value): void
     {
         if (is_array($value)) {
             foreach ($value as $v) {
@@ -590,7 +596,7 @@ class WildduckObject implements ArrayAccess, Countable, JsonSerializable, String
      * @param mixed $obj
      * @return array
      */
-    public static function emptyValues(mixed $obj): array
+    protected static function emptyValues(mixed $obj): array
     {
         if (is_array($obj)) {
             $values = $obj;

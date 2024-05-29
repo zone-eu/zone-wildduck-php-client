@@ -3,8 +3,7 @@
 namespace Zone\Wildduck\Util;
 
 use AllowDynamicProperties;
-
-use Zone\Wildduck\ApiResource;
+use Illuminate\Support\Facades\Log;
 use Zone\Wildduck\Collection2;
 use Zone\Wildduck\WildduckObject;
 
@@ -25,16 +24,12 @@ abstract class Util
      * A list is defined as an array for which all the keys are consecutive
      * integers starting at 0. Empty arrays are considered to be lists.
      *
-     * @param array|mixed $array
+     * @param array $array
      *
      * @return bool true if the given object is a list
      */
-    public static function isList(mixed $array): bool
+    public static function isList(array $array): bool
     {
-        if (!is_array($array)) {
-            return false;
-        }
-
         if ($array === []) {
             return true;
         }
@@ -44,19 +39,19 @@ abstract class Util
     /**
      * Converts a response from the Wildduck API to the corresponding PHP object.
      *
-     * @param array|string|bool $resp the response from the Wildduck API
+     * @param array|string|bool|object $resp the response from the Wildduck API
      * @param array|RequestOptions|null $opts
      *
      * @return mixed
      */
-    public static function convertToWildduckObject(array|string|bool $resp, array|RequestOptions $opts = null): mixed
+    public static function convertToWildduckObject(array|string|bool|object $resp, array|RequestOptions|null $opts = null): mixed
     {
         $types = ObjectTypes::MAPPING;
         if (is_array($resp) && self::isCollection($resp)) {
             return new Collection2($resp, $opts);
         }
 
-        if (self::isList($resp)) {
+	    if (is_array($resp) && self::isList($resp)) {
             $mapped = [];
             foreach ($resp as $i) {
                 $mapped[] = self::convertToWildduckObject($i, $opts);
@@ -64,6 +59,7 @@ abstract class Util
 
             return $mapped;
         }
+
         if ($opts && $opts->object) {
             $class = $types[$opts->object];
         } elseif (isset($resp['object'], $types[$resp['object']]) && is_string($resp['object'])) {
@@ -137,47 +133,52 @@ abstract class Util
      * ApiResource, then it is replaced by the resource's ID.
      * Also clears out null values.
      *
-     * @param object|array|string|int $h
-     * @return array|int|string|object|null
+     * @param array|null $values
+     * @return array|null
      */
-    public static function objectsToIds(object|array|string|int $h): array|int|null|string|object
+    public static function arrayToIds(array|null $values): null|array
     {
-        if ($h instanceof ApiResource) {
-            return $h->id;
-        }
-
-        if (static::isList($h)) {
-            $results = [];
-            foreach ($h as $v) {
-                $results[] = static::objectsToIds($v);
+        /*if ($values instanceof ApiResource) {
+            return $values->id;
+        }*/
+	    $results = [];
+        if (is_array($values) && self::isList($values)) {
+            foreach ($values as $value) {
+                $results[] = self::test($value);
             }
-
-            return $results;
+	        return $results;
         }
 
-        if (is_array($h)) {
-            $results = [];
-            foreach ($h as $k => $v) {
-                if (null === $v) {
+		if (is_array($values)) {
+            foreach ($values as $k => $value) {
+                if (null === $value) {
                     continue;
                 }
-
-                $results[$k] = static::objectsToIds($v);
+                $results[$k] = self::test($value);
             }
-
-            return $results;
+			return $results;
         }
 
-        return $h;
+        return null;
     }
+
+	private static function test ($values) {
+		if(is_array($values)){
+			return self::arrayToIds($values);
+		}
+
+		return $values;
+	}
 
     public static function encodeParameters(array $params): string
     {
         $flattenedParams = self::flattenParams($params);
         $pieces = [];
         foreach ($flattenedParams as $param) {
-            [$k, $v] = $param;
-            $pieces[] = self::urlEncode($k) . '=' . self::urlEncode($v);
+            [$key, $value] = $param;
+	        Log::debug('$param' , [print_r(['key' => $key , 'value' => $value], true)]);
+
+            $pieces[] = self::urlEncode($key) . '=' . self::urlEncode($value);
         }
 
         return implode('&', $pieces);
@@ -186,14 +187,13 @@ abstract class Util
     public static function flattenParams(array $params, null|string $parentKey = null): array
     {
         $result = [];
-
         foreach ($params as $key => $value) {
             $calculatedKey = $parentKey ? sprintf('%s[%s]', $parentKey, $key) : $key;
 
-            if (self::isList($value)) {
-                $result = [$result, self::flattenParamsList($value, $calculatedKey)];
+            if (is_array($value) && self::isList($value)) {
+                $result[] = array_merge(...self::flattenParamsList($value, $calculatedKey));
             } elseif (is_array($value)) {
-                $result = [$result, self::flattenParams($value, $calculatedKey)];
+               $result[] = array_merge(...self::flattenParams($value, $calculatedKey));
             } else {
                 $result[] = [$calculatedKey, $value];
             }
@@ -205,12 +205,11 @@ abstract class Util
     public static function flattenParamsList(array $value, string $calculatedKey): array
     {
         $result = [];
-
         foreach ($value as $i => $elem) {
-            if (self::isList($elem)) {
-                $result = array_merge(...self::flattenParamsList($elem, $calculatedKey));
+            if (is_array($elem) && self::isList($elem)) {
+                $result[] = array_merge(...self::flattenParamsList($elem, $calculatedKey));
             } elseif (is_array($elem)) {
-                $result = array_merge(...self::flattenParams($elem, sprintf('%s[%s]', $calculatedKey, $i)));
+                $result[] = array_merge(...self::flattenParams($elem, sprintf('%s[%s]', $calculatedKey, $i)));
             } else {
                 $result[] = [sprintf('%s[%s]', $calculatedKey, $i), $elem];
             }
@@ -220,13 +219,13 @@ abstract class Util
     }
 
     /**
-     * @param string|object $key a string to URL-encode
+     * @param string|array $key a string to URL-encode
      *
      * @return string the URL-encoded string
      */
-    public static function urlEncode(string|object $key): string
+    public static function urlEncode(string|array $key): string
     {
-        if (is_object($key)) {
+        if (is_array($key)) {
             $key = json_encode($key);
         }
 

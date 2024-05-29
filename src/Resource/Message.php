@@ -8,14 +8,15 @@ use Zone\Wildduck\Recipient;
 
 /**
  * @property int $id
+ * @property bool $success
  * @property string $mailbox
  * @property string $user
  * @property object $envelope
  * @property string $thread
  * @property Recipient $from
- * @property Recipient[] $to
- * @property Recipient[] $cc
- * @property Recipient[] $bcc
+ * @property list<Recipient> $to
+ * @property list<Recipient> $cc
+ * @property list<Recipient> $bcc
  * @property string $subject
  * @property string $messageId
  * @property string $date
@@ -25,15 +26,15 @@ use Zone\Wildduck\Recipient;
  * @property bool $deleted
  * @property bool $flagged
  * @property bool $draft
- * @property string[] $html
+ * @property list<string> $html
  * @property string $text
- * @property Attachment[] $attachments
+ * @property list<Attachment> $attachments
  * @property object $verificationResults
  * @property object $contentType
  * @property object $metaData
  * @property object $reference
- * @property File[] $files
- * @property Outbound[] $outbound
+ * @property list<File> $files
+ * @property list<Outbound> $outbound
  */
 class Message extends ApiResource
 {

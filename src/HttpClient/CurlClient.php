@@ -10,7 +10,7 @@ use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Util\CaseInsensitiveArray;
 use Zone\Wildduck\Wildduck;
-use Zone\Wildduck\Util;
+use Zone\Wildduck\Util\Util;
 
 // @codingStandardsIgnoreStart
 // PSR2 requires all constants be upper case. Sadly, the CURL_SSLVERSION
@@ -53,7 +53,7 @@ class CurlClient implements ClientInterface
 
     private bool $enableHttp2;
 
-    private CurlHandle|bool|null $curlHandle = null;
+    private object|bool|null $curlHandle = null;
 
     private $requestStatusCallback;
 
@@ -192,7 +192,7 @@ class CurlClient implements ClientInterface
      * @param string $method
      * @param string $absUrl
      * @param array $headers
-     * @param array $params
+     * @param array|null $params
      * @param bool $hasFile
      * @param bool $fileUpload
      *
@@ -200,7 +200,7 @@ class CurlClient implements ClientInterface
      * @throws ApiConnectionException
      */
     #[Override]
-    public function request(string $method, string $absUrl, array $headers, array $params, bool $hasFile, bool $fileUpload = false): array
+    public function request(string $method, string $absUrl, array $headers, array|null $params, bool $hasFile, bool $fileUpload = false): array
     {
         $method = strtolower($method);
 
@@ -214,7 +214,7 @@ class CurlClient implements ClientInterface
             $opts = $this->defaultOptions;
         }
 
-        $params = Util\Util::objectsToIds($params);
+        $params = Util::arrayToIds($params);
 
         if ('get' === $method) {
             if (isset($params['sess'])) {
@@ -233,7 +233,7 @@ class CurlClient implements ClientInterface
 
             $opts[CURLOPT_HTTPGET] = 1;
             if (is_countable($params) && count($params) > 0) {
-                $encoded = Util\Util::encodeParameters($params);
+                $encoded = Util::encodeParameters($params);
                 $absUrl = sprintf('%s?%s', $absUrl, $encoded);
             }
         } elseif ('post' === $method) {
@@ -280,7 +280,7 @@ class CurlClient implements ClientInterface
         // sending an empty `Expect:` header.
         $headers[] = 'Expect: ';
 
-        $absUrl = Util\Util::utf8($absUrl);
+        $absUrl = Util::utf8($absUrl);
         $opts[CURLOPT_URL] = $absUrl;
         $opts[CURLOPT_RETURNTRANSFER] = true;
         $opts[CURLOPT_CONNECTTIMEOUT] = $this->connectTimeout;
@@ -532,7 +532,7 @@ class CurlClient implements ClientInterface
     private function hasHeader(array $headers, string $name = ''): bool
     {
         foreach ($headers as $header) {
-            if (0 === strncasecmp($header, $name . ': ', strlen($name) + 2)) {
+            if (0 === (int) strncasecmp($header, $name . ': ', strlen($name) + 2)) {
                 return true;
             }
         }

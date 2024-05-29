@@ -5,7 +5,6 @@ namespace Zone\Wildduck\Service;
 use ErrorException;
 use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Resource\File;
-use Zone\Wildduck\Util\RequestOptions;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
@@ -13,6 +12,7 @@ use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\InvalidArgumentException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
+use Zone\Wildduck\Util\RequestOptions;
 use Zone\Wildduck\WildduckClientInterface;
 
 /**
@@ -72,8 +72,8 @@ abstract class AbstractService
 	/**
 	 * @param string $method
 	 * @param string $path
-	 * @param array $params
-	 * @param array|RequestOptions $opts
+	 * @param string|array|null $params
+	 * @param array|null $opts
 	 * @return File
 	 * @throws ApiConnectionException
 	 * @throws AuthenticationFailedException
@@ -81,8 +81,9 @@ abstract class AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	protected function file(string $method, string $path, array $params, array|RequestOptions $opts): File
+	public function file(string $method, string $path, string|array|null $params, array|null $opts): mixed
     {
+	    $opts['object'] = $this->getObjectName();
         return $this->getClient()->request($method, $path, $params, $opts, true);
     }
 
@@ -113,7 +114,7 @@ abstract class AbstractService
 	 * @param string $method
 	 * @param string $path
 	 * @param array|null $params
-	 * @param array|null $opts
+	 * @param array|RequestOptions|null $opts
 	 *
 	 * @return mixed
 	 * @throws ApiConnectionException
@@ -123,7 +124,7 @@ abstract class AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-    public function requestCollection(string $method, string $path, array|null $params, array|null $opts): mixed
+    public function requestCollection(string $method, string $path, array|null $params, array|RequestOptions|null $opts): mixed
     {
         $opts['object'] = $this->getObjectName();
         return $this->getClient()->requestCollection($method, $path, $this->formatParams($params), $opts);

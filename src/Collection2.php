@@ -50,7 +50,6 @@ class Collection2 extends WildduckObject implements IteratorAggregate
 	 * @param array|null $resp
 	 * @param array|RequestOptions|null $opts
 	 *
-	 * @todo needs some changes
 	 */
     public function __construct(array|null $resp, array|RequestOptions $opts = null)
     {

@@ -80,7 +80,7 @@ class ApiRequestor
      *
      * @return ApiResource|array|mixed|string
      */
-    private static function _encodeObjects(mixed $d): mixed
+    protected static function _encodeObjects(mixed $d): mixed
     {
         if ($d instanceof ApiResource) {
             return Util::utf8($d->id);
@@ -123,7 +123,6 @@ class ApiRequestor
         [$rBody, $rCode, $rHeaders, $myApiKey] = $this->_requestRaw($method, $url, $params, $headers, $fileUpload);
 
         $json = null;
-
         if ($rCode < 200 || $rCode >= 300) {
             $resp = json_decode((string) $rBody, true);
             $jsonError = json_last_error();
@@ -202,7 +201,7 @@ class ApiRequestor
      * @param array|null $appInfo
      *
      * @return null|string
- */
+    */
     private function _formatAppInfo(array|null $appInfo): null|string
     {
         if (null !== $appInfo) {
@@ -258,14 +257,14 @@ class ApiRequestor
 	/**
 	 * @param string $method
 	 * @param string $url
-	 * @param array $params
-	 * @param array $headers
+	 * @param array|null $params
+	 * @param array|null $headers
 	 * @param bool $fileUpload
 	 * @return array
 	 *
 	 * @throws ApiConnectionException
 	 */
-    private function _requestRaw(string $method, string $url, array $params, array $headers, bool $fileUpload): array
+    private function _requestRaw(string $method, string $url, array|null $params, array|null $headers, bool $fileUpload): array
     {
         $myApiKey = $this->_accessToken;
         if (!$myApiKey) {
@@ -308,7 +307,6 @@ class ApiRequestor
 
         $combinedHeaders = array_merge($defaultHeaders, $headers);
         $rawHeaders = [];
-
         foreach ($combinedHeaders as $header => $value) {
             $rawHeaders[] = $header . ': ' . $value;
         }
@@ -362,7 +360,8 @@ class ApiRequestor
              */
             $directory = rtrim(getenv("WDPC_REQUEST_LOGGING_DIRECTORY"), "/");
             if ($directory === '' || $directory === '0') {
-                error_log("Wildduck php client tried to log a request, but no directory was set.");
+	            $message = "Wildduck php client tried to log a request, but no directory was set.";
+	            Wildduck::getLogger()->error($message);
                 return;
             }
 
@@ -374,9 +373,8 @@ class ApiRequestor
                 $createdDirectory = mkdir($fullDirectory, $permissions, true);
 
                 if (!$createdDirectory) {
-                    error_log(
-                        sprintf('Wildduck php client tried to create a directory, but was unable to. Directory path: \'%s\'', $fullDirectory)
-                    );
+	                $message = sprintf('Wildduck php client tried to create a directory, but was unable to. Directory path: \'%s\'', $fullDirectory);
+	                Wildduck::getLogger()->error($message);
                     return;
                 }
             }
@@ -395,7 +393,8 @@ class ApiRequestor
             $filename = sprintf('%s-%s-%s.json', $method, $userId, $randString);
 
             if (!$handle = fopen($fullDirectory . $filename, 'wb')) {
-                error_log(sprintf('Wildduck php client cannot open file (%s%s)', $fullDirectory, $filename));
+	            $message = sprintf('Wildduck php client cannot open file (%s%s)', $fullDirectory, $filename);
+	            Wildduck::getLogger()->error($message);
                 return;
             }
 
@@ -415,7 +414,8 @@ class ApiRequestor
 
             // Write data to our opened file.
             if (fwrite($handle, json_encode($data)) === false) {
-                error_log(sprintf('Wildduck php client cannot write data to file: %s%s', $fullDirectory, $filename));
+	            $message = sprintf('Wildduck php client cannot write data to file: %s%s', $fullDirectory, $filename);
+	            Wildduck::getLogger()->error($message);
                 fclose($handle);
                 return;
             }
@@ -425,19 +425,19 @@ class ApiRequestor
             return;
         } catch (Exception $exception) {
             echo $exception->getMessage();
-            error_log($exception->getMessage());
+	        Wildduck::getLogger()->error($exception->getMessage());
             return;
         }
     }
 
     /**
-     * @param resource $resource
+     * @param object $resource
      *
      * @return CURLFile
      * @throws InvalidArgumentException
      *
      */
-    private function _processResourceParam($resource): CURLFile
+    private function _processResourceParam(object $resource): CURLFile
     {
         if ('stream' !== get_resource_type($resource)) {
             throw new InvalidArgumentException(

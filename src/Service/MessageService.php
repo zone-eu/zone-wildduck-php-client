@@ -3,6 +3,8 @@
 namespace Zone\Wildduck\Service;
 
 use Override;
+use Zone\Wildduck\ApiResponse;
+use Zone\Wildduck\Collection;
 use Zone\Wildduck\Collection2;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
@@ -10,6 +12,8 @@ use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
+use Zone\Wildduck\Resource\ApiResource;
+use Zone\Wildduck\Resource\Attachment;
 use Zone\Wildduck\Resource\Message;
 
 class MessageService extends AbstractService
@@ -61,14 +65,14 @@ class MessageService extends AbstractService
 	 * @param string $attachment
 	 * @param array|null $params
 	 * @param array|null $opts
-	 * @return Message
+	 * @return string|ApiResponse
 	 * @throws ApiConnectionException
 	 * @throws AuthenticationFailedException
 	 * @throws InvalidAccessTokenException
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function downloadAttachment(string $user, string $mailbox, string $message, string $attachment, array|null $params = null, array|null $opts = null): Message
+	public function downloadAttachment(string $user, string $mailbox, string $message, string $attachment, array|null $params = null, array|null $opts = null): string|ApiResponse
 	{
         return $this->request(
             'get',
@@ -136,14 +140,14 @@ class MessageService extends AbstractService
 	 * @param string $message
 	 * @param array|null $params
 	 * @param array|null $opts
-	 * @return Message
+	 * @return ApiResponse
 	 * @throws ApiConnectionException
 	 * @throws AuthenticationFailedException
 	 * @throws InvalidAccessTokenException
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function source(string $user, string $mailbox, string $message, array|null $params = null, array|null $opts = null): Message
+	public function source(string $user, string $mailbox, string $message, array|null $params = null, array|null $opts = null): ApiResponse
     {
         $opts['raw'] = true;
         return $this->request(
@@ -164,7 +168,7 @@ class MessageService extends AbstractService
 	 * @param string $mailbox
 	 * @param array|null $params
 	 * @param array|null $opts
-	 * @return Collection2
+	 * @return Collection2|Message[]
 	 * @throws ApiConnectionException
 	 * @throws AuthenticationFailedException
 	 * @throws InvalidAccessTokenException
@@ -172,7 +176,7 @@ class MessageService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-    public function all(string $user, string $mailbox, array|null $params = null, array|null $opts = null): Collection2
+    public function all(string $user, string $mailbox, array|null $params = null, array|null $opts = null): Collection2|Message
     {
         return $this->requestCollection(
             'get',
@@ -267,14 +271,14 @@ class MessageService extends AbstractService
 	 * @param string $mailbox
 	 * @param array|null $params
 	 * @param array|null $opts
-	 * @return Message
+	 * @return string|Message
 	 * @throws ApiConnectionException
 	 * @throws AuthenticationFailedException
 	 * @throws InvalidAccessTokenException
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-    public function update(string $user, string $mailbox, array|null $params = null, array|null $opts = null): Message
+    public function update(string $user, string $mailbox, array|null $params = null, array|null $opts = null): string|Message
     {
         return $this->request(
             'put',

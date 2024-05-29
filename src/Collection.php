@@ -2,6 +2,12 @@
 
 namespace Zone\Wildduck;
 
+use Zone\Wildduck\Exception\ApiConnectionException;
+use Zone\Wildduck\Exception\AuthenticationFailedException;
+use Zone\Wildduck\Exception\InvalidAccessTokenException;
+use Zone\Wildduck\Exception\InvalidDatabaseException;
+use Zone\Wildduck\Exception\RequestFailedException;
+use Zone\Wildduck\Exception\ValidationException;
 use Zone\Wildduck\Util\RequestOptions;
 use Override;
 use IteratorAggregate;
@@ -76,11 +82,17 @@ class Collection extends WildduckObject implements IteratorAggregate
         throw new InvalidArgumentException($msg);
     }
 
-    /**
-     * @param array|null $params
-     * @param array|null $opts
-     * @return WildduckObject|array
-     */
+	/**
+	 * @param array|null $params
+	 * @param array|null $opts
+	 * @return WildduckObject|array
+	 * @throws ApiConnectionException
+	 * @throws AuthenticationFailedException
+	 * @throws InvalidAccessTokenException
+	 * @throws InvalidDatabaseException
+	 * @throws RequestFailedException
+	 * @throws ValidationException
+	 */
     public function all(array|null $params = null, array|null $opts = null): WildduckObject|array
     {
         self::_validateParams($params);
@@ -102,11 +114,17 @@ class Collection extends WildduckObject implements IteratorAggregate
         return $obj;
     }
 
-    /**
-     * @param array|null $params
-     * @param array|null $opts
-     * @return WildduckObject|Collection2|array
-     */
+	/**
+	 * @param array|null $params
+	 * @param array|null $opts
+	 * @return WildduckObject|Collection2|array
+	 * @throws ApiConnectionException
+	 * @throws AuthenticationFailedException
+	 * @throws InvalidAccessTokenException
+	 * @throws InvalidDatabaseException
+	 * @throws RequestFailedException
+	 * @throws ValidationException
+	 */
     public function create(array|null $params = null, array|null $opts = null): WildduckObject|Collection2|array
     {
         self::_validateParams($params);
@@ -117,12 +135,18 @@ class Collection extends WildduckObject implements IteratorAggregate
         return Util::convertToWildduckObject($response, $opts);
     }
 
-    /**
-     * @param array|string|int $id
-     * @param array|null $params
-     * @param array|RequestOptions|null $opts
-     * @return array|WildduckObject
-     */
+	/**
+	 * @param array|string|int $id
+	 * @param array|null $params
+	 * @param array|RequestOptions|null $opts
+	 * @return array|WildduckObject
+	 * @throws ApiConnectionException
+	 * @throws AuthenticationFailedException
+	 * @throws InvalidAccessTokenException
+	 * @throws InvalidDatabaseException
+	 * @throws RequestFailedException
+	 * @throws ValidationException
+	 */
     public function retrieve(array|string|int $id, array|null $params = null, array|RequestOptions|null $opts = null): array|WildduckObject
     {
         self::_validateParams($params);
@@ -169,7 +193,7 @@ class Collection extends WildduckObject implements IteratorAggregate
     }
 
     /**
-     * @return Generator|WildduckObject[] A generator that can be used to
+     * @return Generator A generator that can be used to
      *    iterate across all objects across all pages. As page boundaries are
      *    encountered, the next page will be fetched automatically for
      *    continued iteration.

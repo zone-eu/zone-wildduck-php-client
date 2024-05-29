@@ -16,6 +16,8 @@ use Zone\Wildduck\Exception\ValidationException;
 use Zone\Wildduck\Util\RequestOptions;
 use Zone\Wildduck\Util\Util;
 
+use function is_countable;
+
 class BaseWildduckClient implements WildduckClientInterface
 {
     private const array DEFAULT_CONFIG = [
@@ -120,7 +122,7 @@ class BaseWildduckClient implements WildduckClientInterface
      * @param string $method the HTTP method
      * @param string $path the path of the request
      * @param array|null $params the parameters of the request
-     * @param array|RequestOptions|null $opts the special modifiers of the request
+     * @param array|null $opts the special modifiers of the request
      * @param bool $fileUpload
      *
      * @return mixed the object returned by Wildduck's API
@@ -134,13 +136,11 @@ class BaseWildduckClient implements WildduckClientInterface
      * @throws InvalidDatabaseException
      */
     #[Override]
-    public function request(string $method, string $path, array|null $params, array|null|RequestOptions $opts, bool $fileUpload = false): mixed
+    public function request(string $method, string $path, array|null $params, array|RequestOptions|null $opts, bool $fileUpload = false): mixed
     {
         if ($this->config['resolve_uri']) {
             return $path;
         }
-
-        $opts = $this->defaultOpts->merge($opts, true);
 
         if ($fileUpload) {
             $path = $this->setIdentificationPath($path);
@@ -148,11 +148,11 @@ class BaseWildduckClient implements WildduckClientInterface
             $params = $this->setIdentificationParams($params);
         }
 
-        $baseUrl = $opts->apiBase ?: $this->getApiBase();
-
-
+	    $opts = $this->defaultOpts->merge($opts, true);
+	    $baseUrl = $opts->apiBase ?: $this->getApiBase();
         $requestor = new ApiRequestor($this->accessTokenForRequest($opts), $baseUrl);
-        [$response, $opts->apiKey] = $requestor->request($method, $path, $params, $opts->headers, $opts->raw, $fileUpload);
+
+	    [$response, $opts->apiKey] = $requestor->request($method, $path, $params, $opts->headers, $opts->raw, $fileUpload);
 
 
         $opts->discardNonPersistentHeaders();
@@ -162,7 +162,6 @@ class BaseWildduckClient implements WildduckClientInterface
         }
 
         $obj = Util::convertToWildduckObject($response->json, $opts);
-
         $obj->setLastResponse($response);
 
         return $obj;
@@ -174,7 +173,7 @@ class BaseWildduckClient implements WildduckClientInterface
      * @param string $method the HTTP method
      * @param string $path the path of the request
      * @param array|null $params the parameters of the request
-     * @param array|null $opts the special modifiers of the request
+     * @param array|RequestOptions|null $opts the special modifiers of the request
      *
      * @return Collection2 of ApiResources
      *
@@ -185,7 +184,7 @@ class BaseWildduckClient implements WildduckClientInterface
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function requestCollection(string $method, string $path, array|null $params, array|null $opts): Collection2
+    public function requestCollection(string $method, string $path, array|null $params, array|RequestOptions|null $opts): Collection2
     {
         $obj = $this->request($method, $path, $params, $opts);
 		if (!($obj instanceof Collection2)) {
@@ -210,11 +209,11 @@ class BaseWildduckClient implements WildduckClientInterface
     }
 
     /**
-     * @param RequestOptions|array $opts
+     * @param RequestOptions|array|null $opts
      *
      * @return null|string
      */
-    private function accessTokenForRequest(RequestOptions|array $opts): string|null
+    private function accessTokenForRequest(RequestOptions|array|null $opts): string|null
     {
         return $opts->accessToken ?? $this->getAccessToken();
     }

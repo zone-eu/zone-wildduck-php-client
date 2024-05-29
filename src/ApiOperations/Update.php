@@ -11,6 +11,8 @@ use Zone\Wildduck\Exception\ValidationException;
 use Zone\Wildduck\WildduckObject;
 use Zone\Wildduck\Util\Util;
 
+use function is_countable;
+
 /**
  * Trait for updatable resources. Adds an `update()` static method and a
  * `save()` method to the class.
