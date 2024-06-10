@@ -21,7 +21,7 @@ class MessageService extends AbstractService
 	/**
 	 * @param string $user
 	 * @param string $mailbox
-	 * @param string $message
+	 * @param int $message
 	 * @param array|null $params
 	 * @param array|null $opts
 	 * @return Message
@@ -31,7 +31,7 @@ class MessageService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function delete(string $user, string $mailbox, string $message, array|null $params = null, array|null $opts = null): Message
+	public function delete(string $user, string $mailbox, int $message, array|null $params = null, array|null $opts = null): Message
     {
         return $this->request(
             'delete',
@@ -61,7 +61,7 @@ class MessageService extends AbstractService
 	/**
 	 * @param string $user
 	 * @param string $mailbox
-	 * @param string $message
+	 * @param int $message
 	 * @param string $attachment
 	 * @param array|null $params
 	 * @param array|null $opts
@@ -72,7 +72,7 @@ class MessageService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function downloadAttachment(string $user, string $mailbox, string $message, string $attachment, array|null $params = null, array|null $opts = null): string|ApiResponse
+	public function downloadAttachment(string $user, string $mailbox, int $message, string $attachment, array|null $params = null, array|null $opts = null): string|ApiResponse
 	{
         return $this->request(
             'get',
@@ -91,7 +91,7 @@ class MessageService extends AbstractService
 	/**
 	 * @param string $user
 	 * @param string $mailbox
-	 * @param string $message
+	 * @param int $message
 	 * @param array|null $params
 	 * @param array|null $opts
 	 * @return Message
@@ -101,7 +101,7 @@ class MessageService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function forward(string $user, string $mailbox, string $message, array|null $params = null, array|null $opts = null): Message
+	public function forward(string $user, string $mailbox, int $message, array|null $params = null, array|null $opts = null): Message
     {
         return $this->request(
             'post',
@@ -114,7 +114,7 @@ class MessageService extends AbstractService
 	/**
 	 * @param string $user
 	 * @param string $mailbox
-	 * @param string $message
+	 * @param int $message
 	 * @param array|null $params
 	 * @param array|null $opts
 	 * @return Message
@@ -124,7 +124,7 @@ class MessageService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function events(string $user, string $mailbox, string $message, array|null $params = null, array|null $opts = null): Message
+	public function events(string $user, string $mailbox, int $message, array|null $params = null, array|null $opts = null): Message
     {
         return $this->request(
             'get',
@@ -137,7 +137,7 @@ class MessageService extends AbstractService
 	/**
 	 * @param string $user
 	 * @param string $mailbox
-	 * @param string $message
+	 * @param int $message
 	 * @param array|null $params
 	 * @param array|null $opts
 	 * @return ApiResponse
@@ -147,7 +147,7 @@ class MessageService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function source(string $user, string $mailbox, string $message, array|null $params = null, array|null $opts = null): ApiResponse
+	public function source(string $user, string $mailbox, int $message, array|null $params = null, array|null $opts = null): ApiResponse
     {
         $opts['raw'] = true;
         return $this->request(
@@ -189,7 +189,7 @@ class MessageService extends AbstractService
 	/**
 	 * @param string $user
 	 * @param string $mailbox
-	 * @param string $message
+	 * @param int $message
 	 * @param array|null $params
 	 * @param array|null $opts
 	 * @return Message
@@ -199,7 +199,7 @@ class MessageService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-    public function get(string $user, string $mailbox, string $message, array|null $params = null, array|null $opts = null): Message
+    public function get(string $user, string $mailbox, int $message, array|null $params = null, array|null $opts = null): Message
     {
         return $this->request(
             'get',
@@ -246,7 +246,7 @@ class MessageService extends AbstractService
 	/**
 	 * @param string $user
 	 * @param string $mailbox
-	 * @param string $message
+	 * @param int $message
 	 * @param array|null $params
 	 * @param array|null $opts
 	 * @return Message
@@ -256,7 +256,7 @@ class MessageService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-    public function submitDraft(string $user, string $mailbox, string $message, array|null $params = null, array|null $opts = null): Message
+    public function submitDraft(string $user, string $mailbox, int $message, array|null $params = null, array|null $opts = null): Message
     {
         return $this->request(
             'post',
