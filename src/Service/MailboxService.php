@@ -77,7 +77,7 @@ class MailboxService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-    public function all(string $user, array|null $params = null, array|null $opts = null): Collection2
+    public function all(string $user, array|null $params = null, array|null $opts = null): Collection2|Mailbox
     {
         return $this->requestCollection('get', $this->buildPath('/users/%s/mailboxes', $user), $params, $opts);
     }

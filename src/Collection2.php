@@ -80,7 +80,7 @@ class Collection2 extends WildduckObject implements IteratorAggregate
         return new ArrayIterator($this->_results);
     }
 
-    public function map(array|null $fn): array
+    public function map(?callable $fn): array
     {
         return array_map($fn, $this->_results);
     }
