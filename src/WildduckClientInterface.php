@@ -50,30 +50,30 @@ interface WildduckClientInterface
      */
     public function request(string $method, string $path, mixed $params, array|RequestOptions|null $opts, bool $fileUpload = false): mixed;
 
-	/**
-	 * @param string $method
-	 * @param string $path
-	 * @param array|null $params
-	 * @param array|RequestOptions|null $opts
-	 * @return mixed
-	 *
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws InvalidDatabaseException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-	public function requestCollection(string $method, string $path, array|null $params, array|RequestOptions|null $opts): mixed;
+    /**
+     * @param string $method
+     * @param string $path
+     * @param array|null $params
+     * @param array|RequestOptions|null $opts
+     * @return mixed
+     *
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws InvalidDatabaseException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function requestCollection(string $method, string $path, array|null $params, array|RequestOptions|null $opts): mixed;
 
-	/**
-	 * @param string $method
-	 * @param string $path
-	 * @param array|null $params
-	 * @param array|null $opts
-	 * @return StreamedResponse
-	 *
-	 * @throws ErrorException
-	 */
-	public function stream(string $method, string $path, array|null $params, array|null $opts): StreamedResponse;
+    /**
+     * @param string $method
+     * @param string $path
+     * @param array|null $params
+     * @param array|null $opts
+     * @return StreamedResponse
+     *
+     * @throws ErrorException
+     */
+    public function stream(string $method, string $path, array|null $params, array|null $opts): StreamedResponse;
 }

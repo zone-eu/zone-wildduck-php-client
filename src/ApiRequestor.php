@@ -2,22 +2,20 @@
 
 namespace Zone\Wildduck;
 
-use Zone\Wildduck\HttpClient\ClientInterface;
-use Zone\Wildduck\Resource\ApiResource;
-use Zone\Wildduck\Util\CaseInsensitiveArray;
-use Zone\Wildduck\Util\Util;
-use Zone\Wildduck\HttpClient\CurlClient;
 use CURLFile;
 use Exception;
 use Zone\Wildduck\Exception\ApiConnectionException;
-use Zone\Wildduck\Exception\InvalidArgumentException;
-use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
+use Zone\Wildduck\Exception\InvalidArgumentException;
 use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
+use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\ValidationException;
-
+use Zone\Wildduck\HttpClient\ClientInterface;
+use Zone\Wildduck\HttpClient\CurlClient;
+use Zone\Wildduck\Resource\ApiResource;
+use Zone\Wildduck\Util\Util;
 use function array_merge;
 use function explode;
 use function get_resource_type;
@@ -28,11 +26,9 @@ use function is_resource;
 use function json_decode;
 use function json_encode;
 use function json_last_error;
-
 use function method_exists;
 use function php_uname;
 use function stream_get_meta_data;
-
 use const JSON_ERROR_NONE;
 use const PHP_VERSION;
 
@@ -50,12 +46,9 @@ class ApiRequestor
     public const string CODE_INTERNAL_SERVER = 'InternalServer';
 
     public const string CODE_INVALID_DATABASE = 'InternalDatabaseError';
-
-    private readonly string $_apiBase;
-
-	private readonly string|null $_accessToken;
-
     private static ?ClientInterface $_httpClient = null;
+    private readonly string $_apiBase;
+    private readonly string|null $_accessToken;
 
     /**
      * ApiRequestor constructor.
@@ -65,12 +58,22 @@ class ApiRequestor
      */
     public function __construct(string|null $accessToken = null, string $apiBase = null)
     {
-	    $this->_accessToken = $accessToken;
+        $this->_accessToken = $accessToken;
         if (!$apiBase) {
             $apiBase = Wildduck::$apiBase;
         }
 
         $this->_apiBase = $apiBase;
+    }
+
+    /**
+     * @static
+     *
+     * @param HttpClient\ClientInterface $client
+     */
+    public static function setHttpClient(ClientInterface $client): void
+    {
+        self::$_httpClient = $client;
     }
 
     /**
@@ -124,7 +127,7 @@ class ApiRequestor
 
         $json = null;
         if ($rCode < 200 || $rCode >= 300) {
-            $resp = json_decode((string) $rBody, true);
+            $resp = json_decode((string)$rBody, true);
             $jsonError = json_last_error();
             if ($resp && $jsonError === JSON_ERROR_NONE) {
                 $this->handleErrorResponse($rBody, $rCode, $resp);
@@ -139,120 +142,6 @@ class ApiRequestor
 
         return [$resp, $myApiKey];
     }
-
-    /**
-     * @param string $rbody a JSON string
-     * @param int $rcode
-     * @param array $resp
-     *
-     * @throws AuthenticationFailedException
-     * @throws InvalidAccessTokenException
-     * @throws InvalidDatabaseException
-     * @throws RequestFailedException
-     * @throws ValidationException
-     */
-    public function handleErrorResponse(string $rbody, int $rcode, array $resp): void
-    {
-        if (!isset($resp['error']) && !isset($resp['code'])) {
-            $msg = sprintf('Invalid response object from API: %s ', $rbody)
-                . sprintf('(HTTP response code was %d)', $rcode);
-
-            throw new UnexpectedValueException($msg);
-        }
-
-        if (isset($resp['code'])) {
-            $this->_specificAPIError($resp['code'], $resp['message'] ?? $resp['error'] ?? 'unknown error', $rcode);
-        }
-
-        throw new RequestFailedException($resp['error']);
-    }
-
-    /**
-     * @static
-     *
-     * @param string $code
-     * @param string $error
-     * @param int $rCode - The wildduck http response code
-     * @throws InvalidAccessTokenException
-     * @throws AuthenticationFailedException
-     * @throws ValidationException
-     * @throws RequestFailedException
-     * @throws InvalidDatabaseException
-     */
-    private function _specificAPIError(string $code, string $error, int $rCode = 0): void
-    {
-        switch ($code) {
-            case static::CODE_INVALID_TOKEN:
-                throw new InvalidAccessTokenException('Access token used for request was invalid');
-            case static::CODE_AUTH_FAILED:
-                throw new AuthenticationFailedException($error);
-            case static::CODE_INPUT_VALIDATION_ERROR:
-                throw new ValidationException($error);
-            case static::CODE_INVALID_DATABASE:
-                throw new InvalidDatabaseException($error);
-        }
-
-        throw new RequestFailedException($error, $code, $rCode);
-    }
-
-    /**
-     * @static
-     * @param array|null $appInfo
-     *
-     * @return null|string
-    */
-    private function _formatAppInfo(array|null $appInfo): null|string
-    {
-        if (null !== $appInfo) {
-            $string = $appInfo['name'];
-            if (null !== $appInfo['version']) {
-                $string .= '/' . $appInfo['version'];
-            }
-            if (null !== $appInfo['url']) {
-                $string .= ' (' . $appInfo['url'] . ')';
-            }
-
-            return $string;
-        }
-
-        return null;
-    }
-
-    /**
-     * @static
-     */
-    private function _defaultHeaders(string $accessToken, array|null $clientInfo = null): array
-    {
-        $uaString = 'Wildduck/v1 PhpBindings/' . Wildduck::VERSION;
-
-        $langVersion = PHP_VERSION;
-        $uname_disabled = in_array('php_uname', explode(',', ini_get('disable_functions')), true);
-        $uname = $uname_disabled ? '(disabled)' : php_uname();
-
-        $appInfo = Wildduck::getAppInfo();
-        $ua = [
-            'bindings_version' => Wildduck::VERSION,
-            'lang' => 'php',
-            'lang_version' => $langVersion,
-            'publisher' => 'zone-eu',
-            'uname' => $uname,
-        ];
-        if ($clientInfo) {
-            $ua = array_merge($clientInfo, $ua);
-        }
-
-        if (null !== $appInfo) {
-            $uaString .= ' ' . $this->_formatAppInfo($appInfo);
-            $ua['application'] = $appInfo;
-        }
-
-        return [
-            'X-Wildduck-Client-User-Agent' => json_encode($ua),
-            'User-Agent' => $uaString,
-            'X-Access-Token' => $accessToken,
-        ];
-    }
-
 
     /**
      * @param string $method The HTTP method being used
@@ -339,15 +228,109 @@ class ApiRequestor
         return [$rBody, $rCode, $rHeaders, $myApiKey];
     }
 
+    private function httpClient(): ClientInterface
+    {
+        if (!self::$_httpClient instanceof ClientInterface) {
+            self::$_httpClient = CurlClient::instance();
+        }
+
+        return self::$_httpClient;
+    }
+
+    /**
+     * @static
+     */
+    private function _defaultHeaders(string $accessToken, array|null $clientInfo = null): array
+    {
+        $uaString = 'Wildduck/v1 PhpBindings/' . Wildduck::VERSION;
+
+        $langVersion = PHP_VERSION;
+        $uname_disabled = in_array('php_uname', explode(',', ini_get('disable_functions')), true);
+        $uname = $uname_disabled ? '(disabled)' : php_uname();
+
+        $appInfo = Wildduck::getAppInfo();
+        $ua = [
+            'bindings_version' => Wildduck::VERSION,
+            'lang' => 'php',
+            'lang_version' => $langVersion,
+            'publisher' => 'zone-eu',
+            'uname' => $uname,
+        ];
+        if ($clientInfo) {
+            $ua = array_merge($clientInfo, $ua);
+        }
+
+        if (null !== $appInfo) {
+            $uaString .= ' ' . $this->_formatAppInfo($appInfo);
+            $ua['application'] = $appInfo;
+        }
+
+        return [
+            'X-Wildduck-Client-User-Agent' => json_encode($ua),
+            'User-Agent' => $uaString,
+            'X-Access-Token' => $accessToken,
+        ];
+    }
+
+    /**
+     * @static
+     * @param array|null $appInfo
+     *
+     * @return null|string
+     */
+    private function _formatAppInfo(array|null $appInfo): null|string
+    {
+        if (null !== $appInfo) {
+            $string = $appInfo['name'];
+            if (null !== $appInfo['version']) {
+                $string .= '/' . $appInfo['version'];
+            }
+            if (null !== $appInfo['url']) {
+                $string .= ' (' . $appInfo['url'] . ')';
+            }
+
+            return $string;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param object $resource
+     *
+     * @return CURLFile
+     * @throws InvalidArgumentException
+     *
+     */
+    private function _processResourceParam(mixed $resource): CURLFile
+    {
+        if ('stream' !== get_resource_type($resource)) {
+            throw new InvalidArgumentException(
+                'Attempted to upload a resource that is not a stream'
+            );
+        }
+
+        $metaData = stream_get_meta_data($resource);
+        if ('plainfile' !== $metaData['wrapper_type']) {
+            throw new InvalidArgumentException(
+                'Only plainfile resource streams are supported'
+            );
+        }
+
+        // We don't have the filename or mimetype, but the API doesn't care
+        return new CURLFile($metaData['uri']);
+    }
+
     private function logRequest(
         string $method,
         string $absUrl,
-        array $headers,
-        array $params,
-        bool $hasFile,
-        bool $fileUpload,
-        array $response
-    ): void {
+        array  $headers,
+        array  $params,
+        bool   $hasFile,
+        bool   $fileUpload,
+        array  $response
+    ): void
+    {
         try {
             if (!preg_match(getenv("WDPC_REQUEST_LOGGING_PATTERN"), $absUrl)) {
                 return;
@@ -360,8 +343,8 @@ class ApiRequestor
              */
             $directory = rtrim(getenv("WDPC_REQUEST_LOGGING_DIRECTORY"), "/");
             if ($directory === '' || $directory === '0') {
-	            $message = "Wildduck php client tried to log a request, but no directory was set.";
-	            Wildduck::getLogger()->error($message);
+                $message = "Wildduck php client tried to log a request, but no directory was set.";
+                Wildduck::getLogger()->error($message);
                 return;
             }
 
@@ -373,8 +356,8 @@ class ApiRequestor
                 $createdDirectory = mkdir($fullDirectory, $permissions, true);
 
                 if (!$createdDirectory) {
-	                $message = sprintf('Wildduck php client tried to create a directory, but was unable to. Directory path: \'%s\'', $fullDirectory);
-	                Wildduck::getLogger()->error($message);
+                    $message = sprintf('Wildduck php client tried to create a directory, but was unable to. Directory path: \'%s\'', $fullDirectory);
+                    Wildduck::getLogger()->error($message);
                     return;
                 }
             }
@@ -393,8 +376,8 @@ class ApiRequestor
             $filename = sprintf('%s-%s-%s.json', $method, $userId, $randString);
 
             if (!$handle = fopen($fullDirectory . $filename, 'wb')) {
-	            $message = sprintf('Wildduck php client cannot open file (%s%s)', $fullDirectory, $filename);
-	            Wildduck::getLogger()->error($message);
+                $message = sprintf('Wildduck php client cannot open file (%s%s)', $fullDirectory, $filename);
+                Wildduck::getLogger()->error($message);
                 return;
             }
 
@@ -414,8 +397,8 @@ class ApiRequestor
 
             // Write data to our opened file.
             if (fwrite($handle, json_encode($data)) === false) {
-	            $message = sprintf('Wildduck php client cannot write data to file: %s%s', $fullDirectory, $filename);
-	            Wildduck::getLogger()->error($message);
+                $message = sprintf('Wildduck php client cannot write data to file: %s%s', $fullDirectory, $filename);
+                Wildduck::getLogger()->error($message);
                 fclose($handle);
                 return;
             }
@@ -425,35 +408,64 @@ class ApiRequestor
             return;
         } catch (Exception $exception) {
             echo $exception->getMessage();
-	        Wildduck::getLogger()->error($exception->getMessage());
+            Wildduck::getLogger()->error($exception->getMessage());
             return;
         }
     }
 
     /**
-     * @param object $resource
+     * @param string $rbody a JSON string
+     * @param int $rcode
+     * @param array $resp
      *
-     * @return CURLFile
-     * @throws InvalidArgumentException
-     *
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws InvalidDatabaseException
+     * @throws RequestFailedException
+     * @throws ValidationException
      */
-    private function _processResourceParam(object $resource): CURLFile
+    public function handleErrorResponse(string $rbody, int $rcode, array $resp): void
     {
-        if ('stream' !== get_resource_type($resource)) {
-            throw new InvalidArgumentException(
-                'Attempted to upload a resource that is not a stream'
-            );
+        if (!isset($resp['error']) && !isset($resp['code'])) {
+            $msg = sprintf('Invalid response object from API: %s ', $rbody)
+                . sprintf('(HTTP response code was %d)', $rcode);
+
+            throw new UnexpectedValueException($msg);
         }
 
-        $metaData = stream_get_meta_data($resource);
-        if ('plainfile' !== $metaData['wrapper_type']) {
-            throw new InvalidArgumentException(
-                'Only plainfile resource streams are supported'
-            );
+        if (isset($resp['code'])) {
+            $this->_specificAPIError($resp['code'], $resp['message'] ?? $resp['error'] ?? 'unknown error', $rcode);
         }
 
-        // We don't have the filename or mimetype, but the API doesn't care
-        return new CURLFile($metaData['uri']);
+        throw new RequestFailedException($resp['error']);
+    }
+
+    /**
+     * @static
+     *
+     * @param string $code
+     * @param string $error
+     * @param int $rCode - The wildduck http response code
+     * @throws InvalidAccessTokenException
+     * @throws AuthenticationFailedException
+     * @throws ValidationException
+     * @throws RequestFailedException
+     * @throws InvalidDatabaseException
+     */
+    private function _specificAPIError(string $code, string $error, int $rCode = 0): void
+    {
+        switch ($code) {
+            case static::CODE_INVALID_TOKEN:
+                throw new InvalidAccessTokenException('Access token used for request was invalid');
+            case static::CODE_AUTH_FAILED:
+                throw new AuthenticationFailedException($error);
+            case static::CODE_INPUT_VALIDATION_ERROR:
+                throw new ValidationException($error);
+            case static::CODE_INVALID_DATABASE:
+                throw new InvalidDatabaseException($error);
+        }
+
+        throw new RequestFailedException($error, $code, $rCode);
     }
 
     /**
@@ -485,24 +497,5 @@ class ApiRequestor
         }
 
         return $resp;
-    }
-
-    /**
-     * @static
-     *
-     * @param HttpClient\ClientInterface $client
-     */
-    public static function setHttpClient(ClientInterface $client): void
-    {
-        self::$_httpClient = $client;
-    }
-
-    private function httpClient(): ClientInterface
-    {
-        if (!self::$_httpClient instanceof ClientInterface) {
-            self::$_httpClient = CurlClient::instance();
-        }
-
-        return self::$_httpClient;
     }
 }

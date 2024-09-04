@@ -2,15 +2,13 @@
 
 namespace Zone\Wildduck\HttpClient;
 
-use CurlHandle;
 use AllowDynamicProperties;
-use Override;
-use Zone\Wildduck\Util\RandomGenerator;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Util\CaseInsensitiveArray;
-use Zone\Wildduck\Wildduck;
+use Zone\Wildduck\Util\RandomGenerator;
 use Zone\Wildduck\Util\Util;
+use Zone\Wildduck\Wildduck;
 
 // @codingStandardsIgnoreStart
 // PSR2 requires all constants be upper case. Sadly, the CURL_SSLVERSION
@@ -34,28 +32,17 @@ if (!defined('CURL_HTTP_VERSION_2TLS')) {
 #[AllowDynamicProperties]
 class CurlClient implements ClientInterface
 {
+    public const int DEFAULT_TIMEOUT = 80;
+    public const int DEFAULT_CONNECT_TIMEOUT = 30;
     private static ?CurlClient $instance = null;
-
-    public static function instance(): CurlClient
-    {
-        if (!self::$instance instanceof self) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
     private readonly RandomGenerator $randomGenerator;
-
     private array $userAgentInfo;
-
     private bool $enablePersistentConnections = true;
-
     private bool $enableHttp2;
-
-    private object|bool|null $curlHandle = null;
-
+    private \CurlHandle|null $curlHandle = null;
     private $requestStatusCallback;
+    private int $timeout = self::DEFAULT_TIMEOUT;
+    private int $connectTimeout = self::DEFAULT_CONNECT_TIMEOUT;
 
     /**
      * CurlClient constructor.
@@ -76,11 +63,6 @@ class CurlClient implements ClientInterface
         $this->enableHttp2 = $this->canSafelyUseHttp2();
     }
 
-    public function __destruct()
-    {
-        $this->closeCurlHandle();
-    }
-
     public function initUserAgentInfo(): void
     {
         $curlVersion = curl_version();
@@ -88,6 +70,43 @@ class CurlClient implements ClientInterface
             'httplib' => 'curl ' . $curlVersion['version'],
             'ssllib' => $curlVersion['ssl_version'],
         ];
+    }
+
+    /**
+     * Indicates whether it is safe to use HTTP/2 or not.
+     */
+    private function canSafelyUseHttp2(): bool
+    {
+        // Versions of curl older than 7.60.0 don't respect GOAWAY frames
+        // (cf. https://github.com/curl/curl/issues/2416), which Wildduck use.
+        $curlVersion = curl_version()['version'];
+
+        return version_compare($curlVersion, '7.60.0') >= 0;
+    }
+
+    public static function instance(): CurlClient
+    {
+        if (!self::$instance instanceof self) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    public function __destruct()
+    {
+        $this->closeCurlHandle();
+    }
+
+    /**
+     * Closes the curl handle if initialized. Do nothing if already closed.
+     */
+    private function closeCurlHandle(): void
+    {
+        if (null !== $this->curlHandle) {
+            curl_close($this->curlHandle);
+            $this->curlHandle = null;
+        }
     }
 
     public function getDefaultOptions(): array|null
@@ -100,69 +119,12 @@ class CurlClient implements ClientInterface
         return $this->userAgentInfo;
     }
 
-    /**
-     * @return bool
-     */
-    public function getEnablePersistentConnections(): bool
-    {
-        return $this->enablePersistentConnections;
-    }
-
-    /**
-     * @param bool $enable
-     */
-    public function setEnablePersistentConnections(bool $enable): void
-    {
-        $this->enablePersistentConnections = $enable;
-    }
-
-    public function getEnableHttp2(): bool
-    {
-        return $this->enableHttp2;
-    }
-
-    public function setEnableHttp2(bool $enable): void
-    {
-        $this->enableHttp2 = $enable;
-    }
-
-    /**
-     * @return null|callable
-     */
-    public function getRequestStatusCallback(): null|callable
-    {
-        return $this->requestStatusCallback;
-    }
-
-    /**
-     * Sets a callback that is called after each request. The callback will
-     * receive the following parameters:
-     * <ol>
-     *   <li>string $rbody The response body</li>
-     *   <li>integer $rcode The response status code</li>
-     *   <li>\Zone\Wildduck\Util\CaseInsensitiveArray $rheaders The response headers</li>
-     *   <li>integer $errno The curl error number</li>
-     *   <li>string|null $message The curl error message</li>
-     *   <li>boolean $shouldRetry Whether the request will be retried</li>
-     *   <li>integer $numRetries The number of the retry attempt</li>
-     * </ol>.
-     *
-     * @param null|callable $requestStatusCallback
-     */
-    public function setRequestStatusCallback(null|callable $requestStatusCallback): void
-    {
-        $this->requestStatusCallback = $requestStatusCallback;
-    }
-
     // USER DEFINED TIMEOUTS
 
-    public const int DEFAULT_TIMEOUT = 80;
-
-    public const int DEFAULT_CONNECT_TIMEOUT = 30;
-
-    private int $timeout = self::DEFAULT_TIMEOUT;
-
-    private int $connectTimeout = self::DEFAULT_CONNECT_TIMEOUT;
+    public function getTimeout(): int
+    {
+        return $this->timeout;
+    }
 
     public function setTimeout(int $seconds): static
     {
@@ -171,21 +133,16 @@ class CurlClient implements ClientInterface
         return $this;
     }
 
+    public function getConnectTimeout(): int
+    {
+        return $this->connectTimeout;
+    }
+
     public function setConnectTimeout(int $seconds): static
     {
         $this->connectTimeout = max($seconds, 0);
 
         return $this;
-    }
-
-    public function getTimeout(): int
-    {
-        return $this->timeout;
-    }
-
-    public function getConnectTimeout(): int
-    {
-        return $this->connectTimeout;
     }
 
     public function request(string $method, string $absUrl, array $headers, mixed $params, bool $hasFile): array
@@ -285,6 +242,33 @@ class CurlClient implements ClientInterface
     }
 
     /**
+     * Checks if a list of headers contains a specific header name.
+     *
+     * @param string[] $headers
+     *
+     */
+    private function hasHeader(array $headers, string $name = ''): bool
+    {
+        foreach ($headers as $header) {
+            if (0 === (int)strncasecmp($header, $name . ': ', strlen($name) + 2)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getEnableHttp2(): bool
+    {
+        return $this->enableHttp2;
+    }
+
+    public function setEnableHttp2(bool $enable): void
+    {
+        $this->enableHttp2 = $enable;
+    }
+
+    /**
      * @param array $opts cURL options
      * @param string $absUrl
      * @return array
@@ -351,34 +335,41 @@ class CurlClient implements ClientInterface
     }
 
     /**
-     * @param string $url
-     * @param int $errno
-     * @param string|null $message
-     * @param int $numRetries
-     * @throws ApiConnectionException
+     * Resets the curl handle. If the handle is not already initialized, or if persistent
+     * connections are disabled, the handle is reinitialized instead.
      */
-    private function handleCurlError(string $url, int $errno, string|null $message, int $numRetries): void
+    private function resetCurlHandle(): void
     {
-        switch ($errno) {
-            case CURLE_COULDNT_CONNECT:
-            case CURLE_COULDNT_RESOLVE_HOST:
-            case CURLE_OPERATION_TIMEOUTED:
-                $msg = sprintf('Could not connect to Wildduck (%s)', $url);
-                break;
-            case CURLE_SSL_CACERT:
-            case CURLE_SSL_PEER_CERTIFICATE:
-                $msg = "Could not verify Wildduck's SSL certificate";
-                break;
-            default:
-                $msg = 'Unexpected error communicating with Wildduck.';
-                $msg .= "\n\n(Network error [errno {$errno}]: {$message})";
+        if (null !== $this->curlHandle && $this->getEnablePersistentConnections()) {
+            curl_reset($this->curlHandle);
+        } else {
+            $this->initCurlHandle();
         }
+    }
 
-        if ($numRetries > 0) {
-            $msg .= "\n\nRequest was retried {$numRetries} times.";
-        }
+    /**
+     * @return bool
+     */
+    public function getEnablePersistentConnections(): bool
+    {
+        return $this->enablePersistentConnections;
+    }
 
-        throw new ApiConnectionException($msg);
+    /**
+     * @param bool $enable
+     */
+    public function setEnablePersistentConnections(bool $enable): void
+    {
+        $this->enablePersistentConnections = $enable;
+    }
+
+    /**
+     * Initializes the curl handle. If already initialized, the handle is closed first.
+     */
+    private function initCurlHandle(): void
+    {
+        $this->closeCurlHandle();
+        $this->curlHandle = curl_init();
     }
 
     /**
@@ -435,6 +426,34 @@ class CurlClient implements ClientInterface
     }
 
     /**
+     * @return null|callable
+     */
+    public function getRequestStatusCallback(): null|callable
+    {
+        return $this->requestStatusCallback;
+    }
+
+    /**
+     * Sets a callback that is called after each request. The callback will
+     * receive the following parameters:
+     * <ol>
+     *   <li>string $rbody The response body</li>
+     *   <li>integer $rcode The response status code</li>
+     *   <li>\Zone\Wildduck\Util\CaseInsensitiveArray $rheaders The response headers</li>
+     *   <li>integer $errno The curl error number</li>
+     *   <li>string|null $message The curl error message</li>
+     *   <li>boolean $shouldRetry Whether the request will be retried</li>
+     *   <li>integer $numRetries The number of the retry attempt</li>
+     * </ol>.
+     *
+     * @param null|callable $requestStatusCallback
+     */
+    public function setRequestStatusCallback(null|callable $requestStatusCallback): void
+    {
+        $this->requestStatusCallback = $requestStatusCallback;
+    }
+
+    /**
      * Provides the number of seconds to wait before retrying a request.
      *
      * @param int $numRetries
@@ -459,7 +478,7 @@ class CurlClient implements ClientInterface
         $sleepSeconds = max(Wildduck::getInitialNetworkRetryDelay(), $sleepSeconds);
 
         // And never sleep less than the time the API asks us to wait, assuming it's a reasonable ask.
-        $retryAfter = isset($rheaders['retry-after']) ? (float) ($rheaders['retry-after']) : 0.0;
+        $retryAfter = isset($rheaders['retry-after']) ? (float)($rheaders['retry-after']) : 0.0;
         if (floor($retryAfter) === $retryAfter && $retryAfter <= Wildduck::getMaxRetryAfter()) {
             return max($sleepSeconds, $retryAfter);
         }
@@ -468,64 +487,33 @@ class CurlClient implements ClientInterface
     }
 
     /**
-     * Initializes the curl handle. If already initialized, the handle is closed first.
+     * @param string $url
+     * @param int $errno
+     * @param string|null $message
+     * @param int $numRetries
+     * @throws ApiConnectionException
      */
-    private function initCurlHandle(): void
+    private function handleCurlError(string $url, int $errno, string|null $message, int $numRetries): void
     {
-        $this->closeCurlHandle();
-        $this->curlHandle = curl_init();
-    }
-
-    /**
-     * Closes the curl handle if initialized. Do nothing if already closed.
-     */
-    private function closeCurlHandle(): void
-    {
-        if (null !== $this->curlHandle) {
-            curl_close($this->curlHandle);
-            $this->curlHandle = null;
-        }
-    }
-
-    /**
-     * Resets the curl handle. If the handle is not already initialized, or if persistent
-     * connections are disabled, the handle is reinitialized instead.
-     */
-    private function resetCurlHandle(): void
-    {
-        if (null !== $this->curlHandle && $this->getEnablePersistentConnections()) {
-            curl_reset($this->curlHandle);
-        } else {
-            $this->initCurlHandle();
-        }
-    }
-
-    /**
-     * Indicates whether it is safe to use HTTP/2 or not.
-     */
-    private function canSafelyUseHttp2(): bool
-    {
-        // Versions of curl older than 7.60.0 don't respect GOAWAY frames
-        // (cf. https://github.com/curl/curl/issues/2416), which Wildduck use.
-        $curlVersion = curl_version()['version'];
-
-        return version_compare($curlVersion, '7.60.0') >= 0;
-    }
-
-    /**
-     * Checks if a list of headers contains a specific header name.
-     *
-     * @param string[] $headers
-     *
-     */
-    private function hasHeader(array $headers, string $name = ''): bool
-    {
-        foreach ($headers as $header) {
-            if (0 === (int) strncasecmp($header, $name . ': ', strlen($name) + 2)) {
-                return true;
-            }
+        switch ($errno) {
+            case CURLE_COULDNT_CONNECT:
+            case CURLE_COULDNT_RESOLVE_HOST:
+            case CURLE_OPERATION_TIMEOUTED:
+                $msg = sprintf('Could not connect to Wildduck (%s)', $url);
+                break;
+            case CURLE_SSL_CACERT:
+            case CURLE_SSL_PEER_CERTIFICATE:
+                $msg = "Could not verify Wildduck's SSL certificate";
+                break;
+            default:
+                $msg = 'Unexpected error communicating with Wildduck.';
+                $msg .= "\n\n(Network error [errno {$errno}]: {$message})";
         }
 
-        return false;
+        if ($numRetries > 0) {
+            $msg .= "\n\nRequest was retried {$numRetries} times.";
+        }
+
+        throw new ApiConnectionException($msg);
     }
 }
