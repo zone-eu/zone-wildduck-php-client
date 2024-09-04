@@ -188,19 +188,7 @@ class CurlClient implements ClientInterface
         return $this->connectTimeout;
     }
 
-    /**
-     * @param string $method
-     * @param string $absUrl
-     * @param array $headers
-     * @param array|null $params
-     * @param bool $hasFile
-     * @param bool $fileUpload
-     *
-     * @return array
-     * @throws ApiConnectionException
-     */
-    #[Override]
-    public function request(string $method, string $absUrl, array $headers, array|null $params, bool $hasFile, bool $fileUpload = false): array
+    public function request(string $method, string $absUrl, array $headers, mixed $params, bool $hasFile): array
     {
         $method = strtolower($method);
 
@@ -237,12 +225,13 @@ class CurlClient implements ClientInterface
                 $absUrl = sprintf('%s?%s', $absUrl, $encoded);
             }
         } elseif ('post' === $method) {
-            if (!$fileUpload && !count($params)) {
+            // Prevent error from json_encode()
+            if (!$hasFile && !count($params)) {
                 $params = [];
             }
 
             $opts[CURLOPT_POST] = 1;
-            $opts[CURLOPT_POSTFIELDS] = $fileUpload || $hasFile ? $params : json_encode($params);
+            $opts[CURLOPT_POSTFIELDS] = $hasFile ? $params : json_encode($params);
         } elseif ('put' === $method) {
             if (is_countable($params) && count($params) === 0) {
                 $params = [];

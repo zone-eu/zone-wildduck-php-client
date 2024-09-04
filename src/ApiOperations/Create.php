@@ -15,13 +15,13 @@ use Zone\Wildduck\Util\Util;
 trait Create
 {
 	/**
-	 * @param array|null $params
+     * @param array|null $params
 	 * @param array|string|null $options
 	 * @return WildduckObject
 	 *
 	 * @deprecated
 	 */
-	public static function create(array|null $params = null, array|null|string $options = null): WildduckObject
+	public static function create(?array $params = null, array|null|string $options = null): WildduckObject
     {
         self::_validateParams($params);
         $url = static::classUrl();

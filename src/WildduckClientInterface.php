@@ -37,7 +37,7 @@ interface WildduckClientInterface
      *
      * @param string $method the HTTP method
      * @param string $path the path of the request
-     * @param array $params the parameters of the request
+     * @param mixed $params Must be KV pairs when not uploading files otherwise anything is allowed, string is expected for file upload. Can be nested for arrays and hashes
      * @param array|RequestOptions|null $opts the special modifiers of the request
      * @param bool $fileUpload
      *
@@ -48,7 +48,7 @@ interface WildduckClientInterface
      * @throws ValidationException
      * @throws InvalidAccessTokenException
      */
-    public function request(string $method, string $path, array $params, array|RequestOptions|null $opts, bool $fileUpload = false): mixed;
+    public function request(string $method, string $path, mixed $params, array|RequestOptions|null $opts, bool $fileUpload = false): mixed;
 
 	/**
 	 * @param string $method

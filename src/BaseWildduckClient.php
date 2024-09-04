@@ -119,24 +119,23 @@ class BaseWildduckClient implements WildduckClientInterface
     /**
      * Sends a request to Wildduck's API.
      *
-     * @param string $method the HTTP method
-     * @param string $path the path of the request
-     * @param array|null $params the parameters of the request
-     * @param array|null $opts the special modifiers of the request
+     * @param string $method The HTTP method being used
+     * @param string $path The URL being requested, including domain and protocol
+     * @param mixed $params Must be KV pairs when not uploading files otherwise anything is allowed, string is expected for file upload. Can be nested for arrays and hashes
+     * @param array|RequestOptions|null $opts the special modifiers of the request
      * @param bool $fileUpload
      *
      * @return mixed the object returned by Wildduck's API
      *
      * @throws ApiConnectionException
-     * @throws UnexpectedValueException
      * @throws AuthenticationFailedException
-     * @throws RequestFailedException
-     * @throws ValidationException
      * @throws InvalidAccessTokenException
      * @throws InvalidDatabaseException
+     * @throws RequestFailedException
+     * @throws ValidationException
      */
     #[Override]
-    public function request(string $method, string $path, array|null $params, array|RequestOptions|null $opts, bool $fileUpload = false): mixed
+    public function request(string $method, string $path, mixed $params, array|RequestOptions|null $opts, bool $fileUpload = false): mixed
     {
         if ($this->config['resolve_uri']) {
             return $path;

@@ -1,33 +1,33 @@
 {
-  "name": "zone-webmail/wildduck-php-client",
-  "description": "",
-  "type": "library",
-  "license": "EUPL-1.1",
-  "version": "1.4.0",
-  "require": {
-    "php": "^8.3",
-    "ext-curl": "*",
-    "ext-json": "*",
-    "ext-mbstring": "*",
-    "symfony/http-foundation": "^7.0",
-    "guzzlehttp/guzzle": "^7.3"
-  },
-  "autoload": {
-    "psr-4": {
-      "Zone\\Wildduck\\": "src/"
+    "name": "zone-webmail/wildduck-php-client",
+    "description": "",
+    "type": "library",
+    "license": "EUPL-1.1",
+    "version": "1.4.1",
+    "require": {
+        "php": "^8.3",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "symfony/http-foundation": "^7.0",
+        "guzzlehttp/guzzle": "^7.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zone\\Wildduck\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "kurbar/wildduck-test-server": "^0.7.0",
+        "phpunit/phpunit": "^9.5",
+        "rector/rector": "^1.0",
+        "fzaninotto/faker": "^1.5",
+        "phpstan/phpstan": "^1.10",
+        "squizlabs/php_codesniffer": "^3.9"
     }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\": "tests/"
-    }
-  },
-  "require-dev": {
-    "kurbar/wildduck-test-server": "^0.7.0",
-    "phpunit/phpunit": "^9.5",
-    "rector/rector": "^1.0",
-    "fzaninotto/faker": "^1.5",
-    "phpstan/phpstan": "^1.10",
-    "squizlabs/php_codesniffer": "^3.9"
-  }
 }

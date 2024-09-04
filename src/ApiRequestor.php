@@ -99,14 +99,14 @@ class ApiRequestor
     }
 
     /**
-     * @param string $method
-     * @param string $url
-     * @param array|null $params
-     * @param array|null $headers
-     * @param bool $raw
-     * @param bool $fileUpload
+     * @param string $method The HTTP method being used
+     * @param string $url The URL being requested, including domain and protocol
+     * @param mixed $params Must be KV pairs when not uploading files otherwise anything is allowed, string is expected for file upload. Can be nested for arrays and hashes
+     * @param array|null $headers Headers to be used in the request (full strings, not KV pairs)
+     * @param bool $raw Whether to return the raw response or JSON decode it
+     * @param bool $fileUpload Whether the request is a file upload
      *
-     * @return array tuple containing (ApiResponse, API key)
+     * @return array{0: ApiResponse, 1: null|string} an array whose first element is the response object and second is the api key
      *
      * @throws ApiConnectionException
      * @throws AuthenticationFailedException
@@ -115,7 +115,7 @@ class ApiRequestor
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function request(string $method, string $url, array|null $params = null, array|null $headers = null, bool $raw = false, bool $fileUpload = false): array
+    public function request(string $method, string $url, mixed $params = null, array|null $headers = null, bool $raw = false, bool $fileUpload = false): array
     {
         $params = $params ?: [];
         $headers = $headers ?: [];
@@ -127,12 +127,12 @@ class ApiRequestor
             $resp = json_decode((string) $rBody, true);
             $jsonError = json_last_error();
             if ($resp && $jsonError === JSON_ERROR_NONE) {
-                $this->handleErrorResponse($rBody, $rCode, $rHeaders, $resp);
+                $this->handleErrorResponse($rBody, $rCode, $resp);
             }
         }
 
         if (!$raw) {
-            $json = $this->_interpretResponse($rBody, $rCode, $rHeaders);
+            $json = $this->_interpretResponse($rBody, $rCode);
         }
 
         $resp = new ApiResponse($rBody, $rCode, $rHeaders, $json);
@@ -143,7 +143,6 @@ class ApiRequestor
     /**
      * @param string $rbody a JSON string
      * @param int $rcode
-     * @param CaseInsensitiveArray $rheaders
      * @param array $resp
      *
      * @throws AuthenticationFailedException
@@ -152,7 +151,7 @@ class ApiRequestor
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function handleErrorResponse(string $rbody, int $rcode, CaseInsensitiveArray $rheaders, array $resp): void
+    public function handleErrorResponse(string $rbody, int $rcode, array $resp): void
     {
         if (!isset($resp['error']) && !isset($resp['code'])) {
             $msg = sprintf('Invalid response object from API: %s ', $rbody)
@@ -254,17 +253,19 @@ class ApiRequestor
         ];
     }
 
-	/**
-	 * @param string $method
-	 * @param string $url
-	 * @param array|null $params
-	 * @param array|null $headers
-	 * @param bool $fileUpload
-	 * @return array
-	 *
-	 * @throws ApiConnectionException
-	 */
-    private function _requestRaw(string $method, string $url, array|null $params, array|null $headers, bool $fileUpload): array
+
+    /**
+     * @param string $method The HTTP method being used
+     * @param string $url The URL being requested, including domain and protocol
+     * @param mixed $params Must be KV pairs when not uploading files otherwise anything is allowed, string is expected for file upload. Can be nested for arrays and hashes
+     * @param array|null $headers Headers to be used in the request (full strings, not KV pairs)
+     * @param bool $fileUpload
+     * @return array{0: mixed, 1: int, 2: array, 3: null|string} an array whose first element is raw request body, second
+     *    element is HTTP status code and third array of HTTP headers and fourth is api key
+     *
+     * @throws ApiConnectionException
+     */
+    private function _requestRaw(string $method, string $url, mixed $params, array|null $headers, bool $fileUpload): array
     {
         $myApiKey = $this->_accessToken;
         if (!$myApiKey) {
@@ -316,8 +317,7 @@ class ApiRequestor
             $absUrl,
             $rawHeaders,
             $params,
-            $hasFile,
-            $fileUpload,
+            $hasFile || $fileUpload,
         );
 
         if (getenv('WDPC_REQUEST_LOGGING') === "true") {
@@ -459,7 +459,6 @@ class ApiRequestor
     /**
      * @param string $rbody
      * @param int $rcode
-     * @param CaseInsensitiveArray $rheaders
      *
      * @return array
      *
@@ -470,7 +469,7 @@ class ApiRequestor
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    private function _interpretResponse(string $rbody, int $rcode, CaseInsensitiveArray $rheaders): array
+    private function _interpretResponse(string $rbody, int $rcode): array
     {
         $resp = json_decode($rbody, true);
         $jsonError = json_last_error();
@@ -482,7 +481,7 @@ class ApiRequestor
         }
 
         if ($rcode < 200 || $rcode >= 300 || isset($resp['error']) || isset($resp['code'])) {
-            $this->handleErrorResponse($rbody, $rcode, $rheaders, $resp);
+            $this->handleErrorResponse($rbody, $rcode, $resp);
         }
 
         return $resp;

@@ -16,7 +16,7 @@ use Zone\Wildduck\Util\Util;
 trait All
 {
     /**
-     * @param null|array $params
+     * @param array|null $params Must be KV pairs when not uploading files otherwise anything is allowed, string is expected for file upload. Can be nested for arrays and hashes
      * @param null|array|string $opts
      *
      * @return Collection2 of ApiResources
@@ -25,7 +25,7 @@ trait All
      *
      * @Deprecated No longer used by internal code.
      */
-    private static function all(array|null $params = null, array|null|string $opts = null): Collection2
+    private static function all(?array $params = null, array|null|string $opts = null): Collection2
     {
         self::_validateParams($params);
         $url = static::classUrl();

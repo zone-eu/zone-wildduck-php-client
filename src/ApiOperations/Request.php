@@ -59,9 +59,9 @@ trait Request
     }
 
     /**
-     * @param string $method HTTP method ('get', 'post', etc.)
-     * @param string $url URL for the request
-     * @param array $params list of parameters for the request
+     * @param string $method The HTTP method being used
+     * @param string $url The URL being requested, including domain and protocol
+     * @param array|null $params Must be KV pairs when not uploading files otherwise anything is allowed, string is expected for file upload. Can be nested for arrays and hashes
      * @param array|null|string|RequestOptions $options
      *
      * @return array tuple containing (the response, $options)
@@ -75,7 +75,7 @@ trait Request
      * @throws InvalidDatabaseException
      *
      */
-    private static function _staticRequest(string $method, string $url, array $params, array|null|string|RequestOptions $options): array
+    private static function _staticRequest(string $method, string $url, array|null $params, array|null|string|RequestOptions $options): array
     {
         $opts = RequestOptions::parse($options);
         $baseUrl = $opts->apiBase ?? static::baseUrl();
