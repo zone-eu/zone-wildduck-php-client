@@ -71,21 +71,24 @@ class StorageService extends AbstractService
         string $content,
         string $filename,
         string $contentType,
-        string $encoding = 'base64',
-        string $cid = '',
+        ?string $cid = null,
         ?array $opts = null
     ) {
+        $path = $this->buildPath(
+            '/users/%s/storage?filename=%s&contentType=%s&encoding=base64',
+            $user,
+            $filename,
+            $contentType,
+        );
+
+        if ($cid) {
+            $path .= '&cid=' . urlencode($cid);
+        }
+
         return $this->uploadFile(
             'post',
-            $this->buildPath(
-                '/users/%s/storage?filename=%s&contentType=%s&encoding=%s&cid=%s',
-                $user,
-                $filename,
-                $contentType,
-                $encoding,
-                $cid
-            ),
-            $content,
+            $path,
+            base64_encode($content),
             $opts
         );
     }

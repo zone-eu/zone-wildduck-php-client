@@ -36,7 +36,6 @@ abstract class AbstractService
     }
 
     /**
-     *
      * Upload file
      *
      * @param string $method
@@ -44,7 +43,7 @@ abstract class AbstractService
      * @param string $fileContent
      * @param array|null $opts
      *
-     * @return File
+     * @return mixed
      *
      * @throws ApiConnectionException
      * @throws AuthenticationFailedException
@@ -172,7 +171,7 @@ abstract class AbstractService
     public function buildPath(string $basePath, mixed ...$ids): string
     {
         foreach ($ids as $id) {
-            if (null === $id || '' === trim((string)$id)) {
+            if (null === $id || '' === trim((string) $id)) {
                 $msg = 'The resource ID cannot be null or whitespace.';
 
                 throw new InvalidArgumentException($msg);

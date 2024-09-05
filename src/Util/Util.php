@@ -132,10 +132,10 @@ abstract class Util
      * ApiResource, then it is replaced by the resource's ID.
      * Also clears out null values.
      *
-     * @param array|null $values
-     * @return array|null
+     * @param mixed $values
+     * @return mixed
      */
-    public static function arrayToIds(array|null $values): null|array
+    public static function arrayToIds(mixed $values): mixed
     {
         /*if ($values instanceof ApiResource) {
             return $values->id;
@@ -158,7 +158,7 @@ abstract class Util
 			return $results;
         }
 
-        return null;
+        return $values;
     }
 
 	private static function test ($values) {
