@@ -230,7 +230,7 @@ class CurlClient implements ClientInterface
         $opts[CURLOPT_URL] = $absUrl;
         $opts[CURLOPT_RETURNTRANSFER] = true;
         $opts[CURLOPT_CONNECTTIMEOUT] = $this->connectTimeout;
-        $opts[CURLOPT_TIMEOUT] = $this->timeout;
+        $opts[CURLOPT_TIMEOUT] = getenv("ZWPC_CURL_TIMEOUT") !== false ? getenv("ZWPC_CURL_TIMEOUT") : $this->timeout;
         $opts[CURLOPT_HTTPHEADER] = $headers;
 
         if (!isset($opts[CURLOPT_HTTP_VERSION]) && $this->getEnableHttp2()) {
