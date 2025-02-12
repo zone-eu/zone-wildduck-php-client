@@ -38,7 +38,7 @@ class Wildduck
     public static $logger = null;
 
     /** @var int Maximum number of request retries */
-    public static $maxNetworkRetries = 0;
+    public static $maxNetworkRetries = -1; // Disable retry by default
 
     /** @var float Maximum delay between retries, in seconds */
     private static $maxNetworkRetryDelay = 2.0;
