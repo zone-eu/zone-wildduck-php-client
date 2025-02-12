@@ -281,7 +281,7 @@ class CurlClient implements ClientInterface
         $opts[\CURLOPT_URL] = $absUrl;
         $opts[\CURLOPT_RETURNTRANSFER] = true;
         $opts[\CURLOPT_CONNECTTIMEOUT] = $this->connectTimeout;
-        $opts[\CURLOPT_TIMEOUT] = $this->timeout;
+        $opts[\CURLOPT_TIMEOUT] = getenv("ZWPC_CURL_TIMEOUT") !== false ? getenv("ZWPC_CURL_TIMEOUT") : $this->timeout;
         $opts[\CURLOPT_HTTPHEADER] = $headers;
         // TODO: Decide later what to do with this
 //        $opts[\CURLOPT_CAINFO] = Wildduck::getCABundlePath();
