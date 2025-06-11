@@ -13,7 +13,7 @@ Heavily inspired by [stripe/stripe-php](https://github.com/stripe/stripe-php).
 
 Require Wildduck PHP client via Composer
 ```bash
-composer require zone-webmail/wildduck-php-client
+composer require zone-eu/wildduck-php-client
 ```
 
 
