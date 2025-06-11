@@ -64,7 +64,7 @@ class ApiRequestor
      * @param null|string $accessToken
      * @param null|string $apiBase
      */
-    public function __construct($accessToken = null, $apiBase = null)
+    public function __construct(?string $apiKey = null, ?string $apiBase = null)
     {
         $this->_accessToken = $accessToken;
         if (!$apiBase) {
