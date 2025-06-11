@@ -2,6 +2,8 @@
 
 namespace Zone\Wildduck;
 
+use Zone\Wildduck\Service\AbstractService;
+use Zone\Wildduck\Service\AbstractServiceFactory;
 use Zone\Wildduck\Service\AddressService;
 use Zone\Wildduck\Service\ApplicationPasswordService;
 use Zone\Wildduck\Service\ArchiveService;
@@ -44,14 +46,14 @@ use Zone\Wildduck\Service\WebhookService;
  */
 class WildduckClient extends BaseWildduckClient
 {
-    /**
-     * @var CoreServiceFactory
-     */
-    private $coreServiceFactory;
+    private ?CoreServiceFactory $coreServiceFactory = null;
 
-    public function __get($name)
+    /**
+     * @param mixed $name
+     */
+    public function __get(mixed $name): null|AbstractService|AbstractServiceFactory
     {
-        if (null === $this->coreServiceFactory) {
+        if (!$this->coreServiceFactory instanceof CoreServiceFactory) {
             $this->coreServiceFactory = new CoreServiceFactory($this);
         }
 

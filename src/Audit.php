@@ -10,6 +10,5 @@ namespace Zone\Wildduck;
  */
 class Audit extends WildduckObject
 {
-
-    const OBJECT_NAME = 'audit';
+    public const string OBJECT_NAME = 'audit';
 }

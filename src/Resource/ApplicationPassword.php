@@ -1,6 +1,8 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
+
+use Zone\Wildduck\ApplicationPasswordLastUse;
 
 /**
  * @property string $id
@@ -11,6 +13,5 @@ namespace Zone\Wildduck;
  */
 class ApplicationPassword extends ApiResource
 {
-
-    const OBJECT_NAME = 'asp';
+    public const string OBJECT_NAME = 'asp';
 }

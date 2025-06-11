@@ -2,6 +2,7 @@
 
 namespace Zone\Wildduck\ApiOperations;
 
+use Zone\Wildduck\Exception\InvalidArgumentException;
 use Zone\Wildduck\ApiRequestor;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
@@ -16,20 +17,20 @@ use Zone\Wildduck\Util\RequestOptions;
  * Trait for resources that need to make API requests.
  *
  * This trait should only be applied to classes that derive from WildduckObject.
+ *
  */
 trait Request
 {
-    /**
-     * @param null|array|mixed $params The list of parameters to validate
-     *
-     * @throws \Zone\Wildduck\Exception\InvalidArgumentException if $params exists and is not an array
-     */
-    protected static function _validateParams($params = null)
+	/**
+	 * @param array|null $params The list of parameters to validate
+	 *
+	 */
+    private static function _validateParams(array|null $params = null): void
     {
-        if ($params && !\is_array($params)) {
+        if ($params && !is_array($params)) {
             $message = 'You must pass an array as the first argument to Wildduck API method calls.';
 
-            throw new \Zone\Wildduck\Exception\InvalidArgumentException($message);
+            throw new InvalidArgumentException($message);
         }
     }
 
@@ -37,31 +38,31 @@ trait Request
      * @param string $method HTTP method ('get', 'post', etc.)
      * @param string $url URL for the request
      * @param array $params list of parameters for the request
-     * @param null|array|string|RequestOptions $options
+     * @param array|null|string|RequestOptions $options
      *
+     * @return array tuple containing (the JSON response, $options)
      * @throws ApiConnectionException
      * @throws UnexpectedValueException
      * @throws AuthenticationFailedException
      * @throws RequestFailedException
      * @throws ValidationException
-     * @throws InvalidAccessTokenException
+     * @throws InvalidAccessTokenException|InvalidDatabaseException*@throws InvalidDatabaseException
      *
-     * @return array tuple containing (the JSON response, $options)
      */
-    protected function _request($method, $url, $params = [], $options = null): array
+    private function _request(string $method, string $url, array $params = [], array|null|string|RequestOptions $options = null): array
     {
         $opts = $this->_opts->merge($options);
-        list($resp, $options) = static::_staticRequest($method, $url, $params, $opts);
+        [$resp, $options] = static::_staticRequest($method, $url, $params, $opts);
         $this->setLastResponse($resp);
 
         return [$resp->json, $options];
     }
 
     /**
-     * @param string $method HTTP method ('get', 'post', etc.)
-     * @param string $url URL for the request
-     * @param array $params list of parameters for the request
-     * @param null|array|string|RequestOptions $options
+     * @param string $method The HTTP method being used
+     * @param string $url The URL being requested, including domain and protocol
+     * @param array|null $params Must be KV pairs when not uploading files otherwise anything is allowed, string is expected for file upload. Can be nested for arrays and hashes
+     * @param array|null|string|RequestOptions $options
      *
      * @return array tuple containing (the response, $options)
      *
@@ -72,13 +73,14 @@ trait Request
      * @throws ValidationException
      * @throws InvalidAccessTokenException
      * @throws InvalidDatabaseException
+     *
      */
-    protected static function _staticRequest($method, $url, $params, $options): array
+    private static function _staticRequest(string $method, string $url, array|null $params, array|null|string|RequestOptions $options): array
     {
         $opts = RequestOptions::parse($options);
         $baseUrl = $opts->apiBase ?? static::baseUrl();
         $requestor = new ApiRequestor($opts->accessToken, $baseUrl);
-        list($response, $opts->apiKey) = $requestor->request($method, $url, $params, $opts->headers);
+        [$response, $opts->apiKey] = $requestor->request($method, $url, $params, $opts->headers);
         $opts->discardNonPersistentHeaders();
 
         return [$response, $opts];

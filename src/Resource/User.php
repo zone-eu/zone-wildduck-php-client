@@ -1,8 +1,16 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
 
-// FIXME: Unable to use typed class properties since PHP doesn't understand that they are initialized by WildduckObject __get/__set?
+use Zone\Wildduck\ApiOperations\All;
+use Zone\Wildduck\ApiOperations\Create;
+use Zone\Wildduck\ApiOperations\Delete;
+use Zone\Wildduck\ApiOperations\NestedResource;
+use Zone\Wildduck\ApiOperations\Retrieve;
+use Zone\Wildduck\ApiOperations\Update;
+use Zone\Wildduck\KeyInfo;
+use Zone\Wildduck\UserLimits;
+use Zone\Wildduck\WildduckObject;
 
 /**
  * @property string $id
@@ -30,25 +38,30 @@ namespace Zone\Wildduck;
  */
 class User extends ApiResource
 {
-    const OBJECT_NAME = 'user';
+	/**
+	 * @deprecated
+	 */
+	use All;
+	use Create;
+	use Delete;
+	use Retrieve;
+	use Update;
 
-    const PATH_ADDRESSES = '/addresses';
-    const PATH_MAILBOXES = '/mailboxes';
+	use NestedResource;
 
-    use ApiOperations\All;
-    use ApiOperations\Create;
-    use ApiOperations\Delete;
-    use ApiOperations\NestedResource;
-    use ApiOperations\Retrieve;
-    use ApiOperations\Update;
+    public const string OBJECT_NAME = 'user';
 
-    public function addresses($params = null, $opts = null)
+    public const string PATH_ADDRESSES = '/addresses';
+
+    public const string PATH_MAILBOXES = '/mailboxes';
+
+    protected function addresses(array|null $params = null, array|null $opts = null): WildduckObject
     {
         $opts['object'] = Address::OBJECT_NAME;
         return self::_allNestedResources($this->id, static::PATH_ADDRESSES, $params, $opts);
     }
 
-    public function mailboxes($params = null, $opts = null)
+	protected function mailboxes(array|null $params = null, array|null $opts = null): WildduckObject
     {
         $opts['object'] = Mailbox::OBJECT_NAME;
         return self::_allNestedResources($this->id, static::PATH_MAILBOXES, $params, $opts);

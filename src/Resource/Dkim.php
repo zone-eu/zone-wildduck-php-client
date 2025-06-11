@@ -1,6 +1,6 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
 
 /**
  * @property string $id
@@ -14,6 +14,5 @@ namespace Zone\Wildduck;
  */
 class Dkim extends ApiResource
 {
-
-    const OBJECT_NAME = 'dkim';
+    public const string OBJECT_NAME = 'dkim';
 }

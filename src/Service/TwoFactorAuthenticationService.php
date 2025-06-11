@@ -2,7 +2,6 @@
 
 namespace Zone\Wildduck\Service;
 
-use Zone\Wildduck\Collection2;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
@@ -20,7 +19,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function disable(string $user, $params = null, $opts = null): WildduckObject
+    public function disable(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('delete', $this->buildPath('/users/%s/2fa', $user), $params, $opts);
     }
@@ -32,7 +31,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function disableTOTPAuth(string $user, $params = null, $opts = null): WildduckObject
+    public function disableTOTPAuth(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('delete', $this->buildPath('/users/%s/2fa/totp', $user), $params, $opts);
     }
@@ -44,7 +43,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function disableCustom(string $user, $params = null, $opts = null): WildduckObject
+    public function disableCustom(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('delete', $this->buildPath('/users/%s/2fa/custom', $user), $params, $opts);
     }
@@ -56,7 +55,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function enableTOTPSeed(string $user, $params = null, $opts = null): WildduckObject
+    public function enableTOTPSeed(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('post', $this->buildPath('/users/%s/2fa/totp/enable', $user), $params, $opts);
     }
@@ -68,7 +67,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function enableCustom(string $user, $params = null, $opts = null): WildduckObject
+    public function enableCustom(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('put', $this->buildPath('/users/%s/2fa/custom', $user), $params, $opts);
     }
@@ -80,7 +79,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function generateTOTPSeed(string $user, $params = null, $opts = null): WildduckObject
+    public function generateTOTPSeed(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('post', $this->buildPath('/users/%s/2fa/totp/setup', $user), $params, $opts);
     }
@@ -92,7 +91,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function validateTOTPToken(string $user, $params = null, $opts = null): WildduckObject
+    public function validateTOTPToken(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('post', $this->buildPath('/users/%s/2fa/totp/check', $user), $params, $opts);
     }
@@ -106,7 +105,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function webAuthNCredentials(string $user, $params = null, $opts = null): WildduckObject
+    public function webAuthNCredentials(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('get', $this->buildPath('/users/%s/2fa/webauthn/credentials', $user), $params, $opts);
     }
@@ -120,7 +119,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function webAuthNRegistrationChallenge(string $user, $params = null, $opts = null): WildduckObject
+    public function webAuthNRegistrationChallenge(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('post', $this->buildPath('/users/%s/2fa/webauthn/registration-challenge', $user), $params, $opts);
     }
@@ -134,7 +133,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function webAuthNRegistrationAttestation(string $user, $params = null, $opts = null): WildduckObject
+    public function webAuthNRegistrationAttestation(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('post', $this->buildPath('/users/%s/2fa/webauthn/registration-attestation', $user), $params, $opts);
     }
@@ -148,7 +147,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function webAuthNRemoveCredential(string $user, string $credentialId, $params = null, $opts = null): WildduckObject
+    public function webAuthNRemoveCredential(string $user, string $credentialId, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('delete', $this->buildPath('/users/%s/2fa/webauthn/credentials/%s', $user, $credentialId), $params, $opts);
     }
@@ -162,7 +161,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function webAuthNAuthenticationChallenge(string $user, $params = null, $opts = null): WildduckObject
+    public function webAuthNAuthenticationChallenge(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('post', $this->buildPath('/users/%s/2fa/webauthn/authentication-challenge', $user), $params, $opts);
     }
@@ -176,7 +175,7 @@ class TwoFactorAuthenticationService extends AbstractService
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function webAuthNAuthenticationAssertion(string $user, $params = null, $opts = null): WildduckObject
+    public function webAuthNAuthenticationAssertion(string $user, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('post', $this->buildPath('/users/%s/2fa/webauthn/authentication-assertion', $user), $params, $opts);
     }

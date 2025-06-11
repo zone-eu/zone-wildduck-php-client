@@ -2,6 +2,9 @@
 
 namespace Zone\Wildduck\ApiOperations;
 
+use Zone\Wildduck\WildduckObject;
+use Zone\Wildduck\Util\Util;
+
 /**
  * Trait for resources that have nested resources.
  *
@@ -12,17 +15,17 @@ trait NestedResource
     /**
      * @param string $method
      * @param string $url
-     * @param null|array $params
-     * @param null|array|string $options
+     * @param array|null $params
+     * @param array|null|string $options
      *
-     * @return \Zone\Wildduck\WildduckObject
+     * @return WildduckObject
      */
-    protected static function _nestedResourceOperation($method, $url, $params = null, $options = null)
+    protected static function _nestedResourceOperation(string $method, string $url, array|null $params = null, array|string|null $options = null): WildduckObject
     {
         self::_validateParams($params);
 
-        list($response, $opts) = static::_staticRequest($method, $url, $params, $options);
-        $obj = \Zone\Wildduck\Util\Util::convertToWildduckObject($response->json, $opts);
+        [$response, $opts] = static::_staticRequest($method, $url, $params, $options);
+        $obj = Util::convertToWildduckObject($response->json, $opts);
         $obj->setLastResponse($response);
 
         return $obj;
@@ -35,11 +38,11 @@ trait NestedResource
      *
      * @return string
      */
-    protected static function _nestedResourceUrl($id, $nestedPath, $nestedId = null)
+    protected static function _nestedResourceUrl(string $id, string $nestedPath, null|string $nestedId = null): string
     {
         $url = static::resourceUrl($id) . $nestedPath;
         if (null !== $nestedId) {
-            $url .= "/{$nestedId}";
+            $url .= '/' . $nestedId;
         }
 
         return $url;
@@ -48,14 +51,12 @@ trait NestedResource
     /**
      * @param string $id
      * @param string $nestedPath
-     * @param null|array $params
-     * @param null|array|string $options
+     * @param array|null $params
+     * @param array|null|string $options
      *
-     * @throws \Zone\Wildduck\Exception\ApiErrorException if the request fails
-     *
-     * @return \Zone\Wildduck\WildduckObject
+     * @return WildduckObject
      */
-    protected static function _createNestedResource($id, $nestedPath, $params = null, $options = null)
+    protected static function _createNestedResource(string $id, string $nestedPath, array|null $params = null, array|null|string $options = null): WildduckObject
     {
         $url = static::_nestedResourceUrl($id, $nestedPath);
 
@@ -66,14 +67,12 @@ trait NestedResource
      * @param string $id
      * @param string $nestedPath
      * @param null|string $nestedId
-     * @param null|array $params
-     * @param null|array|string $options
+     * @param array|null $params
+     * @param array|null|string $options
      *
-     * @throws \Zone\Wildduck\Exception\ApiErrorException if the request fails
-     *
-     * @return \Zone\Wildduck\WildduckObject
+     * @return WildduckObject
      */
-    protected static function _retrieveNestedResource($id, $nestedPath, $nestedId, $params = null, $options = null)
+    protected static function _retrieveNestedResource(string $id, string $nestedPath, null|string $nestedId, array|null $params = null, array|null|string $options = null): WildduckObject
     {
         $url = static::_nestedResourceUrl($id, $nestedPath, $nestedId);
 
@@ -84,14 +83,12 @@ trait NestedResource
      * @param string $id
      * @param string $nestedPath
      * @param null|string $nestedId
-     * @param null|array $params
-     * @param null|array|string $options
+     * @param array|null $params
+     * @param array|string|null $options
      *
-     * @throws \Zone\Wildduck\Exception\ApiErrorException if the request fails
-     *
-     * @return \Zone\Wildduck\WildduckObject
+     * @return WildduckObject
      */
-    protected static function _updateNestedResource($id, $nestedPath, $nestedId, $params = null, $options = null)
+    protected static function _updateNestedResource(string $id, string $nestedPath, null|string $nestedId, array|null $params = null, array|null|string $options = null): WildduckObject
     {
         $url = static::_nestedResourceUrl($id, $nestedPath, $nestedId);
 
@@ -102,14 +99,12 @@ trait NestedResource
      * @param string $id
      * @param string $nestedPath
      * @param null|string $nestedId
-     * @param null|array $params
-     * @param null|array|string $options
+     * @param array|null $params
+     * @param array|null|string $options
      *
-     * @throws \Zone\Wildduck\Exception\ApiErrorException if the request fails
-     *
-     * @return \Zone\Wildduck\WildduckObject
+     * @return WildduckObject
      */
-    protected static function _deleteNestedResource($id, $nestedPath, $nestedId, $params = null, $options = null)
+    protected static function _deleteNestedResource(string $id, string $nestedPath, null|string $nestedId, array|null $params = null, array|null|string $options = null): WildduckObject
     {
         $url = static::_nestedResourceUrl($id, $nestedPath, $nestedId);
 
@@ -119,14 +114,12 @@ trait NestedResource
     /**
      * @param string $id
      * @param string $nestedPath
-     * @param null|array $params
-     * @param null|array|string $options
+     * @param array|null $params
+     * @param array|null|string $options
      *
-     * @throws \Zone\Wildduck\Exception\ApiErrorException if the request fails
-     *
-     * @return \Zone\Wildduck\WildduckObject
+     * @return WildduckObject
      */
-    protected static function _allNestedResources($id, $nestedPath, $params = null, $options = null)
+    protected static function _allNestedResources(string $id, string $nestedPath, array|null $params = null, array|null|string $options = null): WildduckObject
     {
         $url = static::_nestedResourceUrl($id, $nestedPath);
 

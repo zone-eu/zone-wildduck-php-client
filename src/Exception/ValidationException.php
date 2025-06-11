@@ -2,10 +2,12 @@
 
 namespace Zone\Wildduck\Exception;
 
+use AllowDynamicProperties;
+
+#[AllowDynamicProperties]
 class ValidationException extends WildduckException
 {
-
-    private string $errors;
+    private readonly string $errors;
 
     public function __construct(string $errors = '')
     {
@@ -18,7 +20,7 @@ class ValidationException extends WildduckException
         return $this->errors;
     }
 
-    private function formatErrors($errors): string
+    private function formatErrors(string $errors): string
     {
         // TODO
         return $errors;

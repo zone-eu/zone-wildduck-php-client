@@ -2,56 +2,59 @@
 
 namespace Zone\Wildduck;
 
+use Zone\Wildduck\Util\LoggerInterface;
+use Zone\Wildduck\Util\DefaultLogger;
+
 /**
  * Class Wildduck.
  */
 class Wildduck
 {
     /** @var string The Wildduck API key to be used for requests. */
-    public static $accessToken;
+    public static string $accessToken = '';
 
     /** @var string The base URL for the Wildduck API. */
-    public static $apiBase = 'https://localhost:8080';
+    public static string $apiBase = 'https://localhost:8080';
 
     /** @var string|null Active session identifier */
-    public static $session = null;
+    public static string|null $session = null;
 
     /** @var string|null Originating request IP */
-    public static $ip = null;
+    public static string|null $ip = null;
 
     /** @var null|string The version of the Wildduck API to use for requests. */
-    public static $apiVersion = null;
+    public static string|null $apiVersion = null;
 
     /** @var string Path to the CA bundle used to verify SSL certificates */
-    public static $caBundlePath = null;
+    public static string $caBundlePath = '';
 
     /** @var bool Defaults to true. */
-    public static $verifySslCerts = true;
+    public static bool $verifySslCerts = true;
 
-    /** @var array The application's information (name, version, URL) */
-    public static $appInfo = null;
+    /** @var array|null The application's information (name, version, URL) */
+    public static array|null $appInfo = null;
 
     /**
      * @var null|Util\LoggerInterface the logger to which the library will
      *   produce messages
      */
-    public static $logger = null;
+    public static null|LoggerInterface $logger = null;
 
     /** @var int Maximum number of request retries */
     public static $maxNetworkRetries = -1; // Disable retry by default
 
     /** @var float Maximum delay between retries, in seconds */
-    private static $maxNetworkRetryDelay = 2.0;
+    private static float $maxNetworkRetryDelay = 2.0;
 
     /** @var float Maximum delay between retries, in seconds, that will be respected from the Wildduck API */
-    private static $maxRetryAfter = 60.0;
+    private static float $maxRetryAfter = 60.0;
 
     /** @var float Initial delay between retries, in seconds */
-    private static $initialNetworkRetryDelay = 0.5;
+    private static float $initialNetworkRetryDelay = 0.5;
 
-    const VERSION = '1.1.0';
+    public const string VERSION = '1.1.0';
 
-    public static function getApiBase()
+    public static function getApiBase(): string
     {
         return self::$apiBase;
     }
@@ -59,7 +62,7 @@ class Wildduck
     /**
      * @return string the access token used for requests
      */
-    public static function getAccessToken()
+    public static function getAccessToken(): string
     {
         return self::$accessToken;
     }
@@ -68,55 +71,45 @@ class Wildduck
      * @return Util\LoggerInterface the logger to which the library will
      *   produce messages
      */
-    public static function getLogger()
+    public static function getLogger(): LoggerInterface
     {
-        if (null === self::$logger) {
-            return new Util\DefaultLogger();
-        }
-
-        return self::$logger;
+        return self::$logger ?? new DefaultLogger();
     }
 
     /**
      * @param Util\LoggerInterface $logger the logger to which the library
      *   will produce messages
      */
-    public static function setLogger($logger)
+    public static function setLogger(LoggerInterface $logger): void
     {
         self::$logger = $logger;
     }
 
-    public static function setApiBase($apiBase)
+    public static function setApiBase(string $apiBase): void
     {
         self::$apiBase = $apiBase;
     }
 
     /**
      * Sets the access token to be used for requests.
-     *
-     * @param string $accessToken
      */
-    public static function setAccessToken($accessToken)
+    public static function setAccessToken(string $accessToken): void
     {
         self::$accessToken = $accessToken;
     }
 
     /**
      * Sets active session identifier
-     *
-     * @param string|null $session
      */
-    public static function setSession($session)
+    public static function setSession(string|null $session): void
     {
         self::$session = $session;
     }
 
     /**
      * Sets originating request IP
-     *
-     * @param string|null $ip
      */
-    public static function setIp($ip)
+    public static function setIp(string|null $ip): void
     {
         self::$ip = $ip;
     }
@@ -125,7 +118,7 @@ class Wildduck
      * @return string The API version used for requests. null if we're using the
      *    latest version.
      */
-    public static function getApiVersion()
+    public static function getApiVersion(): string
     {
         return self::$apiVersion;
     }
@@ -133,55 +126,40 @@ class Wildduck
     /**
      * @param string $apiVersion the API version to use for requests
      */
-    public static function setApiVersion($apiVersion)
+    public static function setApiVersion(string $apiVersion): void
     {
         self::$apiVersion = $apiVersion;
     }
 
-    /**
-     * @return string
-     */
-    private static function getDefaultCABundlePath()
+    private static function getDefaultCABundlePath(): string
     {
-        return \realpath(__DIR__ . '/../data/ca-certificates.crt');
+        return dirname(__DIR__) . '/data/ca-certificates.crt';
     }
 
-    /**
-     * @return string
-     */
-    public static function getCABundlePath()
+    public static function getCABundlePath(): string
     {
         return self::$caBundlePath ?: self::getDefaultCABundlePath();
     }
 
-    /**
-     * @param string $caBundlePath
-     */
-    public static function setCABundlePath($caBundlePath)
+    public static function setCABundlePath(string $caBundlePath): void
     {
         self::$caBundlePath = $caBundlePath;
     }
 
-    /**
-     * @return bool
-     */
-    public static function getVerifySslCerts()
+    public static function getVerifySslCerts(): bool
     {
         return self::$verifySslCerts;
     }
 
-    /**
-     * @param bool $verify
-     */
-    public static function setVerifySslCerts($verify)
+    public static function setVerifySslCerts(bool $verify): void
     {
         self::$verifySslCerts = $verify;
     }
 
     /**
-     * @return array | null The application's information
+     * @return array|null The application's information
      */
-    public static function getAppInfo()
+    public static function getAppInfo(): array|null
     {
         return self::$appInfo;
     }
@@ -192,7 +170,7 @@ class Wildduck
      * @param null|string $appUrl The application's URL
      * @param null|string $appPartnerId The application's partner ID
      */
-    public static function setAppInfo($appName, $appVersion = null, $appUrl = null, $appPartnerId = null)
+    public static function setAppInfo(string $appName, null|string $appVersion = null, null|string $appUrl = null, null|string $appPartnerId = null): void
     {
         self::$appInfo = self::$appInfo ?: [];
         self::$appInfo['name'] = $appName;
@@ -204,7 +182,7 @@ class Wildduck
     /**
      * @return int Maximum number of request retries
      */
-    public static function getMaxNetworkRetries()
+    public static function getMaxNetworkRetries(): int
     {
         return self::$maxNetworkRetries;
     }
@@ -212,7 +190,7 @@ class Wildduck
     /**
      * @param int $maxNetworkRetries Maximum number of request retries
      */
-    public static function setMaxNetworkRetries($maxNetworkRetries)
+    public static function setMaxNetworkRetries(int $maxNetworkRetries): void
     {
         self::$maxNetworkRetries = $maxNetworkRetries;
     }
@@ -220,7 +198,7 @@ class Wildduck
     /**
      * @return float Maximum delay between retries, in seconds
      */
-    public static function getMaxNetworkRetryDelay()
+    public static function getMaxNetworkRetryDelay(): float
     {
         return self::$maxNetworkRetryDelay;
     }
@@ -228,7 +206,7 @@ class Wildduck
     /**
      * @return float Maximum delay between retries, in seconds, that will be respected from the Wildduck API
      */
-    public static function getMaxRetryAfter()
+    public static function getMaxRetryAfter(): float
     {
         return self::$maxRetryAfter;
     }
@@ -236,7 +214,7 @@ class Wildduck
     /**
      * @return float Initial delay between retries, in seconds
      */
-    public static function getInitialNetworkRetryDelay()
+    public static function getInitialNetworkRetryDelay(): float
     {
         return self::$initialNetworkRetryDelay;
     }

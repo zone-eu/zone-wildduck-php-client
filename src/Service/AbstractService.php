@@ -2,14 +2,17 @@
 
 namespace Zone\Wildduck\Service;
 
-use Zone\Wildduck\Collection2;
+use ErrorException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\InvalidArgumentException;
+use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
-use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\ValidationException;
+use Zone\Wildduck\Resource\File;
+use Zone\Wildduck\Util\RequestOptions;
 use Zone\Wildduck\WildduckClientInterface;
 
 /**
@@ -20,16 +23,75 @@ abstract class AbstractService
     /**
      * @var WildduckClientInterface
      */
-    protected $client;
+    protected WildduckClientInterface $client;
 
     /**
      * Initializes a new instance of the {@link AbstractService} class.
      *
      * @param WildduckClientInterface $client
      */
-    public function __construct($client)
+    public function __construct(WildduckClientInterface $client)
     {
         $this->client = $client;
+    }
+
+    /**
+     * Upload file
+     *
+     * @param string $method
+     * @param string $path
+     * @param string $fileContent
+     * @param array|null $opts
+     *
+     * @return mixed
+     *
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function uploadFile(string $method, string $path, string $fileContent, array|null $opts): mixed
+    {
+        return $this->getClient()->request($method, $path, $fileContent, $opts, true);
+    }
+
+    /**
+     * @param string $method
+     * @param string $path
+     * @param array|null $params Must be KV pairs
+     * @param array|null $opts
+     * @param bool $fileUpload
+     *
+     * @return mixed
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function request(string $method, string $path, array|null $params, array|null $opts, bool $fileUpload = false): mixed
+    {
+        if (null !== $this->getObjectName()) {
+            $opts['object'] = $this->getObjectName();
+        }
+
+        return $this->getClient()->request($method, $path, $this->formatParams($params), $opts, $fileUpload);
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getObjectName(): mixed
+    {
+        $parts = explode('\\', static::class);
+        $service = $parts[count($parts) - 1];
+        $entityClass = implode('\\', [$parts[0], $parts[1]]) . '\\' . explode('Service', $service)[0];
+        if (class_exists($entityClass)) {
+            return $entityClass::OBJECT_NAME;
+        }
+
+        return null;
     }
 
     /**
@@ -48,17 +110,16 @@ abstract class AbstractService
      * corresponds to sending an empty string for the field to the
      * API.
      *
-     * @param null|array $params
+     * @param array|null $params
+     * @return array|null
      */
-    private static function formatParams($params)
+    private function formatParams(array|null $params): array|null
     {
         if (null === $params) {
             return null;
         }
 
-        if (is_resource($params)) return $params;
-
-        \array_walk_recursive($params, function (&$value, $key) {
+        array_walk_recursive($params, static function (&$value): void {
             if (null === $value) {
                 $value = '';
             }
@@ -68,81 +129,55 @@ abstract class AbstractService
     }
 
     /**
-     * @throws RequestFailedException
+     * @param string $method
+     * @param string $path
+     * @param array|null $params
+     * @param array|RequestOptions|null $opts
+     *
+     * @return mixed
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
      * @throws InvalidAccessTokenException
-     * @throws AuthenticationFailedException
-     * @throws ApiConnectionException
-     * @throws ValidationException
-     */
-    protected function file($method, $path, $params, $opts)
-    {
-
-        return $this->getClient()->request($method, $path, $params, $opts, true);
-    }
-
-    /**
-     * @throws RequestFailedException
-     * @throws InvalidAccessTokenException
-     * @throws AuthenticationFailedException
-     * @throws ApiConnectionException
-     * @throws ValidationException
-     */
-    protected function request($method, $path, $params, $opts, $fileUpload = false)
-    {
-        if (null !== $object = $this->getObjectName()) {
-            $opts['object'] = $object;
-        }
-        return $this->getClient()->request($method, $path, static::formatParams($params), $opts, $fileUpload);
-    }
-
-    /**
-     * @throws ApiConnectionException
-     * @throws UnexpectedValueException
-     * @throws AuthenticationFailedException
+     * @throws InvalidDatabaseException
      * @throws RequestFailedException
      * @throws ValidationException
-     * @throws InvalidAccessTokenException
      */
-    protected function requestCollection($method, $path, $params, $opts): Collection2
+    public function requestCollection(string $method, string $path, array|null $params, array|RequestOptions|null $opts): mixed
     {
         $opts['object'] = $this->getObjectName();
-        return $this->getClient()->requestCollection($method, $path, static::formatParams($params), $opts);
+        return $this->getClient()->requestCollection($method, $path, $this->formatParams($params), $opts);
     }
 
-    protected function stream(string $method, string $path, $params, $opts): \Symfony\Component\HttpFoundation\StreamedResponse
+    /**
+     * @param string $method
+     * @param string $path
+     * @param array|null $params
+     * @param array|null $opts
+     *
+     * @return StreamedResponse
+     * @throws ErrorException
+     */
+    public function stream(string $method, string $path, array|null $params, array|null $opts): StreamedResponse
     {
-        return $this->getClient()->stream($method, $path, static::formatParams($params), $opts);
+        return $this->getClient()->stream($method, $path, $this->formatParams($params), $opts);
     }
 
     /**
      * @param string $basePath The string for sprintf
      * @param mixed $ids params to be replaced
-     * @return string
      *
      * @throws InvalidArgumentException
      */
-    protected function buildPath($basePath, ...$ids): string
+    public function buildPath(string $basePath, mixed ...$ids): string
     {
         foreach ($ids as $id) {
-            if (null === $id || '' === \trim($id)) {
+            if (null === $id || '' === trim((string) $id)) {
                 $msg = 'The resource ID cannot be null or whitespace.';
 
                 throw new InvalidArgumentException($msg);
             }
         }
 
-        return \sprintf($basePath, ...\array_map('\urlencode', $ids));
-    }
-
-    protected function getObjectName()
-    {
-        $parts = explode('\\', get_called_class());
-        $service = $parts[count($parts) - 1];
-        $entityClass = implode('\\', [$parts[0], $parts[1]]) . '\\' . explode('Service', $service)[0];
-        if (class_exists($entityClass)) {
-            return $entityClass::OBJECT_NAME;
-        }
-
-        return null;
+        return sprintf($basePath, ...array_map('\urlencode', $ids));
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
+
+use Zone\Wildduck\ForwardedAddressLimits;
 
 /**
  * @property string $id
@@ -15,6 +17,5 @@ namespace Zone\Wildduck;
  */
 class ForwardedAddress extends ApiResource
 {
-
-    const OBJECT_NAME = 'forwarded_address';
+    public const string OBJECT_NAME = 'forwarded_address';
 }

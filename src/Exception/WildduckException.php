@@ -2,6 +2,10 @@
 
 namespace Zone\Wildduck\Exception;
 
-class WildduckException extends \Exception
+use AllowDynamicProperties;
+use Exception;
+
+#[AllowDynamicProperties]
+class WildduckException extends Exception
 {
 }

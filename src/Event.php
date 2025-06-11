@@ -12,6 +12,5 @@ namespace Zone\Wildduck;
  */
 class Event extends WildduckObject
 {
-
-    const OBJECT_NAME = 'event';
+    public const string OBJECT_NAME = 'event';
 }

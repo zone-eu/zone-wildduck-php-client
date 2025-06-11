@@ -2,18 +2,17 @@
 
 namespace Zone\Wildduck\Exception;
 
+use AllowDynamicProperties;
+
+#[AllowDynamicProperties]
 class RequestFailedException extends WildduckException
 {
-
-    private ?string $errorCode;
-
-    public function __construct(string $message, string $code = 'internal', int $rCode = 0)
+    public function __construct(string $message, private readonly ?string $errorCode = 'internal', int $rCode = 0)
     {
-        $this->errorCode = $code;
         parent::__construct($message, $rCode);
     }
 
-    public function getErrorCode()
+    public function getErrorCode(): ?string
     {
         return $this->errorCode;
     }

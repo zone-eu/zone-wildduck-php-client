@@ -1,6 +1,9 @@
 <?php
 
-namespace Zone\Wildduck;
+namespace Zone\Wildduck\Resource;
+
+use Zone\Wildduck\FilterAction;
+use Zone\Wildduck\FilterQuery;
 
 /**
  * @property string $id
@@ -11,6 +14,5 @@ namespace Zone\Wildduck;
  */
 class Filter extends ApiResource
 {
-
-    const OBJECT_NAME = 'filter';
+    public const string OBJECT_NAME = 'filter';
 }
