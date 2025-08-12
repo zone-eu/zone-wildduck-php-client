@@ -50,7 +50,7 @@ abstract class Util
             return new Collection2($resp, $opts);
         }
 
-	    if (is_array($resp) && self::isList($resp)) {
+        if (is_array($resp) && self::isList($resp)) {
             $mapped = [];
             foreach ($resp as $i) {
                 $mapped[] = self::convertToWildduckObject($i, $opts);
@@ -140,42 +140,47 @@ abstract class Util
         /*if ($values instanceof ApiResource) {
             return $values->id;
         }*/
-	    $results = [];
+        $results = [];
         if (is_array($values) && self::isList($values)) {
             foreach ($values as $value) {
                 $results[] = self::test($value);
             }
-	        return $results;
+            return $results;
         }
 
-		if (is_array($values)) {
+        if (is_array($values)) {
             foreach ($values as $k => $value) {
                 if (null === $value) {
                     continue;
                 }
                 $results[$k] = self::test($value);
             }
-			return $results;
+            return $results;
         }
 
         return $values;
     }
 
-	private static function test ($values) {
-		if(is_array($values)){
-			return self::arrayToIds($values);
-		}
+    private static function test($values)
+    {
+        if (is_array($values)) {
+            return self::arrayToIds($values);
+        }
 
-		return $values;
-	}
+        return $values;
+    }
 
     public static function encodeParameters(array $params): string
     {
         $flattenedParams = self::flattenParams($params);
         $pieces = [];
         foreach ($flattenedParams as $param) {
-            [$key, $value] = $param;
-            $pieces[] = self::urlEncode($key) . '=' . self::urlEncode($value);
+            $paramCount = count($param);
+            for ($i = 0; $i < $paramCount; $i += 2) {
+                $key = $param[$i];
+                $value = $param[$i + 1] ?? '';
+                $pieces[] = self::urlEncode($key) . '=' . self::urlEncode($value);
+            }
         }
 
         return implode('&', $pieces);
@@ -190,7 +195,7 @@ abstract class Util
             if (is_array($value) && self::isList($value)) {
                 $result[] = array_merge(...self::flattenParamsList($value, $calculatedKey));
             } elseif (is_array($value)) {
-               $result[] = array_merge(...self::flattenParams($value, $calculatedKey));
+                $result[] = array_merge(...self::flattenParams($value, $calculatedKey));
             } else {
                 $result[] = [$calculatedKey, $value];
             }
@@ -235,21 +240,21 @@ abstract class Util
     }
 
 
-	/**
-	 * @param array $response
-	 * @return array{0: string, 1: array}
-	 */
-	public static function normalizeId(array $response): array
-	{
-		if (isset($response['id'])) {
-			$id = $response['id'];
-			unset($response['id']);
-		} else {
-			$id = '';
-		}
+    /**
+     * @param array $response
+     * @return array{0: string, 1: array}
+     */
+    public static function normalizeId(array $response): array
+    {
+        if (isset($response['id'])) {
+            $id = $response['id'];
+            unset($response['id']);
+        } else {
+            $id = '';
+        }
 
-		return [$id, $response];
-	}
+        return [$id, $response];
+    }
 
     /**
      * Returns UNIX timestamp in milliseconds.
