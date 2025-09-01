@@ -10,6 +10,7 @@ use Zone\Wildduck\Resource\Autoreply;
 use Zone\Wildduck\Resource\Dkim;
 use Zone\Wildduck\Resource\DomainAlias;
 use Zone\Wildduck\Event;
+use Zone\Wildduck\Resource\AuthenticationResult;
 use Zone\Wildduck\Resource\File;
 use Zone\Wildduck\Resource\Filter;
 use Zone\Wildduck\Resource\ForwardedAddress;
@@ -39,5 +40,6 @@ class ObjectTypes
         Message::OBJECT_NAME => Message::class,
         User::OBJECT_NAME => User::class,
         Webhook::OBJECT_NAME => Webhook::class,
+        AuthenticationResult::OBJECT_NAME => AuthenticationResult::class,
     ];
 }
