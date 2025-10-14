@@ -236,8 +236,8 @@ class AddressService extends AbstractService
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function deleteAddressFromRegister(string $user, string $address, array|null $params = null, array|null $opts = null): Address
+	public function updateAddressFromRegister(string $user, string $address, array|null $params = null, array|null $opts = null): Address
     {
-        return $this->request('delete', $this->buildPath('/users/%s/addresses/%s', $user, $address), $params, $opts);
+        return $this->request('put', $this->buildPath('/users/%s/addressregister/%s', $user, $address), $params, $opts);
     }
 }
