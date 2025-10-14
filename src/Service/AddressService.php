@@ -222,4 +222,22 @@ class AddressService extends AbstractService
     {
         return $this->requestCollection('get', $this->buildPath('/users/%s/addressregister', $user), $params, $opts);
     }
+
+	/**
+	 * @param string $user
+	 * @param string $address
+	 * @param array|null $params
+	 * @param array|null $opts
+	 *
+	 * @return Address
+	 * @throws ApiConnectionException
+	 * @throws AuthenticationFailedException
+	 * @throws InvalidAccessTokenException
+	 * @throws RequestFailedException
+	 * @throws ValidationException
+	 */
+	public function deleteAddressFromRegister(string $user, string $address, array|null $params = null, array|null $opts = null): Address
+    {
+        return $this->request('delete', $this->buildPath('/users/%s/addresses/%s', $user, $address), $params, $opts);
+    }
 }
