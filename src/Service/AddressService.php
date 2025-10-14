@@ -10,6 +10,7 @@ use Zone\Wildduck\Exception\ValidationException;
 use Zone\Wildduck\Resource\Address;
 use Zone\Wildduck\Collection2;
 use Zone\Wildduck\Resource\ForwardedAddress;
+use Zone\Wildduck\WildduckObject;
 
 class AddressService extends AbstractService
 {
@@ -229,14 +230,14 @@ class AddressService extends AbstractService
 	 * @param array|null $params
 	 * @param array|null $opts
 	 *
-	 * @return Address
+	 * @return WildduckObject
 	 * @throws ApiConnectionException
 	 * @throws AuthenticationFailedException
 	 * @throws InvalidAccessTokenException
 	 * @throws RequestFailedException
 	 * @throws ValidationException
 	 */
-	public function updateAddressFromRegister(string $user, string $address, array|null $params = null, array|null $opts = null): Address
+	public function updateAddressFromRegister(string $user, string $address, array|null $params = null, array|null $opts = null): WildduckObject
     {
         return $this->request('put', $this->buildPath('/users/%s/addressregister/%s', $user, $address), $params, $opts);
     }
