@@ -1,51 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zone\Wildduck\Service;
 
-use Override;
-use Zone\Wildduck\Collection2;
+use Zone\Wildduck\Dto\PaginatedResultDto;
+use Zone\Wildduck\Dto\Storage\ListFilesRequestDto;
+use Zone\Wildduck\Dto\Storage\StoredFileResponseDto;
+use Zone\Wildduck\Dto\Storage\UploadFileRequestDto;
+use Zone\Wildduck\Dto\Storage\UploadFileResponseDto;
+use Zone\Wildduck\Dto\Shared\SuccessResponseDto;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
-use Zone\Wildduck\Resource\File;
-use Zone\Wildduck\Resource\Message;
 
+/**
+ * Storage service for managing file storage
+ */
 class StorageService extends AbstractService
 {
     /**
-     * @throws ApiConnectionException
-     * @throws AuthenticationFailedException
-     * @throws InvalidAccessTokenException
-     * @throws RequestFailedException
-     * @throws ValidationException
-     */
-    public function delete(string $user, string $file, array|null $params = null, array|null $opts = null): mixed
-    {
-        return $this->request('delete', $this->buildPath('/users/%s/storage/%s', $user, $file), $params, $opts);
-    }
-
-    /**
-     * @throws ApiConnectionException
-     * @throws AuthenticationFailedException
-     * @throws InvalidAccessTokenException
-     * @throws RequestFailedException
-     * @throws ValidationException
-     */
-    public function download(string $user, string $file, array|null $params = null, array|null $opts = null): mixed
-    {
-        $opts['raw'] = true;
-        return $this->request('get', $this->buildPath('/users/%s/storage/%s', $user, $file), $params, $opts);
-    }
-
-    /**
-     * @param string $user
-     * @param array|null $params
-     * @param array|null $opts
+     * List stored files
      *
-     * @return Collection2
+     * @param string $user
+     * @param ListFilesRequestDto|null $params
+     * @param array|null $opts
+     * @return PaginatedResultDto<StoredFileResponseDto>
      * @throws ApiConnectionException
      * @throws AuthenticationFailedException
      * @throws InvalidAccessTokenException
@@ -53,49 +36,71 @@ class StorageService extends AbstractService
      * @throws ValidationException
      * @throws InvalidDatabaseException
      */
-    public function list(string $user, array|null $params = null, array|null $opts = null): Collection2
+    public function all(string $user, ?ListFilesRequestDto $params = null, array|null $opts = null): PaginatedResultDto
     {
-        return $this->requestCollection('get', $this->buildPath('/users/%s/storage', $user), $params, $opts);
+        return $this->requestPaginatedDto('get', $this->buildPath('/users/%s/storage', $user), $params, StoredFileResponseDto::class, $opts);
     }
-
 
     /**
-     * @throws RequestFailedException
-     * @throws InvalidAccessTokenException
-     * @throws AuthenticationFailedException
+     * Upload a file
+     *
+     * @param string $user
+     * @param UploadFileRequestDto $params
+     * @param array|null $opts
+     * @return UploadFileResponseDto
      * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function upload(
-        string $user,
-        string $content,
-        string $filename,
-        string $contentType,
-        ?string $cid = null,
-        ?array $opts = null
-    ) {
-        $path = $this->buildPath(
-            '/users/%s/storage?filename=%s&contentType=%s&encoding=base64',
-            $user,
-            $filename,
-            $contentType,
-        );
-
-        if ($cid) {
-            $path .= '&cid=' . urlencode($cid);
-        }
-
-        return $this->uploadFile(
-            'post',
-            $path,
-            base64_encode($content),
-            $opts
-        );
+    public function upload(string $user, UploadFileRequestDto $params, array|null $opts = null): UploadFileResponseDto
+    {
+        return $this->requestDto('post', $this->buildPath('/users/%s/storage', $user), $params, UploadFileResponseDto::class, $opts);
     }
 
-    #[Override]
-    public function getObjectName(): string
+    /**
+     * Download a file (returns binary content)
+     *
+     * @param string $user
+     * @param string $file
+     * @param array|null $opts
+     * @return string Binary file content
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function download(string $user, string $file, array|null $opts = null): string
     {
-        return File::OBJECT_NAME;
+        $opts = $opts ?? [];
+        $opts['raw'] = true;
+        $response = $this->requestResponse('get', $this->buildPath('/users/%s/storage/%s', $user, $file), null, $opts);
+
+        // When raw is true, requestResponse returns an ApiResponse object
+        if ($response instanceof \Zone\Wildduck\ApiResponse) {
+            return $response->body ?? '';
+        }
+
+        return $response;
+    }
+
+    /**
+     * Delete a file
+     *
+     * @param string $user
+     * @param string $file
+     * @param array|null $opts
+     * @return SuccessResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function delete(string $user, string $file, array|null $opts = null): SuccessResponseDto
+    {
+        return $this->requestDto('delete', $this->buildPath('/users/%s/storage/%s', $user, $file), null, SuccessResponseDto::class, $opts);
     }
 }

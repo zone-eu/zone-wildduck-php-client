@@ -1,69 +1,74 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zone\Wildduck\Service;
 
-use Override;
-use Zone\Wildduck\Resource\Autoreply;
+use Zone\Wildduck\Dto\Autoreply\AutoreplyResponseDto;
+use Zone\Wildduck\Dto\Autoreply\AutoreplyUpdateResponseDto;
+use Zone\Wildduck\Dto\Autoreply\UpdateAutoreplyRequestDto;
+use Zone\Wildduck\Dto\Shared\SuccessResponseDto;
+use Zone\Wildduck\Dto\User\UserInfoResponseDto;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
 
-
+/**
+ * Autoreply service for managing user autoreplies
+ */
 class AutoreplyService extends AbstractService
 {
     /**
+     * Delete autoreply
+     *
      * @param string $user
-     * @param array|null $params
      * @param array|null $opts
-     * @return Autoreply
+     * @return SuccessResponseDto
      * @throws ApiConnectionException
      * @throws AuthenticationFailedException
      * @throws InvalidAccessTokenException
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function delete(string $user, array|null $params = null, array|null $opts = null): Autoreply
+    public function delete(string $user, array|null $opts = null): SuccessResponseDto
     {
-        return $this->request('delete', $this->buildPath('/users/%s/autoreply', $user), $params, $opts);
+        return $this->requestDto('delete', $this->buildPath('/users/%s/autoreply', $user), null, SuccessResponseDto::class, $opts);
     }
 
     /**
+     * Get autoreply settings
+     *
      * @param string $user
-     * @param array|null $params
      * @param array|null $opts
-     * @return Autoreply
+     * @return AutoreplyResponseDto
      * @throws ApiConnectionException
      * @throws AuthenticationFailedException
      * @throws InvalidAccessTokenException
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function get(string $user, array|null $params = null, array|null $opts = null): Autoreply
+    public function get(string $user, array|null $opts = null): AutoreplyResponseDto
     {
-        return $this->request('get', $this->buildPath('/users/%s/autoreply', $user), $params, $opts);
+        return $this->requestDto('get', $this->buildPath('/users/%s/autoreply', $user), null, AutoreplyResponseDto::class, $opts);
     }
 
     /**
+     * Update autoreply settings
+     *
      * @param string $user
-     * @param array|null $params
+     * @param UpdateAutoreplyRequestDto $params
      * @param array|null $opts
-     * @return Autoreply
+     * @return AutoreplyUpdateResponseDto
      * @throws ApiConnectionException
      * @throws AuthenticationFailedException
      * @throws InvalidAccessTokenException
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function update(string $user, array|null $params = null, array|null $opts = null): Autoreply
+    public function update(string $user, UpdateAutoreplyRequestDto $params, array|null $opts = null): AutoreplyUpdateResponseDto
     {
-        return $this->request('put', $this->buildPath('/users/%s/autoreply', $user), $params, $opts);
-    }
-
-    #[Override]
-    protected function getObjectName(): string
-    {
-        return Autoreply::OBJECT_NAME;
+        return $this->requestDto('put', $this->buildPath('/users/%s/autoreply', $user), $params, AutoreplyUpdateResponseDto::class, $opts);
     }
 }

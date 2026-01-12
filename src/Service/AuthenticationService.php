@@ -1,50 +1,73 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zone\Wildduck\Service;
 
-use Override;
+use Zone\Wildduck\Dto\Authentication\AuthenticateRequestDto;
+use Zone\Wildduck\Dto\Authentication\AuthenticationResponseDto;
+use Zone\Wildduck\Dto\Authentication\PreauthRequestDto;
+use Zone\Wildduck\Dto\Authentication\PreauthResponseDto;
+use Zone\Wildduck\Dto\Shared\SuccessResponseDto;
+use Zone\Wildduck\Dto\User\UserInfoResponseDto;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
-use Zone\Wildduck\Resource\AuthenticationResult;
 
+/**
+ * Authentication service for user authentication
+ */
 class AuthenticationService extends AbstractService
 {
     /**
-     * @param array|null $params
+     * Authenticate a user
+     *
+     * @param AuthenticateRequestDto $params
      * @param array|null $opts
-     * @return AuthenticationResult
+     * @return AuthenticationResponseDto
      * @throws ApiConnectionException
      * @throws AuthenticationFailedException
      * @throws InvalidAccessTokenException
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function authenticate(array|null $params = null, array|null $opts = null): AuthenticationResult
+    public function authenticate(AuthenticateRequestDto $params, array|null $opts = null): AuthenticationResponseDto
     {
-        return $this->request('post', '/authenticate', $params, $opts);
+        return $this->requestDto('post', '/authenticate', $params, AuthenticationResponseDto::class, $opts);
     }
 
     /**
-     * @param array|null $params
+     * Invalidate authentication token
+     *
      * @param array|null $opts
-     * @return object{success: bool}
+     * @return SuccessResponseDto
      * @throws ApiConnectionException
      * @throws AuthenticationFailedException
      * @throws InvalidAccessTokenException
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function invalidate(array|null $params = null, array|null $opts = null)
+    public function invalidateToken(array|null $opts = null): SuccessResponseDto
     {
-        return $this->request('delete', '/authenticate', $params, $opts);
+        return $this->requestDto('delete', '/authenticate', null, SuccessResponseDto::class, $opts);
     }
 
-    #[Override]
-    protected function getObjectName(): string
+    /**
+     * Pre-authenticate for token generation
+     *
+     * @param PreauthRequestDto $params
+     * @param array|null $opts
+     * @return PreauthResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function preauth(PreauthRequestDto $params, array|null $opts = null): PreauthResponseDto
     {
-        return AuthenticationResult::OBJECT_NAME;
+        return $this->requestDto('post', '/preauth', $params, PreauthResponseDto::class, $opts);
     }
 }

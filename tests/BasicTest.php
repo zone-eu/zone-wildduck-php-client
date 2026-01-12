@@ -10,7 +10,6 @@ use Wildduck\Http\Request;
 #[AllowDynamicProperties]
 class BasicTest extends TestCase
 {
-
     public function testUserCreation(): array
     {
         $r = Wildduck::users()->create([

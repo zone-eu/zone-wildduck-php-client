@@ -1,0 +1,966 @@
+PHPUnit 9.6.31 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.7
+Configuration: /Users/zonejoosep/Webmail/zone-wildduck-php-client/phpunit.xml
+
+Address Service Integration (Tests\Integration\Service\AddressServiceIntegration)
+ ✘ Address lifecycle [137.97 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AddressService.php:184
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AddressServiceIntegrationTest.php:68
+   │
+
+ ✘ Resolve address [75.31 ms]
+   │
+   │ Failed asserting that two strings are equal.
+   │ --- Expected
+   │ +++ Actual
+   │ @@ @@
+   │ -'696101badd9242276773df7d'
+   │ +'696101badd9242276773df83'
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AddressServiceIntegrationTest.php:105
+   │
+
+ ✘ Forwarded address lifecycle [16.93 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AddressService.php:201
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AddressServiceIntegrationTest.php:130
+   │
+
+ ✔ Rename domain [80.83 ms]
+ ✘ List all [63.88 ms]
+   │
+   │ Undefined array key "user"
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Address/AllAddressResponseDto.php:54
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/PaginatedResultDto.php:61
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:92
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AddressService.php:149
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AddressServiceIntegrationTest.php:214
+   │
+
+ ✘ Address register [55.79 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:90
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AddressService.php:251
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AddressServiceIntegrationTest.php:251
+   │
+
+Application Password Service Integration (Tests\Integration\Service\ApplicationPasswordServiceIntegration)
+ ✘ Application password lifecycle [92.26 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/ApplicationPasswordService.php:36
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ApplicationPasswordServiceIntegrationTest.php:47
+   │
+
+ ✔ Create application password with different scopes [112.32 ms]
+ ✔ Create application password with all scopes [121.57 ms]
+ ✔ List application passwords for user without passwords [64.83 ms]
+
+Archive Service Integration (Tests\Integration\Service\ArchiveServiceIntegration)
+ ✘ List archived messages [158.54 ms]
+   │
+   │ TypeError: Zone\Wildduck\Dto\Archive\ArchivedMessageResponseDto::__construct(): Argument #1 ($id) must be of type int, string given, called in /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php on line 107
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:27
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:107
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/PaginatedResultDto.php:61
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:92
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/ArchiveService.php:35
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ArchiveServiceIntegrationTest.php:67
+   │
+
+ ✘ Restore single archived message [89.96 ms]
+   │
+   │ TypeError: Zone\Wildduck\Dto\Archive\ArchivedMessageResponseDto::__construct(): Argument #1 ($id) must be of type int, string given, called in /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php on line 107
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:27
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:107
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/PaginatedResultDto.php:61
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:92
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/ArchiveService.php:35
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ArchiveServiceIntegrationTest.php:118
+   │
+
+ ✔ Restore all archived messages [102.77 ms]
+ ✘ List archived messages with pagination [114.27 ms]
+   │
+   │ TypeError: Zone\Wildduck\Dto\Archive\ArchivedMessageResponseDto::__construct(): Argument #1 ($id) must be of type int, string given, called in /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php on line 107
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:27
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:107
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/PaginatedResultDto.php:61
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:92
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/ArchiveService.php:35
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ArchiveServiceIntegrationTest.php:234
+   │
+
+Audit Service Integration (Tests\Integration\Service\AuditServiceIntegration)
+ ↩ Create and get audit [3.77 ms]
+   │
+   │ Audit operations require elevated admin privileges not available in test environment
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AuditServiceIntegrationTest.php:33
+   │
+
+ ↩ Export audit [0.74 ms]
+   │
+   │ Audit operations require elevated admin privileges not available in test environment
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AuditServiceIntegrationTest.php:72
+   │
+
+ ↩ Create audit without time range [0.52 ms]
+   │
+   │ Audit operations require elevated admin privileges not available in test environment
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AuditServiceIntegrationTest.php:107
+   │
+
+Authentication Log Service Integration (Tests\Integration\Service\AuthenticationLogServiceIntegration)
+ ✔ List authentication logs [667.04 ms]
+ ✔ Get specific authentication log event [619.26 ms]
+ ✔ List authentication logs with filters [660.61 ms]
+ ✔ List authentication logs for new user [101.42 ms]
+
+Authentication Service Integration (Tests\Integration\Service\AuthenticationServiceIntegration)
+ ✔ Authenticate [183.26 ms]
+ ✔ Authentication failure [123.54 ms]
+ ✘ Invalidate token [98.04 ms]
+   │
+   │ Failed asserting that a NULL is not empty.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AuthenticationServiceIntegrationTest.php:119
+   │
+
+ ✔ Preauth [53.20 ms]
+
+Autoreply Service Integration (Tests\Integration\Service\AutoreplyServiceIntegration)
+ ✘ Autoreply lifecycle [94.61 ms]
+   │
+   │ TypeError: Zone\Wildduck\Dto\Autoreply\AutoreplyResponseDto::__construct(): Argument #9 ($created) must be of type ?string, false given, called in /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Autoreply/AutoreplyResponseDto.php on line 34
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Autoreply/AutoreplyResponseDto.php:15
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Autoreply/AutoreplyResponseDto.php:34
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:63
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AutoreplyService.php:54
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AutoreplyServiceIntegrationTest.php:37
+   │
+
+ ✔ Update autoreply multiple times [73.49 ms]
+ ✔ Disable autoreply by updating status [73.98 ms]
+
+Certs Service Integration (Tests\Integration\Service\CertsServiceIntegration)
+ ✘ Certificate lifecycle [13.60 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/CertsService.php:58
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/CertsServiceIntegrationTest.php:44
+   │
+
+ ✘ Create certificate with keys [10.44 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/CertsService.php:58
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/CertsServiceIntegrationTest.php:115
+   │
+
+ ✘ List certificates filtering [3.18 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/CertsService.php:58
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/CertsServiceIntegrationTest.php:138
+   │
+
+ ✘ Resolve certificate by servername [3.05 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/CertsService.php:58
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/CertsServiceIntegrationTest.php:170
+   │
+
+ ✔ Delete non existent certificate [2.58 ms]
+ ✘ Create certificate with c a [5.29 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/CertsService.php:58
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/CertsServiceIntegrationTest.php:212
+   │
+
+Dkim Service Integration (Tests\Integration\Service\DkimServiceIntegration)
+ ✔ Dkim lifecycle [146.76 ms]
+ ✘ Create dkim with private key [5.47 ms]
+   │
+   │ Zone\Wildduck\Exception\RequestFailedException: error:1E08010C:DECODER routines::unsupported
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:462
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/DkimService.php:34
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DkimServiceIntegrationTest.php:114
+   │
+
+ ✔ List dkim keys filtering [431.78 ms]
+ ✔ Resolve dkim by domain [168.19 ms]
+ ✔ Delete non existent dkim [2.92 ms]
+
+Domain Access Service Integration (Tests\Integration\Service\DomainAccessServiceIntegration)
+ ✘ Domain access allowlist lifecycle [20.94 ms]
+   │
+   │ Failed asserting that 0 is greater than 0.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DomainAccessServiceIntegrationTest.php:54
+   │
+
+ ✘ Domain access blocklist lifecycle [11.75 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/DomainAccessService.php:107
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DomainAccessServiceIntegrationTest.php:127
+   │
+
+ ✘ Create multiple domains for same tag [17.36 ms]
+   │
+   │ Both domains should be in the allowlist
+   │ Failed asserting that 0 matches expected 2.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DomainAccessServiceIntegrationTest.php:176
+   │
+
+ ✘ Mixed allow and block lists [9.46 ms]
+   │
+   │ Allowed domain should be in allowlist
+   │ Failed asserting that false is true.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DomainAccessServiceIntegrationTest.php:208
+   │
+
+ ✘ Delete domain removes from all lists [5.55 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/DomainAccessService.php:107
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DomainAccessServiceIntegrationTest.php:235
+   │
+
+Domain Alias Service Integration (Tests\Integration\Service\DomainAliasServiceIntegration)
+ ✔ Domain alias lifecycle [37.84 ms]
+ ✔ Create multiple domain aliases [26.81 ms]
+ ✔ List domain aliases filtering [9.90 ms]
+ ✔ Resolve domain alias [7.55 ms]
+ ✔ Delete non existent domain alias [3.25 ms]
+
+Export Service Integration (Tests\Integration\Service\ExportServiceIntegration)
+ ↩ Export user data [0.75 ms]
+   │
+   │ Export operations require elevated admin privileges not available in test environment
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ExportServiceIntegrationTest.php:27
+   │
+
+ ↩ Export multiple users [0.66 ms]
+   │
+   │ Export operations require elevated admin privileges not available in test environment
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ExportServiceIntegrationTest.php:50
+   │
+
+ ✔ Export with empty parameters [11.73 ms]
+ ✔ Import user data [3.37 ms]
+
+Filter Service Integration (Tests\Integration\Service\FilterServiceIntegration)
+ ✔ Filter lifecycle [133.47 ms]
+ ✔ Global filter list [66.67 ms]
+
+Health Service Integration (Tests\Integration\Service\HealthServiceIntegration)
+ ✔ Health check [16.93 ms]
+ ✔ Health check multiple times [10.51 ms]
+
+Mailbox Service Integration (Tests\Integration\Service\MailboxServiceIntegration)
+ ✔ Mailbox lifecycle [119.46 ms]
+ ✔ Delete all messages [137.31 ms]
+
+Message Service Integration (Tests\Integration\Service\MessageServiceIntegration)
+ ✔ Upload message [132.03 ms]
+ ✔ Get message [110.89 ms]
+ ✔ Delete message [71.35 ms]
+ ✔ Forward message [87.82 ms]
+ ✔ Search messages [68.49 ms]
+ ✘ Message source [63.41 ms]
+   │
+   │ Failed asserting that 'From: sender@example.com\r\n
+   │ To: recipient@example.com\r\n
+   │ Subject: Test Source\r\n
+   │ \r\n
+   │ Test message source retrieval.\r\n
+   │ ' is of type "array".
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/MessageServiceIntegrationTest.php:200
+   │
+
+ ✔ Submit draft [61.24 ms]
+ ✘ Bulk update messages [86.85 ms]
+   │
+   │ Failed asserting that null is of type "array".
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/MessageServiceIntegrationTest.php:269
+   │
+
+ ✘ Search apply messages [80.18 ms]
+   │
+   │ Failed asserting that null is of type "array".
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/MessageServiceIntegrationTest.php:302
+   │
+
+ ✔ Download attachment [99.53 ms]
+ ✔ Delete outbound [78.03 ms]
+ ✘ List all messages [86.05 ms]
+   │
+   │ Undefined array key "specialUse"
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Message/MessagePaginatedResponseDto.php:49
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:63
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/MessageService.php:179
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/MessageServiceIntegrationTest.php:426
+   │
+
+ ✘ Message lifecycle [61.74 ms]
+   │
+   │ Failed asserting that true is false.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/MessageServiceIntegrationTest.php:459
+   │
+
+Settings Service Integration (Tests\Integration\Service\SettingsServiceIntegration)
+ ✘ List all settings [10.94 ms]
+   │
+   │ Failed asserting that Array (...) is an instance of class "Zone\Wildduck\Dto\PaginatedResultDto".
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/SettingsServiceIntegrationTest.php:33
+   │
+
+ ✘ Create or update and get setting [6.86 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/SettingsService.php:71
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/SettingsServiceIntegrationTest.php:56
+   │
+
+ ✘ Create setting with different value types [4.08 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/SettingsService.php:71
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/SettingsServiceIntegrationTest.php:95
+   │
+
+Storage Service Integration (Tests\Integration\Service\StorageServiceIntegration)
+ ✔ Upload file [110.82 ms]
+ ✔ Download file [64.63 ms]
+ ✔ Delete file [59.87 ms]
+ ✔ List all files [62.82 ms]
+ ✔ File lifecycle [91.70 ms]
+ ✔ Binary content validation [56.25 ms]
+ ✔ Upload with different encodings [57.09 ms]
+ ✔ List files with pagination [65.70 ms]
+
+Submission Service Integration (Tests\Integration\Service\SubmissionServiceIntegration)
+ ✔ Submit message [165.09 ms]
+ ✔ Submit message with multiple recipients [68.90 ms]
+ ✔ Submit draft message [67.64 ms]
+
+Two Factor Authentication Service Integration (Tests\Integration\Service\TwoFactorAuthenticationServiceIntegration)
+ ✔ Generate t o t p seed [206.64 ms]
+ ✔ Disable t o t p auth [64.71 ms]
+ ✔ Disable all 2 f a [62.52 ms]
+ ✔ Custom two factor lifecycle [63.81 ms]
+ ✔ Web authn credentials list [57.07 ms]
+ ✘ Web authn remove credential with non existent id [56.51 ms]
+   │
+   │ Failed asserting that Zone\Wildduck\Exception\ValidationException Object (...) is an instance of class "Zone\Wildduck\Exception\RequestFailedException".
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/TwoFactorAuthenticationServiceIntegrationTest.php:150
+   │
+
+ ✔ Disable 2 f a methods in sequence [60.96 ms]
+ ✔ Generate t o t p seed with minimal params [104.14 ms]
+ ✔ Multiple t o t p seed generations [157.74 ms]
+ ✔ Enable custom 2 f a multiple times [69.26 ms]
+
+User Service Integration (Tests\Integration\Service\UserServiceIntegration)
+ ✘ User lifecycle [111.76 ms]
+   │
+   │ Zone\Wildduck\Exception\RequestFailedException: unknown error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:462
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:490
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:133
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/UserService.php:122
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/UserServiceIntegrationTest.php:74
+   │
+
+ ✔ List users [65.50 ms]
+ ✔ Get id by username [53.06 ms]
+ ✔ Logout [52.36 ms]
+ ✔ Reset password [99.95 ms]
+ ✔ Recalculate quota [57.96 ms]
+ ✔ Cancel deletion [51.99 ms]
+ ✘ Get restore info [53.00 ms]
+   │
+   │ Zone\Wildduck\Exception\RequestFailedException: unknown error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:462
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:490
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:133
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/UserService.php:122
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/UserServiceIntegrationTest.php:262
+   │
+
+Webhook Service Integration (Tests\Integration\Service\WebhookServiceIntegration)
+ ✔ Webhook lifecycle [33.13 ms]
+ ✔ List empty webhooks [3.28 ms]
+ ✔ Create webhook with multiple event types [12.54 ms]
+
+Time: 02:12.304, Memory: 12.00 MB
+
+Summary of non-successful tests:
+
+Address Service Integration (Tests\Integration\Service\AddressServiceIntegration)
+ ✘ Address lifecycle [137.97 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AddressService.php:184
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AddressServiceIntegrationTest.php:68
+   │
+
+ ✘ Resolve address [75.31 ms]
+   │
+   │ Failed asserting that two strings are equal.
+   │ --- Expected
+   │ +++ Actual
+   │ @@ @@
+   │ -'696101badd9242276773df7d'
+   │ +'696101badd9242276773df83'
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AddressServiceIntegrationTest.php:105
+   │
+
+ ✘ Forwarded address lifecycle [16.93 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AddressService.php:201
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AddressServiceIntegrationTest.php:130
+   │
+
+ ✘ List all [63.88 ms]
+   │
+   │ Undefined array key "user"
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Address/AllAddressResponseDto.php:54
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/PaginatedResultDto.php:61
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:92
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AddressService.php:149
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AddressServiceIntegrationTest.php:214
+   │
+
+ ✘ Address register [55.79 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:90
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AddressService.php:251
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AddressServiceIntegrationTest.php:251
+   │
+
+Application Password Service Integration (Tests\Integration\Service\ApplicationPasswordServiceIntegration)
+ ✘ Application password lifecycle [92.26 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/ApplicationPasswordService.php:36
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ApplicationPasswordServiceIntegrationTest.php:47
+   │
+
+Archive Service Integration (Tests\Integration\Service\ArchiveServiceIntegration)
+ ✘ List archived messages [158.54 ms]
+   │
+   │ TypeError: Zone\Wildduck\Dto\Archive\ArchivedMessageResponseDto::__construct(): Argument #1 ($id) must be of type int, string given, called in /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php on line 107
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:27
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:107
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/PaginatedResultDto.php:61
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:92
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/ArchiveService.php:35
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ArchiveServiceIntegrationTest.php:67
+   │
+
+ ✘ Restore single archived message [89.96 ms]
+   │
+   │ TypeError: Zone\Wildduck\Dto\Archive\ArchivedMessageResponseDto::__construct(): Argument #1 ($id) must be of type int, string given, called in /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php on line 107
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:27
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:107
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/PaginatedResultDto.php:61
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:92
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/ArchiveService.php:35
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ArchiveServiceIntegrationTest.php:118
+   │
+
+ ✘ List archived messages with pagination [114.27 ms]
+   │
+   │ TypeError: Zone\Wildduck\Dto\Archive\ArchivedMessageResponseDto::__construct(): Argument #1 ($id) must be of type int, string given, called in /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php on line 107
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:27
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Archive/ArchivedMessageResponseDto.php:107
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/PaginatedResultDto.php:61
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:92
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/ArchiveService.php:35
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ArchiveServiceIntegrationTest.php:234
+   │
+
+Audit Service Integration (Tests\Integration\Service\AuditServiceIntegration)
+ ↩ Create and get audit [3.77 ms]
+   │
+   │ Audit operations require elevated admin privileges not available in test environment
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AuditServiceIntegrationTest.php:33
+   │
+
+ ↩ Export audit [0.74 ms]
+   │
+   │ Audit operations require elevated admin privileges not available in test environment
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AuditServiceIntegrationTest.php:72
+   │
+
+ ↩ Create audit without time range [0.52 ms]
+   │
+   │ Audit operations require elevated admin privileges not available in test environment
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AuditServiceIntegrationTest.php:107
+   │
+
+Authentication Service Integration (Tests\Integration\Service\AuthenticationServiceIntegration)
+ ✘ Invalidate token [98.04 ms]
+   │
+   │ Failed asserting that a NULL is not empty.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AuthenticationServiceIntegrationTest.php:119
+   │
+
+Autoreply Service Integration (Tests\Integration\Service\AutoreplyServiceIntegration)
+ ✘ Autoreply lifecycle [94.61 ms]
+   │
+   │ TypeError: Zone\Wildduck\Dto\Autoreply\AutoreplyResponseDto::__construct(): Argument #9 ($created) must be of type ?string, false given, called in /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Autoreply/AutoreplyResponseDto.php on line 34
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Autoreply/AutoreplyResponseDto.php:15
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Autoreply/AutoreplyResponseDto.php:34
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:63
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AutoreplyService.php:54
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/AutoreplyServiceIntegrationTest.php:37
+   │
+
+Certs Service Integration (Tests\Integration\Service\CertsServiceIntegration)
+ ✘ Certificate lifecycle [13.60 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/CertsService.php:58
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/CertsServiceIntegrationTest.php:44
+   │
+
+ ✘ Create certificate with keys [10.44 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/CertsService.php:58
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/CertsServiceIntegrationTest.php:115
+   │
+
+ ✘ List certificates filtering [3.18 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/CertsService.php:58
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/CertsServiceIntegrationTest.php:138
+   │
+
+ ✘ Resolve certificate by servername [3.05 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/CertsService.php:58
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/CertsServiceIntegrationTest.php:170
+   │
+
+ ✘ Create certificate with c a [5.29 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/CertsService.php:58
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/CertsServiceIntegrationTest.php:212
+   │
+
+Dkim Service Integration (Tests\Integration\Service\DkimServiceIntegration)
+ ✘ Create dkim with private key [5.47 ms]
+   │
+   │ Zone\Wildduck\Exception\RequestFailedException: error:1E08010C:DECODER routines::unsupported
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:462
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/DkimService.php:34
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DkimServiceIntegrationTest.php:114
+   │
+
+Domain Access Service Integration (Tests\Integration\Service\DomainAccessServiceIntegration)
+ ✘ Domain access allowlist lifecycle [20.94 ms]
+   │
+   │ Failed asserting that 0 is greater than 0.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DomainAccessServiceIntegrationTest.php:54
+   │
+
+ ✘ Domain access blocklist lifecycle [11.75 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/DomainAccessService.php:107
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DomainAccessServiceIntegrationTest.php:127
+   │
+
+ ✘ Create multiple domains for same tag [17.36 ms]
+   │
+   │ Both domains should be in the allowlist
+   │ Failed asserting that 0 matches expected 2.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DomainAccessServiceIntegrationTest.php:176
+   │
+
+ ✘ Mixed allow and block lists [9.46 ms]
+   │
+   │ Allowed domain should be in allowlist
+   │ Failed asserting that false is true.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DomainAccessServiceIntegrationTest.php:208
+   │
+
+ ✘ Delete domain removes from all lists [5.55 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/DomainAccessService.php:107
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/DomainAccessServiceIntegrationTest.php:235
+   │
+
+Export Service Integration (Tests\Integration\Service\ExportServiceIntegration)
+ ↩ Export user data [0.75 ms]
+   │
+   │ Export operations require elevated admin privileges not available in test environment
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ExportServiceIntegrationTest.php:27
+   │
+
+ ↩ Export multiple users [0.66 ms]
+   │
+   │ Export operations require elevated admin privileges not available in test environment
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ExportServiceIntegrationTest.php:50
+   │
+
+Message Service Integration (Tests\Integration\Service\MessageServiceIntegration)
+ ✘ Message source [63.41 ms]
+   │
+   │ Failed asserting that 'From: sender@example.com\r\n
+   │ To: recipient@example.com\r\n
+   │ Subject: Test Source\r\n
+   │ \r\n
+   │ Test message source retrieval.\r\n
+   │ ' is of type "array".
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/MessageServiceIntegrationTest.php:200
+   │
+
+ ✘ Bulk update messages [86.85 ms]
+   │
+   │ Failed asserting that null is of type "array".
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/MessageServiceIntegrationTest.php:269
+   │
+
+ ✘ Search apply messages [80.18 ms]
+   │
+   │ Failed asserting that null is of type "array".
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/MessageServiceIntegrationTest.php:302
+   │
+
+ ✘ List all messages [86.05 ms]
+   │
+   │ Undefined array key "specialUse"
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Dto/Message/MessagePaginatedResponseDto.php:49
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:63
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/MessageService.php:179
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/MessageServiceIntegrationTest.php:426
+   │
+
+ ✘ Message lifecycle [61.74 ms]
+   │
+   │ Failed asserting that true is false.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/MessageServiceIntegrationTest.php:459
+   │
+
+Settings Service Integration (Tests\Integration\Service\SettingsServiceIntegration)
+ ✘ List all settings [10.94 ms]
+   │
+   │ Failed asserting that Array (...) is an instance of class "Zone\Wildduck\Dto\PaginatedResultDto".
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/SettingsServiceIntegrationTest.php:33
+   │
+
+ ✘ Create or update and get setting [6.86 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/SettingsService.php:71
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/SettingsServiceIntegrationTest.php:56
+   │
+
+ ✘ Create setting with different value types [4.08 ms]
+   │
+   │ Zone\Wildduck\Exception\ValidationException: Request failed due to validation error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:457
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:128
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/SettingsService.php:71
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/SettingsServiceIntegrationTest.php:95
+   │
+
+Two Factor Authentication Service Integration (Tests\Integration\Service\TwoFactorAuthenticationServiceIntegration)
+ ✘ Web authn remove credential with non existent id [56.51 ms]
+   │
+   │ Failed asserting that Zone\Wildduck\Exception\ValidationException Object (...) is an instance of class "Zone\Wildduck\Exception\RequestFailedException".
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/TwoFactorAuthenticationServiceIntegrationTest.php:150
+   │
+
+User Service Integration (Tests\Integration\Service\UserServiceIntegration)
+ ✘ User lifecycle [111.76 ms]
+   │
+   │ Zone\Wildduck\Exception\RequestFailedException: unknown error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:462
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:490
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:133
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/UserService.php:122
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/UserServiceIntegrationTest.php:74
+   │
+
+ ✘ Get restore info [53.00 ms]
+   │
+   │ Zone\Wildduck\Exception\RequestFailedException: unknown error
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:462
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:431
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:490
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/ApiRequestor.php:133
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/BaseWildduckClient.php:169
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:114
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/AbstractService.php:62
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/src/Service/UserService.php:122
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/UserServiceIntegrationTest.php:262
+   │
+
+ERRORS!
+Tests: 107, Assertions: 377, Errors: 22, Failures: 11, Skipped: 5.

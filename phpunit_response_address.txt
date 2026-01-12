@@ -1,0 +1,31 @@
+PHPUnit 9.6.31 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.7
+Configuration: /Users/zonejoosep/Webmail/zone-wildduck-php-client/phpunit.xml
+
+Archive Service Integration (Tests\Integration\Service\ArchiveServiceIntegration)
+ ✔ List archived messages [473.03 ms]
+ ↩ Restore single archived message [8.24 ms]
+   │
+   │ Wildduck API returns MongoDB ObjectIds for archived messages, but restore endpoint expects numeric message IDs. API inconsistency.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ArchiveServiceIntegrationTest.php:96
+   │
+
+ ✔ Restore all archived messages [111.51 ms]
+ ✔ List archived messages with pagination [122.20 ms]
+
+Time: 00:01.717, Memory: 8.00 MB
+
+Summary of non-successful tests:
+
+Archive Service Integration (Tests\Integration\Service\ArchiveServiceIntegration)
+ ↩ Restore single archived message [8.24 ms]
+   │
+   │ Wildduck API returns MongoDB ObjectIds for archived messages, but restore endpoint expects numeric message IDs. API inconsistency.
+   │
+   │ /Users/zonejoosep/Webmail/zone-wildduck-php-client/tests/Integration/Service/ArchiveServiceIntegrationTest.php:96
+   │
+
+OK, but incomplete, skipped, or risky tests!
+Tests: 4, Assertions: 12, Skipped: 1.

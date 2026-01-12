@@ -2,35 +2,29 @@
 
 namespace Zone\Wildduck\Service;
 
-use Override;
+use Zone\Wildduck\Dto\Submission\SubmitMessageRequestDto;
+use Zone\Wildduck\Dto\Submission\SubmitMessageResponseDto;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
-use Zone\Wildduck\Resource\User;
 
 class SubmissionService extends AbstractService
 {
-	/**
-	 * @param string $user
-	 * @param array|null $params
-	 * @param array|null $opts
-	 * @return User
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-	public function submit(string $user, array|null $params = null, array|null $opts = null): User
+    /**
+     * @param string $user
+     * @param SubmitMessageRequestDto $params
+     * @param array<string, mixed>|null $opts
+     * @return SubmitMessageResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function submit(string $user, SubmitMessageRequestDto $params, array|null $opts = null): SubmitMessageResponseDto
     {
-        return $this->request('post', $this->buildPath('/users/%s/submit', $user), $params, $opts);
+        return $this->requestDto('post', $this->buildPath('/users/%s/submit', $user), $params, SubmitMessageResponseDto::class, $opts);
     }
-
-	#[Override]
-	protected function getObjectName(): string
-	{
-		return User::OBJECT_NAME;
-	}
 }

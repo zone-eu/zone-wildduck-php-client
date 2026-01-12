@@ -75,11 +75,11 @@ class CaseInsensitiveArray implements ArrayAccess, Countable, IteratorAggregate
         return $this->container[$offset] ?? null;
     }
 
-	/**
-	 * @param mixed $v
-	 * @return string|null
-	 */
-	private function maybeLowercase(mixed $v): string|null
+    /**
+     * @param mixed $v
+     * @return string|null
+     */
+    private function maybeLowercase(mixed $v): string|null
     {
         if (is_string($v)) {
             return strtolower($v);

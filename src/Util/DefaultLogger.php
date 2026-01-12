@@ -27,9 +27,9 @@ class DefaultLogger implements LoggerInterface
         }
 
         if (null === $this->destination) {
-            error_log($message, $this->messageType);
+            error_log($message, 0);
         } else {
-            error_log($message, $this->messageType, $this->destination);
+            error_log($message, 3, $this->destination);
         }
     }
 }

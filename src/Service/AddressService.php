@@ -1,244 +1,272 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zone\Wildduck\Service;
 
+use Zone\Wildduck\Dto\Address\AddressRegisterRequestDto;
+use Zone\Wildduck\Dto\Address\AddressResponseDto;
+use Zone\Wildduck\Dto\Address\AddressRegisterResponseDto;
+use Zone\Wildduck\Dto\Address\AllAddressResponseDto;
+use Zone\Wildduck\Dto\Address\CreateAddressRequestDto;
+use Zone\Wildduck\Dto\Address\CreateForwardedAddressRequestDto;
+use Zone\Wildduck\Dto\Address\ForwardedAddressResponseDto;
+use Zone\Wildduck\Dto\Address\ListRegisteredAddressesRequest;
+use Zone\Wildduck\Dto\Address\ListAllRegisteredAddressesRequestDto;
+use Zone\Wildduck\Dto\Address\ListUserRegisteredAddressesRequestDto;
+use Zone\Wildduck\Dto\Address\RenameDomainRequestDto;
+use Zone\Wildduck\Dto\Address\RenameDomainResponseDto;
+use Zone\Wildduck\Dto\Address\ResolveAddressRequestDto;
+use Zone\Wildduck\Dto\Address\ResolvedAddressResponseDto;
+use Zone\Wildduck\Dto\Address\UpdateAddressRequestDto;
+use Zone\Wildduck\Dto\Address\UpdateAddressRegisterRequestDto;
+use Zone\Wildduck\Dto\Address\UpdateForwardedAddressRequestDto;
+use Zone\Wildduck\Dto\Shared\CreatedResourceResponseDto;
+use Zone\Wildduck\Dto\PaginatedResultDto;
+use Zone\Wildduck\Dto\Shared\SuccessResponseDto;
+use Zone\Wildduck\Dto\User\UserInfoResponseDto;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
-use Zone\Wildduck\Resource\Address;
-use Zone\Wildduck\Collection2;
-use Zone\Wildduck\Resource\ForwardedAddress;
-use Zone\Wildduck\WildduckObject;
 
+/**
+ * Address service for managing user addresses and forwarded addresses
+ */
 class AddressService extends AbstractService
 {
-	/**
-	 * @param string $user
-	 * @param array|null $params
-	 * @param array|null $opts
-	 * @return Address
-	 *
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-    public function create(string $user, array|null $params = null, array|null $opts = null): Address
+    /**
+     * Create a new address for a user
+     *
+     * @param string $user
+     * @param CreateAddressRequestDto $params
+     * @param array|null $opts
+     * @return CreatedResourceResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function create(string $user, CreateAddressRequestDto $params, array|null $opts = null): CreatedResourceResponseDto
     {
-        return $this->request('post', $this->buildPath('/users/%s/addresses', $user), $params, $opts);
+        return $this->requestDto('post', $this->buildPath('/users/%s/addresses', $user), $params, CreatedResourceResponseDto::class, $opts);
     }
 
-	/**
-	 * @param array|null $params
-	 * @param array|null $opts
-	 * @return ForwardedAddress
-	 *
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-    public function createForwarded(array|null $params = null, array|null $opts = null): ForwardedAddress
+    /**
+     * Create a new forwarded address
+     *
+     * @param CreateForwardedAddressRequestDto $params
+     * @param array|null $opts
+     * @return CreatedResourceResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function createForwarded(CreateForwardedAddressRequestDto $params, array|null $opts = null): CreatedResourceResponseDto
     {
-        $opts['object'] = ForwardedAddress::OBJECT_NAME;
-        return $this->request('post', '/addresses/forwarded', $params, $opts);
+        return $this->requestDto('post', '/addresses/forwarded', $params, CreatedResourceResponseDto::class, $opts);
     }
 
-	/**
-	 * @param string $user
-	 * @param string $address
-	 * @param array|null $params
-	 * @param array|null $opts
-	 * @return Address
-	 *
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-	public function delete(string $user, string $address, array|null $params = null, array|null $opts = null): Address
+    /**
+     * Delete an address
+     *
+     * @param string $user
+     * @param string $address
+     * @param array|null $opts
+     * @return SuccessResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function delete(string $user, string $address, array|null $opts = null): SuccessResponseDto
     {
-        return $this->request('delete', $this->buildPath('/users/%s/addresses/%s', $user, $address), $params, $opts);
+        return $this->requestDto('delete', $this->buildPath('/users/%s/addresses/%s', $user, $address), null, SuccessResponseDto::class, $opts);
     }
 
-	/**
-	 * @param string $address
-	 * @param array|null $params
-	 * @param array|null $opts
-	 * @return ForwardedAddress
-	 *
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-	public function deleteForwarded(string $address, array|null $params = null, array|null $opts = null): ForwardedAddress
+    /**
+     * Delete a forwarded address
+     *
+     * @param string $address
+     * @param array|null $opts
+     * @return SuccessResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function deleteForwarded(string $address, array|null $opts = null): SuccessResponseDto
     {
-        $opts['object'] = ForwardedAddress::OBJECT_NAME;
-        return $this->request('delete', $this->buildPath('/addresses/forwarded/%s', $address), $params, $opts);
+        return $this->requestDto('delete', $this->buildPath('/addresses/forwarded/%s', $address), null, SuccessResponseDto::class, $opts);
     }
 
-	/**
-	 * @param string $address
-	 * @param array|null $params
-	 * @param array|null $opts
-	 * @return Address
-	 *
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-	public function resolve(string $address, array|null $params = null, array|null $opts = null): Address
+    /**
+     * Resolve an address
+     *
+     * @param string $address
+     * @param ResolveAddressRequestDto $params
+     * @param array|null $opts
+     * @return ResolvedAddressResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function resolve(string $address, ResolveAddressRequestDto $params, array|null $opts = null): ResolvedAddressResponseDto
     {
-        return $this->request('get', $this->buildPath('/addresses/resolve/%s', $address), $params, $opts);
+        return $this->requestDto('get', $this->buildPath('/addresses/resolve/%s', $address), $params, ResolvedAddressResponseDto::class, $opts);
     }
 
-	/**
-	 * @param string $user
-	 * @param array|null $params
-	 * @param array|null $opts
-	 *
-	 * @return Collection2|Address[]
-	 */
-    public function list(string $user, array|null $params = null, array|null $opts = null): Collection2|Address
+    /**
+     * List addresses for a user
+     *
+     * @param string $user
+     * @param ListUserRegisteredAddressesRequestDto $params
+     * @param array|null $opts
+     * @return PaginatedResultDto<AddressResponseDto>
+     */
+    public function list(string $user, ListUserRegisteredAddressesRequestDto $params, array|null $opts = null): PaginatedResultDto
     {
-        return $this->requestCollection('get', $this->buildPath('/users/%s/addresses', $user), $params, $opts);
+        return $this->requestPaginatedDto('get', $this->buildPath('/users/%s/addresses', $user), $params, AddressResponseDto::class, $opts);
     }
 
-	/**
-	 * @param array|null $params
-	 * @param array|null $opts
-	 *
-	 * @return Collection2|Address[]
-	 */
-    public function all(array|null $params = null, array|null $opts = null): Collection2|Address
+    /**
+     * List all registered addresses
+     *
+     * @param ListAllRegisteredAddressesRequestDto $params
+     * @param array|null $opts
+     * @return PaginatedResultDto<AllAddressResponseDto>
+     */
+    public function listAll(ListAllRegisteredAddressesRequestDto $params, array|null $opts = null): PaginatedResultDto
     {
-        return $this->requestCollection('get', '/addresses', $params, $opts);
+        return $this->requestPaginatedDto('get', '/addresses', $params, AllAddressResponseDto::class, $opts);
     }
 
-	/**
-	 * @param array|null $params
-	 * @param array|null $opts
-	 *
-	 * @return Address
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-	public function renameDomain(array|null $params = null, array|null $opts = null): Address
+    /**
+     * Rename domain for all addresses
+     *
+     * @param RenameDomainRequestDto $params
+     * @param array|null $opts
+     * @return RenameDomainResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function renameDomain(RenameDomainRequestDto $params, array|null $opts = null): RenameDomainResponseDto
     {
-        return $this->request('put', '/addresses/renameDomain', $params, $opts);
+        return $this->requestDto('put', '/addresses/renameDomain', $params, RenameDomainResponseDto::class, $opts);
     }
 
-	/**
-	 * @param string $user
-	 * @param string $address
-	 * @param array|null $params
-	 * @param array|null $opts
-	 *
-	 * @return Address
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-    public function get(string $user, string $address, array|null $params = null, array|null $opts = null): Address
+    /**
+     * Get address information
+     *
+     * @param string $user
+     * @param string $address
+     * @param array|null $opts
+     * @return AddressResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function get(string $user, string $address, array|null $opts = null): AddressResponseDto
     {
-        return $this->request('get', $this->buildPath('/users/%s/addresses/%s', $user, $address), $params, $opts);
+        return $this->requestDto('get', $this->buildPath('/users/%s/addresses/%s', $user, $address), null, AddressResponseDto::class, $opts);
     }
 
-	/**
-	 * @param string $address
-	 * @param array|null $params
-	 * @param array|null $opts
-	 *
-	 * @return ForwardedAddress
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-    public function getForwarded(string $address, array|null $params = null, array|null $opts = null): ForwardedAddress
+    /**
+     * Get forwarded address information
+     *
+     * @param string $address
+     * @param array|null $opts
+     * @return ForwardedAddressResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function getForwarded(string $address, array|null $opts = null): ForwardedAddressResponseDto
     {
-        $opts['object'] = ForwardedAddress::OBJECT_NAME;
-        return $this->request('get', $this->buildPath('/addresses/forwarded/%s', $address), $params, $opts);
+        return $this->requestDto('get', $this->buildPath('/addresses/forwarded/%s', $address), null, ForwardedAddressResponseDto::class, $opts);
     }
 
-	/**
-	 * @param string $user
-	 * @param string $address
-	 * @param array|null $params
-	 * @param array|null $opts
-	 *
-	 * @return Address
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-	public function update(string $user, string $address, array|null $params = null, array|null $opts = null): Address
+    /**
+     * Update an address
+     *
+     * @param string $user
+     * @param string $addressId
+     * @param UpdateAddressRequestDto $params
+     * @param array|null $opts
+     * @return SuccessResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function update(string $user, string $addressId, UpdateAddressRequestDto $params, array|null $opts = null): SuccessResponseDto
     {
-        return $this->request('put', $this->buildPath('/users/%s/addresses/%s', $user, $address), $params, $opts);
+        return $this->requestDto('put', $this->buildPath('/users/%s/addresses/%s', $user, $addressId), $params, SuccessResponseDto::class, $opts);
     }
 
-	/**
-	 * @param string $address
-	 * @param array|null $params
-	 * @param array|null $opts
-	 *
-	 * @return ForwardedAddress
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-	public function updateForwarded(string $address, array|null $params = null, array|null $opts = null): ForwardedAddress
+    /**
+     * Update a forwarded address
+     *
+     * @param string $address
+     * @param UpdateForwardedAddressRequestDto $params
+     * @param array|null $opts
+     * @return SuccessResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function updateForwarded(string $address, UpdateForwardedAddressRequestDto $params, array|null $opts = null): SuccessResponseDto
     {
-        $opts['object'] = ForwardedAddress::OBJECT_NAME;
-        return $this->request('put', $this->buildPath('/addresses/forwarded/%s', $address), $params, $opts);
+        return $this->requestDto('put', $this->buildPath('/addresses/forwarded/%s', $address), $params, SuccessResponseDto::class, $opts);
     }
 
-	/**
-	 * @param string $user
-	 * @param array|null $params
-	 * @param array|null $opts
-	 *
-	 * @return Collection2
-	 */
-	public function listAddressRegister(string $user, array|null $params = null, array|null $opts = null): Collection2
+    /**
+     * List address register for a user
+     *
+     * @param string $user
+     * @param AddressRegisterRequestDto $params
+     * @param array|null $opts
+     * @return PaginatedResultDto<AddressRegisterResponseDto>
+     */
+    public function listAddressRegister(string $user, AddressRegisterRequestDto $params, array|null $opts = null): PaginatedResultDto
     {
-        return $this->requestCollection('get', $this->buildPath('/users/%s/addressregister', $user), $params, $opts);
+        return $this->requestPaginatedDto('get', $this->buildPath('/users/%s/addressregister', $user), $params, AddressRegisterResponseDto::class, $opts);
     }
 
-	/**
-	 * @param string $user
-	 * @param string $address
-	 * @param array|null $params
-	 * @param array|null $opts
-	 *
-	 * @return WildduckObject
-	 * @throws ApiConnectionException
-	 * @throws AuthenticationFailedException
-	 * @throws InvalidAccessTokenException
-	 * @throws RequestFailedException
-	 * @throws ValidationException
-	 */
-	public function updateAddressFromRegister(string $user, string $address, array|null $params = null, array|null $opts = null): WildduckObject
+    /**
+     * Update address from register
+     *
+     * @param string $user
+     * @param string $addressId
+     * @param UpdateAddressRegisterRequestDto $params
+     * @param array|null $opts
+     * @return SuccessResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function updateAddressFromRegister(string $user, string $addressId, UpdateAddressRegisterRequestDto $params, array|null $opts = null): SuccessResponseDto
     {
-        return $this->request('put', $this->buildPath('/users/%s/addressregister/%s', $user, $address), $params, $opts);
+        return $this->requestDto('put', $this->buildPath('/users/%s/addressregister/%s', $user, $addressId), $params, SuccessResponseDto::class, $opts);
     }
 }

@@ -22,25 +22,27 @@ class StreamRequest
 
     private static ?Client $_httpClient = null;
 
+    /** @phpstan-ignore-next-line */
     private static array $_httpOptions = [];
 
+    /** @phpstan-ignore-next-line */
     private static Request $_request;
 
     private static ResponseInterface $_response;
 
     private string|null $_lastId = null;
 
-    private int|null $_retry = self::RETRY_DEFAULT_MS;
+    private int $_retry = self::RETRY_DEFAULT_MS;
 
     public function __construct(string|null $apiBase, string|null $accessToken, array|RequestOptions $opts = [])
     {
 
         if (!$apiBase) {
-	        $apiBase = Wildduck::getApiBase();
+            $apiBase = Wildduck::getApiBase();
         }
 
         if (!$accessToken) {
-	        $accessToken = Wildduck::getAccessToken();
+            $accessToken = Wildduck::getAccessToken();
         }
 
         self::$_request = Request::createFromGlobals();
@@ -59,14 +61,14 @@ class StreamRequest
         ]);
     }
 
-	/**
-	 * @param string $method
-	 * @param string $path
-	 * @param array|null $params
-	 * @param array|null $headers
-	 * @return StreamedResponse
-	 * @throws ErrorException
-	 */
+    /**
+     * @param string $method
+     * @param string $path
+     * @param array|null $params
+     * @param array|null $headers
+     * @return StreamedResponse
+     * @throws ErrorException
+     */
     public function stream(string $method, string $path, array|null $params = [], array|null $headers = []): StreamedResponse
     {
         $params ??= [];
@@ -147,7 +149,7 @@ class StreamRequest
         @set_time_limit(0); // Disable time limit
 
         if (function_exists('apache_setenv')) {
-            @apache_setenv('no-gzip', 1);
+            @apache_setenv('no-gzip', '1');
         }
 
         @ini_set('output_buffering', 0);
@@ -158,7 +160,7 @@ class StreamRequest
             ob_end_flush();
         }
 
-        ob_implicit_flush(1);
+        ob_implicit_flush(true);
     }
 
     /**
@@ -182,7 +184,7 @@ class StreamRequest
             }
         } catch (GuzzleException $guzzleException) {
             $message = $guzzleException->getMessage();
-            throw new ErrorException(sprintf('%s - %s', $method, $message), self::HTTP_ERROR, $guzzleException);
+            throw new ErrorException(sprintf('%s - %s', $method, $message), self::HTTP_ERROR, 0, null, 0, $guzzleException);
         }
     }
 }

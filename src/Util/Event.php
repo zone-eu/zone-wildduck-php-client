@@ -36,10 +36,10 @@ class Event
         $this->retry = $retry;
     }
 
-	/**
-	 * @param string $raw
-	 * @return static
-	 */
+    /**
+     * @param string $raw
+     * @return static
+     */
     public static function parse(string $raw): static
     {
         $event = new static();

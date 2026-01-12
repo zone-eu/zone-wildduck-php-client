@@ -2,12 +2,10 @@
 
 namespace Zone\Wildduck;
 
-use ErrorException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
-use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\ValidationException;
@@ -37,7 +35,7 @@ interface WildduckClientInterface
      *
      * @param string $method the HTTP method
      * @param string $path the path of the request
-     * @param mixed $params Must be KV pairs when not uploading files otherwise anything is allowed, string is expected for file upload. Can be nested for arrays and hashes
+     * @param array|string|null $params Must be KV pairs when not uploading files otherwise anything is allowed, string is expected for file upload. Can be nested for arrays and hashes
      * @param array|RequestOptions|null $opts the special modifiers of the request
      * @param bool $fileUpload
      *
@@ -48,32 +46,17 @@ interface WildduckClientInterface
      * @throws ValidationException
      * @throws InvalidAccessTokenException
      */
-    public function request(string $method, string $path, mixed $params, array|RequestOptions|null $opts, bool $fileUpload = false): mixed;
+    public function request(string $method, string $path, array|string|null $params, array|RequestOptions|null $opts, bool $fileUpload = false): ApiResponse|string;
 
     /**
-     * @param string $method
-     * @param string $path
-     * @param array|null $params
-     * @param array|RequestOptions|null $opts
-     * @return mixed
+     * Sends a streaming request to Wildduck's API (for EventSource).
      *
-     * @throws ApiConnectionException
-     * @throws AuthenticationFailedException
-     * @throws InvalidAccessTokenException
-     * @throws InvalidDatabaseException
-     * @throws RequestFailedException
-     * @throws ValidationException
-     */
-    public function requestCollection(string $method, string $path, array|null $params, array|RequestOptions|null $opts): mixed;
-
-    /**
-     * @param string $method
-     * @param string $path
-     * @param array|null $params
-     * @param array|null $opts
-     * @return StreamedResponse
+     * @param string $method the HTTP method
+     * @param string $path the path of the request
+     * @param array|null $params the parameters of the request
+     * @param array|object|null $opts the special modifiers of the request
      *
-     * @throws ErrorException
+     * @return StreamedResponse the streamed response
      */
-    public function stream(string $method, string $path, array|null $params, array|null $opts): StreamedResponse;
+    public function stream(string $method, string $path, array|null $params, array|object|null $opts): StreamedResponse;
 }

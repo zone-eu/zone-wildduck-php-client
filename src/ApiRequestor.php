@@ -14,8 +14,8 @@ use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\ValidationException;
 use Zone\Wildduck\HttpClient\ClientInterface;
 use Zone\Wildduck\HttpClient\CurlClient;
-use Zone\Wildduck\Resource\ApiResource;
 use Zone\Wildduck\Util\Util;
+
 use function array_merge;
 use function explode;
 use function get_resource_type;
@@ -29,6 +29,7 @@ use function json_last_error;
 use function method_exists;
 use function php_uname;
 use function stream_get_meta_data;
+
 use const JSON_ERROR_NONE;
 use const PHP_VERSION;
 
@@ -79,16 +80,12 @@ class ApiRequestor
     /**
      * @static
      *
-     * @param ApiResource|array|bool|mixed $d
+     * @param array|bool|mixed $d
      *
-     * @return ApiResource|array|mixed|string
+     * @return array|mixed|string
      */
     protected static function _encodeObjects(mixed $d): mixed
     {
-        if ($d instanceof ApiResource) {
-            return Util::utf8($d->id);
-        }
-
         if (is_array($d)) {
             $res = [];
             foreach ($d as $k => $v) {
@@ -124,7 +121,6 @@ class ApiRequestor
         $headers = $headers ?: [];
 
         [$rBody, $rCode, $rHeaders, $myApiKey] = $this->_requestRaw($method, $url, $params, $headers, $fileUpload);
-
         $json = null;
         if ($rCode < 200 || $rCode >= 300) {
             $resp = json_decode((string)$rBody, true);
@@ -162,12 +158,8 @@ class ApiRequestor
         }
 
         // Clients can supply arbitrary additional keys to be included in the
-        // X-Wildduck-Client-User-Agent header via the optional getUserAgentInfo()
-        // method
+        // X-Wildduck-Client-User-Agent header
         $clientUAInfo = null;
-        if (method_exists($this->httpClient(), 'getUserAgentInfo')) {
-            $clientUAInfo = $this->httpClient()->getUserAgentInfo();
-        }
 
         $absUrl = $this->_apiBase . $url;
         $defaultHeaders = $this->_defaultHeaders($myApiKey, $clientUAInfo);
@@ -180,6 +172,7 @@ class ApiRequestor
             foreach ($params as $k => $v) {
                 if (is_resource($v)) {
                     $hasFile = true;
+                    /** @phpstan-ignore-next-line */
                     $params[$k] = $this->_processResourceParam($v);
                 } elseif ($v instanceof CURLFile) {
                     $hasFile = true;
@@ -304,12 +297,14 @@ class ApiRequestor
      */
     private function _processResourceParam(mixed $resource): CURLFile
     {
+        /** @phpstan-ignore-next-line */
         if ('stream' !== get_resource_type($resource)) {
             throw new InvalidArgumentException(
                 'Attempted to upload a resource that is not a stream'
             );
         }
 
+        /** @phpstan-ignore-next-line */
         $metaData = stream_get_meta_data($resource);
         if ('plainfile' !== $metaData['wrapper_type']) {
             throw new InvalidArgumentException(
@@ -324,13 +319,12 @@ class ApiRequestor
     private function logRequest(
         string $method,
         string $absUrl,
-        array  $headers,
-        array  $params,
-        bool   $hasFile,
-        bool   $fileUpload,
-        array  $response
-    ): void
-    {
+        array $headers,
+        array $params,
+        bool $hasFile,
+        bool $fileUpload,
+        array $response
+    ): void {
         try {
             if (!preg_match(getenv("WDPC_REQUEST_LOGGING_PATTERN"), $absUrl)) {
                 return;
@@ -485,6 +479,7 @@ class ApiRequestor
     {
         $resp = json_decode($rbody, true);
         $jsonError = json_last_error();
+
         if (null === $resp && JSON_ERROR_NONE !== $jsonError) {
             $msg = sprintf('Invalid response body from API: %s ', $rbody)
                 . sprintf('(HTTP response code was %d, json_last_error() was %s)', $rcode, $jsonError);
@@ -492,7 +487,7 @@ class ApiRequestor
             throw new UnexpectedValueException($msg, $rcode);
         }
 
-        if ($rcode < 200 || $rcode >= 300 || isset($resp['error']) || isset($resp['code'])) {
+        if ($rcode < 200 || $rcode >= 300 || isset($resp['error']) || (isset($resp['code']) && $resp['code'] !== 'TaskScheduled')) {
             $this->handleErrorResponse($rbody, $rcode, $resp);
         }
 

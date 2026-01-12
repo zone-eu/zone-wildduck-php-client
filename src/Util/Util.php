@@ -3,8 +3,6 @@
 namespace Zone\Wildduck\Util;
 
 use AllowDynamicProperties;
-use Zone\Wildduck\Collection2;
-use Zone\Wildduck\WildduckObject;
 
 #[AllowDynamicProperties]
 abstract class Util
@@ -12,11 +10,6 @@ abstract class Util
     private static ?bool $isMbstringAvailable = null;
 
     private static ?bool $isHashEqualsAvailable = null;
-
-    public static function isCollection(array $resp): bool
-    {
-        return isset($resp['results']);
-    }
 
     /**
      * Whether the provided array (or other) is a list rather than a dictionary.
@@ -33,41 +26,6 @@ abstract class Util
             return true;
         }
         return array_keys($array) === range(0, count($array) - 1);
-    }
-
-    /**
-     * Converts a response from the Wildduck API to the corresponding PHP object.
-     *
-     * @param array|string|bool|object $resp the response from the Wildduck API
-     * @param array|RequestOptions|null $opts
-     *
-     * @return mixed
-     */
-    public static function convertToWildduckObject(array|string|bool|object $resp, array|RequestOptions|null $opts = null): mixed
-    {
-        $types = ObjectTypes::MAPPING;
-        if (is_array($resp) && self::isCollection($resp)) {
-            return new Collection2($resp, $opts);
-        }
-
-        if (is_array($resp) && self::isList($resp)) {
-            $mapped = [];
-            foreach ($resp as $i) {
-                $mapped[] = self::convertToWildduckObject($i, $opts);
-            }
-
-            return $mapped;
-        }
-
-        if ($opts && $opts->object) {
-            $class = $types[$opts->object];
-        } elseif (isset($resp['object'], $types[$resp['object']]) && is_string($resp['object'])) {
-            $class = $types[$resp['object']];
-        } else {
-            $class = WildduckObject::class;
-        }
-
-        return is_array($resp) ? $class::constructFrom($resp, $opts) : $resp;
     }
 
     /**

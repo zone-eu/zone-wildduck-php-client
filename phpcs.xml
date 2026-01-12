@@ -2,9 +2,9 @@
 <ruleset name="ZWM Laravel PSR12">
     <description>The Zone Wildduck PSR12 coding standard.</description>
 
-	<ini name="memory_limit" value="128M"/>
+    <ini name="memory_limit" value="128M" />
 
-    <arg name="extensions" value="php"/>
+    <arg name="extensions" value="php" />
 
     <file>src</file>
 
@@ -12,29 +12,33 @@
 
     <!-- Code MUST follow rules outlined in PSR-12. -->
     <rule ref="PSR12">
-        <exclude name="PSR12.Files.FileHeader.SpacingInsideBlock"/>
+        <exclude name="PSR12.Files.FileHeader.SpacingInsideBlock" />
     </rule>
     <!-- Extra disallow dump/var_dump/var_export functions -->
     <rule ref="Generic.PHP.ForbiddenFunctions">
         <properties>
             <property name="forbiddenFunctions" type="array"
-                      value="dump=>null,var_dump=>null,var_export=>null,eval=>null,sizeof=>count,print=>echo,create_function=>null"/>
+                value="dump=>null,var_dump=>null,var_export=>null,eval=>null,sizeof=>count,print=>echo,create_function=>null" />
         </properties>
     </rule>
-    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
-    <rule ref="Generic.Formatting.SpaceAfterCast"/>
-	<rule ref="Generic.Files.LineLength">
-		<severity>0</severity>
-	</rule>
-	<!-- Methods MUST not be prefixed with an underscore -->
-	<rule ref="PSR2.Methods.MethodDeclaration.Underscore">
-		<severity>0</severity>
-	</rule>
-	<!-- Properties MUST not be prefixed with an underscore -->
-	<rule ref="PSR2.Classes.PropertyDeclaration.Underscore">
-		<severity>0</severity>
-	</rule>
-	<rule ref="PSR12.Properties.ConstantVisibility.NotFound">
-		<severity>0</severity>
-	</rule>
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax" />
+    <rule ref="Generic.Formatting.SpaceAfterCast" />
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="1500" />
+            <property name="absoluteLineLimit" value="0" />
+        </properties>
+        <severity>0</severity>
+    </rule>
+    <!-- Methods MUST not be prefixed with an underscore -->
+    <rule ref="PSR2.Methods.MethodDeclaration.Underscore">
+        <severity>0</severity>
+    </rule>
+    <!-- Properties MUST not be prefixed with an underscore -->
+    <rule ref="PSR2.Classes.PropertyDeclaration.Underscore">
+        <severity>0</severity>
+    </rule>
+    <rule ref="PSR12.Properties.ConstantVisibility.NotFound">
+        <severity>0</severity>
+    </rule>
 </ruleset>

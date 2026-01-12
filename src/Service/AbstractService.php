@@ -2,8 +2,11 @@
 
 namespace Zone\Wildduck\Service;
 
-use ErrorException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Zone\Wildduck\ApiResponse;
+use Zone\Wildduck\Dto\ResponseDtoInterface;
+use Zone\Wildduck\Dto\PaginatedResultDto;
+use Zone\Wildduck\Dto\RequestDtoInterface;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
@@ -11,8 +14,6 @@ use Zone\Wildduck\Exception\InvalidArgumentException;
 use Zone\Wildduck\Exception\InvalidDatabaseException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
-use Zone\Wildduck\Resource\File;
-use Zone\Wildduck\Util\RequestOptions;
 use Zone\Wildduck\WildduckClientInterface;
 
 /**
@@ -36,6 +37,110 @@ abstract class AbstractService
     }
 
     /**
+     * Make a request and convert response to DTO
+     *
+     * @template T of ResponseDtoInterface
+     * @param string $method
+     * @param string $path
+     * @param RequestDtoInterface|null $params
+     * @param class-string<T> $responseClass
+     * @param array|null $opts
+     * @return T
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    protected function requestDto(
+        string $method,
+        string $path,
+        RequestDtoInterface|null $params,
+        string $responseClass,
+        array|null $opts = null
+    ): ResponseDtoInterface {
+        $response = $this->request($method, $path, $params, $opts);
+        return $responseClass::fromArray($response);
+    }
+
+    /**
+     * Make a request and convert paginated response to PaginatedResultDto
+     *
+     * @template T of ResponseDtoInterface
+     * @param string $method
+     * @param string $path
+     * @param RequestDtoInterface|null $params
+     * @param class-string<T> $itemClass
+     * @param array|null $opts
+     * @return PaginatedResultDto<T>
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws InvalidDatabaseException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    protected function requestPaginatedDto(
+        string $method,
+        string $path,
+        RequestDtoInterface|null $params,
+        string $itemClass,
+        array|null $opts = null
+    ): PaginatedResultDto {
+        $response = $this->request($method, $path, $params, $opts);
+        /** @var PaginatedResultDto<T> */
+        return PaginatedResultDto::fromArray($response, $itemClass);
+    }
+
+    /**
+     * Make a request and return array response
+     *
+     * @param string $method
+     * @param string $path
+     * @param RequestDtoInterface|null $params
+     * @param array|null $opts
+     * @return array<string, mixed>
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    protected function request(string $method, string $path, RequestDtoInterface|null $params, array|null $opts = null): array
+    {
+        $opts = $opts ?? [];
+        $paramsArray = $params?->toArray();
+
+        $response = $this->getClient()->request($method, $path, $paramsArray, $opts, false);
+
+        return $response->json ?? [];
+    }
+
+    /**
+     * Make a request and return raw
+     *
+     * @param string $method
+     * @param string $path
+     * @param RequestDtoInterface|null $params
+     * @param array|null $opts
+     * @return ApiResponse|string
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    protected function requestResponse(string $method, string $path, RequestDtoInterface|null $params, array|null $opts = null): ApiResponse|string
+    {
+        $opts = $opts ?? [];
+        $paramsArray = $params?->toArray();
+
+        $response = $this->getClient()->request($method, $path, $paramsArray, $opts, false);
+
+        return $response;
+    }
+
+    /**
      * Upload file
      *
      * @param string $method
@@ -43,7 +148,7 @@ abstract class AbstractService
      * @param string $fileContent
      * @param array|null $opts
      *
-     * @return mixed
+     * @return ApiResponse|string
      *
      * @throws ApiConnectionException
      * @throws AuthenticationFailedException
@@ -51,47 +156,9 @@ abstract class AbstractService
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function uploadFile(string $method, string $path, string $fileContent, array|null $opts): mixed
+    public function uploadFile(string $method, string $path, string $fileContent, array|null $opts): ApiResponse|string
     {
         return $this->getClient()->request($method, $path, $fileContent, $opts, true);
-    }
-
-    /**
-     * @param string $method
-     * @param string $path
-     * @param array|null $params Must be KV pairs
-     * @param array|null $opts
-     * @param bool $fileUpload
-     *
-     * @return mixed
-     * @throws ApiConnectionException
-     * @throws AuthenticationFailedException
-     * @throws InvalidAccessTokenException
-     * @throws RequestFailedException
-     * @throws ValidationException
-     */
-    public function request(string $method, string $path, array|null $params, array|null $opts, bool $fileUpload = false): mixed
-    {
-        if (null !== $this->getObjectName()) {
-            $opts['object'] = $this->getObjectName();
-        }
-
-        return $this->getClient()->request($method, $path, $this->formatParams($params), $opts, $fileUpload);
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function getObjectName(): mixed
-    {
-        $parts = explode('\\', static::class);
-        $service = $parts[count($parts) - 1];
-        $entityClass = implode('\\', [$parts[0], $parts[1]]) . '\\' . explode('Service', $service)[0];
-        if (class_exists($entityClass)) {
-            return $entityClass::OBJECT_NAME;
-        }
-
-        return null;
     }
 
     /**
@@ -102,64 +169,6 @@ abstract class AbstractService
     public function getClient(): WildduckClientInterface
     {
         return $this->client;
-    }
-
-    /**
-     * Translate null values to empty strings. For service methods,
-     * we interpret null as a request to unset the field, which
-     * corresponds to sending an empty string for the field to the
-     * API.
-     *
-     * @param array|null $params
-     * @return array|null
-     */
-    private function formatParams(array|null $params): array|null
-    {
-        if (null === $params) {
-            return null;
-        }
-
-        array_walk_recursive($params, static function (&$value): void {
-            if (null === $value) {
-                $value = '';
-            }
-        });
-
-        return $params;
-    }
-
-    /**
-     * @param string $method
-     * @param string $path
-     * @param array|null $params
-     * @param array|RequestOptions|null $opts
-     *
-     * @return mixed
-     * @throws ApiConnectionException
-     * @throws AuthenticationFailedException
-     * @throws InvalidAccessTokenException
-     * @throws InvalidDatabaseException
-     * @throws RequestFailedException
-     * @throws ValidationException
-     */
-    public function requestCollection(string $method, string $path, array|null $params, array|RequestOptions|null $opts): mixed
-    {
-        $opts['object'] = $this->getObjectName();
-        return $this->getClient()->requestCollection($method, $path, $this->formatParams($params), $opts);
-    }
-
-    /**
-     * @param string $method
-     * @param string $path
-     * @param array|null $params
-     * @param array|null $opts
-     *
-     * @return StreamedResponse
-     * @throws ErrorException
-     */
-    public function stream(string $method, string $path, array|null $params, array|null $opts): StreamedResponse
-    {
-        return $this->getClient()->stream($method, $path, $this->formatParams($params), $opts);
     }
 
     /**
@@ -179,5 +188,19 @@ abstract class AbstractService
         }
 
         return sprintf($basePath, ...array_map('\urlencode', $ids));
+    }
+
+    /**
+     * Stream a request to the API (for EventSource streams)
+     *
+     * @param string $method
+     * @param string $path
+     * @param array|null $params
+     * @param array|null $opts
+     * @return StreamedResponse
+     */
+    protected function stream(string $method, string $path, array|null $params = null, array|null $opts = null): StreamedResponse
+    {
+        return $this->client->stream($method, $path, $params, $opts);
     }
 }

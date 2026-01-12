@@ -188,14 +188,18 @@ class CurlClient implements ClientInterface
             }
 
             $opts[CURLOPT_POST] = 1;
-            $opts[CURLOPT_POSTFIELDS] = $hasFile ? $params : json_encode($params);
+            // Encode empty arrays as {} instead of []
+            $encoded = $hasFile ? $params : json_encode(count($params) === 0 ? new \stdClass() : $params);
+            $opts[CURLOPT_POSTFIELDS] = $encoded;
         } elseif ('put' === $method) {
             if (is_countable($params) && count($params) === 0) {
                 $params = [];
             }
 
             $opts[CURLOPT_CUSTOMREQUEST] = 'PUT';
-            $opts[CURLOPT_POSTFIELDS] = $hasFile ? $params : json_encode($params);
+            // Encode empty arrays as {} instead of []
+            $encoded = $hasFile ? $params : json_encode(count($params) === 0 ? new \stdClass() : $params);
+            $opts[CURLOPT_POSTFIELDS] = $encoded;
         } elseif ('delete' === $method) {
             $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
             if (is_countable($params) && count($params) > 0) {
