@@ -15,7 +15,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 readonly class MessagePaginatedResponseDto implements ResponseDtoInterface
 {
     /**
-     * @param MessageResponseDto[] $results Array of result DTOs
+     * @param MessageListResponseDto[] $results Array of result DTOs
      */
     public function __construct(
         public array $results,
@@ -24,8 +24,7 @@ readonly class MessagePaginatedResponseDto implements ResponseDtoInterface
         public string|false|null $nextCursor = null,
         public string|false|null $previousCursor = null,
         public int $page = 1,
-    ) {
-    }
+    ) {}
 
     /**
      * Create paginated result from API response
@@ -36,8 +35,8 @@ readonly class MessagePaginatedResponseDto implements ResponseDtoInterface
      */
     public static function fromArray(array $data): self
     {
-        /** @var PaginatedResultDto<MessageResponseDto> $parentSelf */
-        $parentSelf = PaginatedResultDto::fromArray($data, MessageResponseDto::class);
+        /** @var PaginatedResultDto<MessageListResponseDto> $parentSelf */
+        $parentSelf = PaginatedResultDto::fromArray($data, MessageListResponseDto::class);
 
         $instance = new self(
             results: $parentSelf->results,
