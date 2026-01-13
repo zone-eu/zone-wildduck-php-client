@@ -95,7 +95,7 @@ class ArchiveServiceIntegrationTest extends IntegrationTestCase
     {
         $this->markTestSkipped(
             'Wildduck API returns MongoDB ObjectIds for archived messages, ' .
-            'but restore endpoint expects numeric message IDs. API inconsistency.'
+                'but restore endpoint expects numeric message IDs. API inconsistency.'
         );
     }
 

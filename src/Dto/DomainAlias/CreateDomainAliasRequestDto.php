@@ -14,8 +14,7 @@ readonly class CreateDomainAliasRequestDto implements RequestDtoInterface
     public function __construct(
         public string $alias,
         public string $domain,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {
