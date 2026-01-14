@@ -27,25 +27,32 @@ readonly class UserResponseDto implements ResponseDtoInterface
         public ?string $name = null,
         public ?string $address = null,
         public int|bool|null $retention = null,
-        /** @var string[] */ public array $enabled2fa = [],
+        /** @var string[] */
+        public array $enabled2fa = [],
         public ?bool $autoreply = null,
         public ?bool $encryptMessages = null,
         public ?bool $encryptForwarded = null,
         public ?string $pubKey = null,
         public ?KeyInfoResponseDto $keyInfo = null,
-        /** @var array<string, mixed>|null Custom metadata */ public ?array $metaData = null,
-        /** @var string[] */ public array $targets = [],
+        /** @var array<string, mixed>|null Custom metadata */
+        public ?array $metaData = null,
+        /** @var string[] */
+        public array $targets = [],
         public ?int $spamLevel = null,
         public ?UserLimitsResponseDto $limits = null,
-        /** @var string[] */ public array $tags = [],
-        /** @var string[] */ public array $fromWhitelist = [],
-        /** @var string[] */ public array $disabledScopes = [],
+        /** @var string[] */
+        public array $tags = [],
+        /** @var string[] */
+        public array $fromWhitelist = [],
+        /** @var string[] */
+        public array $disabledScopes = [],
         public ?bool $hasPasswordSet = null,
         public ?bool $activated = null,
         public ?bool $disabled = null,
         public ?bool $suspended = null,
-    ) {
-    }
+        public ?bool $passwordPwned = null,
+        public ?bool $requirePasswordChange = null,
+    ) {}
 
     public static function fromArray(array $data): self
     {
@@ -101,6 +108,8 @@ readonly class UserResponseDto implements ResponseDtoInterface
             activated: isset($data['activated']) && is_bool($data['activated']) ? $data['activated'] : null,
             disabled: isset($data['disabled']) && is_bool($data['disabled']) ? $data['disabled'] : null,
             suspended: isset($data['suspended']) && is_bool($data['suspended']) ? $data['suspended'] : null,
+            passwordPwned: isset($data['passwordPwned']) && is_bool($data['passwordPwned']) ? $data['passwordPwned'] : null,
+            requirePasswordChange: isset($data['requirePasswordChange']) && is_bool($data['requirePasswordChange']) ? $data['requirePasswordChange'] : null,
         );
     }
 }
