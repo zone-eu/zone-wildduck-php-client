@@ -26,6 +26,13 @@ use Zone\Wildduck\Exception\ValidationException;
  */
 class MailboxService extends AbstractService
 {
+    public const string SPECIAL_USE_DRAFTS = '\Drafts';
+
+    public const string SPECIAL_USE_JUNK = '\Junk';
+
+    public const string SPECIAL_USE_SENT = '\Sent';
+
+    public const string SPECIAL_USE_TRASH = '\Trash';
     /**
      * Create a new mailbox
      *
