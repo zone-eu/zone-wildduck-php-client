@@ -2,6 +2,7 @@
 
 namespace Zone\Wildduck\Service;
 
+use Zone\Wildduck\ApiResponse;
 use Zone\Wildduck\Dto\Message\BulkUpdateMessagesRequestDto;
 use Zone\Wildduck\Dto\Message\ForwardMessageRequestDto;
 use Zone\Wildduck\Dto\Message\ListMessagesRequestDto;
@@ -76,7 +77,7 @@ class MessageService extends AbstractService
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function downloadAttachment(string $user, string $mailbox, int $message, string $attachment, array|null $opts = null): string
+    public function downloadAttachment(string $user, string $mailbox, int $message, string $attachment, array|null $opts = null): string|ApiResponse
     {
         $opts = $opts ?? [];
         $opts['raw'] = true;
@@ -95,7 +96,7 @@ class MessageService extends AbstractService
 
         // When raw is true, requestResponse returns an ApiResponse object
         if ($response instanceof \Zone\Wildduck\ApiResponse) {
-            return $response->body ?? '';
+            return $response;
         }
 
         return $response;
