@@ -33,6 +33,8 @@ class MailboxService extends AbstractService
     public const string SPECIAL_USE_SENT = '\Sent';
 
     public const string SPECIAL_USE_TRASH = '\Trash';
+
+    public const string SPECIAL_USE_INBOX = '\Inbox';
     /**
      * Create a new mailbox
      *
