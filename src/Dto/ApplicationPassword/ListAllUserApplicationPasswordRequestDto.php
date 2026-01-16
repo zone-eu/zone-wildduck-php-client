@@ -12,9 +12,8 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 readonly class ListAllUserApplicationPasswordRequestDto implements RequestDtoInterface
 {
     public function __construct(
-        public bool $showAll
-    ) {
-    }
+        public bool $showAll = false
+    ) {}
 
     public function toArray(): array
     {

@@ -128,11 +128,11 @@ class AddressService extends AbstractService
      * List addresses for a user
      *
      * @param string $user
-     * @param ListUserRegisteredAddressesRequestDto $params
+     * @param ?ListUserRegisteredAddressesRequestDto $params
      * @param array|null $opts
      * @return PaginatedResultDto<AddressResponseDto>
      */
-    public function list(string $user, ListUserRegisteredAddressesRequestDto $params, array|null $opts = null): PaginatedResultDto
+    public function list(string $user, ?ListUserRegisteredAddressesRequestDto $params = null, array|null $opts = null): PaginatedResultDto
     {
         return $this->requestPaginatedDto('get', $this->buildPath('/users/%s/addresses', $user), $params, AddressResponseDto::class, $opts);
     }

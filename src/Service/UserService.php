@@ -126,7 +126,7 @@ class UserService extends AbstractService
      * Logout user (invalidate all sessions)
      *
      * @param string $id
-     * @param LogoutUserRequestDto $params
+     * @param ?LogoutUserRequestDto $params
      * @param array|null $opts
      * @return SuccessResponseDto
      * @throws ApiConnectionException
@@ -135,7 +135,7 @@ class UserService extends AbstractService
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function logout(string $id, LogoutUserRequestDto $params, array|null $opts = null): SuccessResponseDto
+    public function logout(string $id, ?LogoutUserRequestDto $params = null, array|null $opts = null): SuccessResponseDto
     {
         return $this->requestDto('put', $this->buildPath('/users/%s/logout', $id), $params, SuccessResponseDto::class, $opts);
     }

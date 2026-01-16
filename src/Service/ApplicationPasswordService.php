@@ -48,14 +48,14 @@ class ApplicationPasswordService extends AbstractService
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function delete(string $user, string $asp, DeleteApplicationPasswordRequestDto $params, array|null $opts = null): SuccessResponseDto
+    public function delete(string $user, string $asp, ?DeleteApplicationPasswordRequestDto $params = null, array|null $opts = null): SuccessResponseDto
     {
         return $this->requestDto('delete', $this->buildPath('/users/%s/asps/%s', $user, $asp), $params, SuccessResponseDto::class, $opts);
     }
 
     /**
      * @param string $user
-     * @param ListAllUserApplicationPasswordRequestDto $params
+     * @param ?ListAllUserApplicationPasswordRequestDto $params
      * @param array<string, mixed>|null $opts
      *
      * @return PaginatedResultDto<ApplicationPasswordResponseDto>
@@ -66,7 +66,7 @@ class ApplicationPasswordService extends AbstractService
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function all(string $user, ListAllUserApplicationPasswordRequestDto $params, array|null $opts = null): PaginatedResultDto
+    public function all(string $user, ?ListAllUserApplicationPasswordRequestDto $params = null, array|null $opts = null): PaginatedResultDto
     {
         return $this->requestPaginatedDto('get', $this->buildPath('/users/%s/asps', $user), $params, ApplicationPasswordResponseDto::class, $opts);
     }
