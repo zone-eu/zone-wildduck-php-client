@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for WebAuthN authentication assertion
  */
-readonly class WebAuthnAuthenticationAssertionRequestDto implements RequestDtoInterface
+class WebAuthnAuthenticationAssertionRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $challenge,

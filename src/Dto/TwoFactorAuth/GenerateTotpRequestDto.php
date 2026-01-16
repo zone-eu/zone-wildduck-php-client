@@ -10,7 +10,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * Request DTO for generating TOTP seed
  */
-readonly class GenerateTotpRequestDto implements RequestDtoInterface
+class GenerateTotpRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $issuer,

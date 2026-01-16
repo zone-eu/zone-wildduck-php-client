@@ -16,7 +16,7 @@ use Zone\Wildduck\Dto\Traits\MetaDataSupportTrait;
 /**
  * Request DTO for uploading/creating a message
  */
-readonly class UploadMessageRequestDto implements RequestDtoInterface
+class UploadMessageRequestDto implements RequestDtoInterface
 {
     use MetaDataSupportTrait;
 

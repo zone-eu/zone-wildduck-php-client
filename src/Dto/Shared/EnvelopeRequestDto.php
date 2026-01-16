@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * SMTP envelope information
  */
-readonly class EnvelopeRequestDto implements RequestDtoInterface
+class EnvelopeRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?string $from = null,

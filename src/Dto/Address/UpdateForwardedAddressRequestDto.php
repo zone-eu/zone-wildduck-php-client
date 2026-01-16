@@ -12,7 +12,7 @@ use Zone\Wildduck\Dto\Traits\TaggableTrait;
 /**
  * DTO for updating a forwarded address
  */
-readonly class UpdateForwardedAddressRequestDto implements RequestDtoInterface
+class UpdateForwardedAddressRequestDto implements RequestDtoInterface
 {
     use MetaDataSupportTrait;
     use TaggableTrait;

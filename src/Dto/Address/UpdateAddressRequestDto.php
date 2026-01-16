@@ -12,7 +12,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * DTO for updating an existing address
  */
-readonly class UpdateAddressRequestDto implements RequestDtoInterface
+class UpdateAddressRequestDto implements RequestDtoInterface
 {
     use MetaDataSupportTrait;
     use TaggableTrait;

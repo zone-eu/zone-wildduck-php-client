@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for searching and applying actions to messages
  */
-readonly class SearchApplyMessagesRequestDto implements RequestDtoInterface
+class SearchApplyMessagesRequestDto implements RequestDtoInterface
 {
     /**
      * @param array<string, mixed> $action Define actions to take with matching messages

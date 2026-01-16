@@ -11,7 +11,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
  * Request DTO for validating TOTP token
  * POST /users/:user/2fa/totp/check
  */
-readonly class ValidateTotpRequestDto implements RequestDtoInterface
+class ValidateTotpRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $token,

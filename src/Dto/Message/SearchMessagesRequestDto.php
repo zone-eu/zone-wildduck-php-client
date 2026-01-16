@@ -6,7 +6,7 @@ namespace Zone\Wildduck\Dto\Message;
 
 use Zone\Wildduck\Dto\RequestDtoInterface;
 
-readonly class SearchTermsDto implements RequestDtoInterface
+class SearchTermsDto implements RequestDtoInterface
 {
     public ?string $query;
     public ?string $dateStart;
@@ -71,7 +71,7 @@ readonly class SearchTermsDto implements RequestDtoInterface
 /**
  * Request DTO for searching messages
  */
-readonly class SearchMessagesRequestDto extends SearchTermsDto
+class SearchMessagesRequestDto extends SearchTermsDto
 {
     public function __construct(
         public ?string $q = null,

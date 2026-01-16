@@ -10,7 +10,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * Request DTO for creating or updating a TLS certificate
  */
-readonly class CreateOrUpdateCertificateRequestDto implements RequestDtoInterface
+class CreateOrUpdateCertificateRequestDto implements RequestDtoInterface
 {
     /**
      * @param string[] $ca

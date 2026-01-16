@@ -10,7 +10,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * Request DTO for uploading a file
  */
-readonly class UploadFileRequestDto implements RequestDtoInterface
+class UploadFileRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $content,

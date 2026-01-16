@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * DTO for restoring archived messages by date range
  */
-readonly class RestoreArchivedMessagesRequestDto implements RequestDtoInterface
+class RestoreArchivedMessagesRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $start,

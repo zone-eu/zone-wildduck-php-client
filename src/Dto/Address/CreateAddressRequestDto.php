@@ -12,7 +12,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * DTO for creating a new address
  */
-readonly class CreateAddressRequestDto implements RequestDtoInterface
+class CreateAddressRequestDto implements RequestDtoInterface
 {
     use MetaDataSupportTrait;
     use TaggableTrait;

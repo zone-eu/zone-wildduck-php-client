@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for creating a blocked domain
  */
-readonly class CreateBlockedDomainRequestDto implements RequestDtoInterface
+class CreateBlockedDomainRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $domain,

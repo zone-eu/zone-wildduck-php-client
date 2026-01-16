@@ -10,7 +10,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * Recipient information DTO
  */
-readonly class RecipientRequestDto implements RequestDtoInterface
+class RecipientRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?string $name = null,

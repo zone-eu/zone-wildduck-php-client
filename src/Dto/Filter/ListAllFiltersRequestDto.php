@@ -10,7 +10,7 @@ use Zone\Wildduck\Dto\Traits\PaginatedRequestTrait;
 /**
  * DTO for renaming a domain across all addresses
  */
-readonly class ListAllFiltersRequestDto implements RequestDtoInterface
+class ListAllFiltersRequestDto implements RequestDtoInterface
 {
     use PaginatedRequestTrait;
 

@@ -10,7 +10,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * Request DTO for creating or updating DKIM key
  */
-readonly class CreateOrUpdateDkimRequestDto implements RequestDtoInterface
+class CreateOrUpdateDkimRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $domain,

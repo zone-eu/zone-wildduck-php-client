@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * DTO for creating an application password
  */
-readonly class DeleteApplicationPasswordRequestDto implements RequestDtoInterface
+class DeleteApplicationPasswordRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?string $protocol = null,

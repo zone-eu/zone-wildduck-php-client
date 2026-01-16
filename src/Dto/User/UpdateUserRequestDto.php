@@ -13,7 +13,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * DTO for updating an existing user
  */
-readonly class UpdateUserRequestDto implements RequestDtoInterface
+class UpdateUserRequestDto implements RequestDtoInterface
 {
     use EncryptionSupportTrait;
     use MetaDataSupportTrait;

@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for creating a new domain alias
  */
-readonly class CreateDomainAliasRequestDto implements RequestDtoInterface
+class CreateDomainAliasRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $alias,

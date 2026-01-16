@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for updating autoreply information
  */
-readonly class UpdateAutoreplyRequestDto implements RequestDtoInterface
+class UpdateAutoreplyRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?bool $status = null,

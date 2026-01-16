@@ -12,7 +12,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
  * PUT /users/:user/2fa/custom
  * Disables account password for IMAP/POP3/SMTP
  */
-readonly class EnableCustomTwoFactorRequestDto implements RequestDtoInterface
+class EnableCustomTwoFactorRequestDto implements RequestDtoInterface
 {
     public function __construct()
     {

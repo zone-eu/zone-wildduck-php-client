@@ -10,7 +10,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * Request DTO for creating a new mailbox
  */
-readonly class CreateMailboxRequestDto implements RequestDtoInterface
+class CreateMailboxRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $path,

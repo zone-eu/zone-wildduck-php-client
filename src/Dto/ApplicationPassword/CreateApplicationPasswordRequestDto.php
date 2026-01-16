@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * DTO for creating an application password
  */
-readonly class CreateApplicationPasswordRequestDto implements RequestDtoInterface
+class CreateApplicationPasswordRequestDto implements RequestDtoInterface
 {
     /**
      * @param ('imap'|'pop3'|'smtp'|'*')[] $scopes

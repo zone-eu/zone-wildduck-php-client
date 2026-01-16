@@ -10,7 +10,7 @@ use Zone\Wildduck\Dto\Traits\MetaDataSupportTrait;
 /**
  * Request DTO for updating message information
  */
-readonly class UpdateMessageRequestDto implements RequestDtoInterface
+class UpdateMessageRequestDto implements RequestDtoInterface
 {
     use MetaDataSupportTrait;
 

@@ -19,7 +19,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
  * @property-read string|null $next Cursor value for next page, retrieved from nextCursor response value
  * @property-read string|null $previous Cursor value for previous page, retrieved from previousCursor response value
  */
-final readonly class ListUsersRequestDto implements RequestDtoInterface
+final class ListUsersRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?string $query = null,

@@ -12,7 +12,7 @@ use Zone\Wildduck\Dto\Traits\MetaDataSupportTrait;
 /**
  * Request DTO for creating a new filter
  */
-readonly class CreateFilterRequestDto implements RequestDtoInterface
+class CreateFilterRequestDto implements RequestDtoInterface
 {
     use MetaDataSupportTrait;
 

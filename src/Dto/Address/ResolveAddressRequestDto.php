@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * DTO for resolving an address
  */
-readonly class ResolveAddressRequestDto implements RequestDtoInterface
+class ResolveAddressRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?bool $allowWildcard = null,

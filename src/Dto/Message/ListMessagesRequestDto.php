@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for listing messages in a mailbox
  */
-readonly class ListMessagesRequestDto implements RequestDtoInterface
+class ListMessagesRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?bool $unseen = null,

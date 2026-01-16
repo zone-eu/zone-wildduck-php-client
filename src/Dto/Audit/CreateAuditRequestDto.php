@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * DTO for creating an audit
  */
-readonly class CreateAuditRequestDto implements RequestDtoInterface
+class CreateAuditRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $user,

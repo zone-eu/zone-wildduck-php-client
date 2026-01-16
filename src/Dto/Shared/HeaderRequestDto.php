@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Email header information
  */
-readonly class HeaderRequestDto implements RequestDtoInterface
+class HeaderRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $key,

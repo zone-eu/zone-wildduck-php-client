@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Message reference information (reply/forward context)
  */
-readonly class MessageReferenceRequestDto implements RequestDtoInterface
+class MessageReferenceRequestDto implements RequestDtoInterface
 {
     /**
      * @param bool|string[]|null $attachments

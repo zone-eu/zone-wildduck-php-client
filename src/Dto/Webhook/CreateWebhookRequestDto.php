@@ -10,7 +10,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * Request DTO for creating a new webhook
  */
-readonly class CreateWebhookRequestDto implements RequestDtoInterface
+class CreateWebhookRequestDto implements RequestDtoInterface
 {
     /**
      * @param string[] $type

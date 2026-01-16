@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for deleting a mailbox
  */
-readonly class DeleteMailboxRequestDto implements RequestDtoInterface
+class DeleteMailboxRequestDto implements RequestDtoInterface
 {
     public function __construct()
     {

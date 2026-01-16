@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for pre-authentication check
  */
-readonly class PreauthRequestDto implements RequestDtoInterface
+class PreauthRequestDto implements RequestDtoInterface
 {
     /**
      * @param 'master'|'imap'|'smtp'|'pop3' $scope

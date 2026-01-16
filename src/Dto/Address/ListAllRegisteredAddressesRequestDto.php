@@ -11,7 +11,7 @@ use Zone\Wildduck\Dto\Traits\PaginatedRequestTrait;
 /**
  * DTO for renaming a domain across all addresses
  */
-readonly class ListAllRegisteredAddressesRequestDto implements RequestDtoInterface
+class ListAllRegisteredAddressesRequestDto implements RequestDtoInterface
 {
     use PaginatedRequestTrait;
     use MetaDataSupportTrait;

@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for getting mailbox information
  */
-readonly class GetMailboxRequestDto implements RequestDtoInterface
+class GetMailboxRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?string $path = null,

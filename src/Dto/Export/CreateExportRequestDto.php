@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for creating a data export
  */
-readonly class CreateExportRequestDto implements RequestDtoInterface
+class CreateExportRequestDto implements RequestDtoInterface
 {
     /**
      * @param string[]|null $users List of user IDs to export

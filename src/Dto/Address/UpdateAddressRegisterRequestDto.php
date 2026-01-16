@@ -10,7 +10,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * DTO for updating address register entry
  */
-readonly class UpdateAddressRegisterRequestDto implements RequestDtoInterface
+class UpdateAddressRegisterRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public bool $disabled,

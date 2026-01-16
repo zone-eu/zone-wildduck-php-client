@@ -14,7 +14,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
  * @property-read string|null $next Cursor value for next page
  * @property-read string|null $previous Cursor value for previous page
  */
-final readonly class ListFilesRequestDto implements RequestDtoInterface
+final class ListFilesRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?string $query = null,

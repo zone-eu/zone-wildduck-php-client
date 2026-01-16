@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for logging out a user
  */
-readonly class LogoutUserRequestDto implements RequestDtoInterface
+class LogoutUserRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?string $reason = null,

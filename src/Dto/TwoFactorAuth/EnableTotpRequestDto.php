@@ -10,7 +10,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * Request DTO for enabling TOTP
  */
-readonly class EnableTotpRequestDto implements RequestDtoInterface
+class EnableTotpRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $token,

@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * DTO for restoring a single archived message
  */
-readonly class RestoreArchivedMessageRequestDto implements RequestDtoInterface
+class RestoreArchivedMessageRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?string $mailbox = null,

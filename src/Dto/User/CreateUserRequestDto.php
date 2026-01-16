@@ -13,7 +13,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * DTO for creating a new user
  */
-readonly class CreateUserRequestDto implements RequestDtoInterface
+class CreateUserRequestDto implements RequestDtoInterface
 {
     use EncryptionSupportTrait;
     use MetaDataSupportTrait;

@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * DTO for renaming a domain across all addresses
  */
-readonly class RenameDomainRequestDto implements RequestDtoInterface
+class RenameDomainRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $oldDomain,

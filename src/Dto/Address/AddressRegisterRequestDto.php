@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Address Register entries request DTO
  */
-readonly class AddressRegisterRequestDto implements RequestDtoInterface
+class AddressRegisterRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $query

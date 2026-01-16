@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for forwarding a stored message
  */
-readonly class ForwardMessageRequestDto implements RequestDtoInterface
+class ForwardMessageRequestDto implements RequestDtoInterface
 {
     /**
      * @param string[]|null $addresses

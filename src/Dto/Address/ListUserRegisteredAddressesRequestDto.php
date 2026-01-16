@@ -10,7 +10,7 @@ use Zone\Wildduck\Dto\Traits\MetaDataSupportTrait;
 /**
  * DTO for renaming a domain across all addresses
  */
-readonly class ListUserRegisteredAddressesRequestDto implements RequestDtoInterface
+class ListUserRegisteredAddressesRequestDto implements RequestDtoInterface
 {
     use MetaDataSupportTrait;
 

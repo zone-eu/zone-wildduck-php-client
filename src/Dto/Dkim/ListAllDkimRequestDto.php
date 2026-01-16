@@ -10,7 +10,7 @@ use Zone\Wildduck\Dto\Traits\PaginatedRequestTrait;
 /**
  * DTO for renaming a domain across all addresses
  */
-readonly class ListAllDkimRequestDto implements RequestDtoInterface
+class ListAllDkimRequestDto implements RequestDtoInterface
 {
     use PaginatedRequestTrait;
 

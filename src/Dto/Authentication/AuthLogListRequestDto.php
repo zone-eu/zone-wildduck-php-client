@@ -10,7 +10,7 @@ use Zone\Wildduck\Dto\Traits\PaginatedRequestTrait;
 /**
  * Request DTO for user authentication logs
  */
-readonly class AuthLogListRequestDto implements RequestDtoInterface
+class AuthLogListRequestDto implements RequestDtoInterface
 {
     use PaginatedRequestTrait;
 

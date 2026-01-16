@@ -5,17 +5,10 @@ declare(strict_types=1);
 namespace Zone\Wildduck\Dto\Message;
 
 use Zone\Wildduck\Dto\ResponseDtoInterface;
-use Zone\Wildduck\Dto\Shared\AttachmentResponseDto;
 use Zone\Wildduck\Dto\Shared\ContentTypeResponseDto;
 use Zone\Wildduck\Dto\Shared\ListBimiResponseDto;
-use Zone\Wildduck\Dto\Shared\EnvelopeResponseDto;
-use Zone\Wildduck\Dto\Shared\FileResponseDto;
-use Zone\Wildduck\Dto\Shared\MailingListResponseDto;
 use Zone\Wildduck\Dto\Shared\MessageReferenceResponseDto;
-use Zone\Wildduck\Dto\Shared\OutboundResponseDto;
 use Zone\Wildduck\Dto\Shared\RecipientResponseDto;
-use Zone\Wildduck\Dto\Shared\VerificationResultsResponseDto;
-use Zone\Wildduck\Exception\DtoValidationException;
 
 /**
  * Response DTO for message information
@@ -26,7 +19,6 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
      * @param RecipientResponseDto[] $to
      * @param RecipientResponseDto[] $cc
      * @param RecipientResponseDto[] $bcc
-     * @param RecipientResponseDto[] $replyTo
      */
     public function __construct(
         public int $id,

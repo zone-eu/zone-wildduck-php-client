@@ -10,7 +10,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 /**
  * Request DTO for user authentication
  */
-readonly class AuthenticateRequestDto implements RequestDtoInterface
+class AuthenticateRequestDto implements RequestDtoInterface
 {
     /**
      * @param 'master'|'imap'|'smtp'|'pop3' $scope

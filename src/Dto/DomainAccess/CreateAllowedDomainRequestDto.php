@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for creating an allowed domain
  */
-readonly class CreateAllowedDomainRequestDto implements RequestDtoInterface
+class CreateAllowedDomainRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $domain,

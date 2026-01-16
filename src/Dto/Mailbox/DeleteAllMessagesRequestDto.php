@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for deleting all messages in a mailbox
  */
-readonly class DeleteAllMessagesRequestDto implements RequestDtoInterface
+class DeleteAllMessagesRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?bool $async = null,

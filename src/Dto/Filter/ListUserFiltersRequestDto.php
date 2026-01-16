@@ -10,7 +10,7 @@ use Zone\Wildduck\Dto\Traits\PaginatedRequestTrait;
 /**
  * DTO for renaming a domain across all addresses
  */
-readonly class ListUserFiltersRequestDto implements RequestDtoInterface
+class ListUserFiltersRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?bool $metaData,

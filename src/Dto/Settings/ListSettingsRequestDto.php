@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Request DTO for listing settings
  */
-readonly class ListSettingsRequestDto implements RequestDtoInterface
+class ListSettingsRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?string $filter = null,

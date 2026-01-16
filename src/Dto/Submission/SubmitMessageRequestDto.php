@@ -14,7 +14,7 @@ use Zone\Wildduck\Dto\Shared\EnvelopeRequestDto;
 /**
  * Request DTO for submitting a message for delivery
  */
-readonly class SubmitMessageRequestDto implements RequestDtoInterface
+class SubmitMessageRequestDto implements RequestDtoInterface
 {
     /**
      * @param RecipientRequestDto[]|null $to

@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * DTO for listing all user application passwords
  */
-readonly class ListAllUserApplicationPasswordRequestDto implements RequestDtoInterface
+class ListAllUserApplicationPasswordRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public bool $showAll = false

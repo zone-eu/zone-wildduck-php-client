@@ -6,12 +6,11 @@ namespace Zone\Wildduck\Dto\Message;
 
 use Zone\Wildduck\Dto\RequestDtoInterface;
 use Zone\Wildduck\Dto\Traits\MetaDataSupportTrait;
-use Zone\Wildduck\Exception\DtoValidationException;
 
 /**
  * Request DTO for bulk updating messages
  */
-readonly class BulkUpdateMessagesRequestDto implements RequestDtoInterface
+class BulkUpdateMessagesRequestDto implements RequestDtoInterface
 {
     use MetaDataSupportTrait;
 
@@ -23,9 +22,9 @@ readonly class BulkUpdateMessagesRequestDto implements RequestDtoInterface
         public ?bool $flagged = null,
         public ?bool $draft = null,
         public string|false|null $expires = null,
-        /** @var array<string, mixed>|null Custom metadata */ public ?array $metaData = null,
-    ) {
-    }
+        /** @var array<string, mixed>|null Custom metadata */
+        public ?array $metaData = null,
+    ) {}
 
     public function toArray(): array
     {

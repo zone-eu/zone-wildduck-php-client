@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 /**
  * Attachment reference DTO for message submission
  */
-readonly class AttachmentReferenceRequestDto implements RequestDtoInterface
+class AttachmentReferenceRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?string $id = null,
