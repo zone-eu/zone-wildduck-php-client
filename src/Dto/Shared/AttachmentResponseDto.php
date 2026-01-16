@@ -13,19 +13,20 @@ readonly class AttachmentResponseDto implements ResponseDtoInterface
 {
     public function __construct(
         public string $id,
+        public ?string $cid,
         public ?string $filename = null,
         public ?string $contentType = null,
         public ?string $disposition = null,
         public ?string $transferEncoding = null,
         public ?bool $related = null,
         public ?int $sizeKb = null,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {
         return new self(
             id: $data['id'] ?? '',
+            cid: isset($data['cid']) && is_string($data['cid']) ? $data['cid'] : null,
             filename: isset($data['filename']) && is_string($data['filename']) ? $data['filename'] : null,
             contentType: isset($data['contentType']) && is_string($data['contentType']) ? $data['contentType'] : null,
             disposition: isset($data['disposition']) && is_string($data['disposition']) ? $data['disposition'] : null,
