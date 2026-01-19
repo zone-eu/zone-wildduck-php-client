@@ -20,33 +20,7 @@ final class FilterActionRequestDto implements RequestDtoInterface
         public readonly ?string $mailbox = null,
         /** @var string[]|null */
         public readonly ?array $targets = null,
-    ) {
-    }
-
-    public static function fromArray(array $data): static
-    {
-        $targets = null;
-        if (isset($data['targets'])) {
-            if (!is_array($data['targets'])) {
-                throw DtoValidationException::invalidType('targets', 'array', $data['targets']);
-            }
-            $targets = array_map(function ($target) {
-                if (!is_string($target)) {
-                    throw DtoValidationException::invalidType('targets[]', 'string', $target);
-                }
-                return $target;
-            }, $data['targets']);
-        }
-
-        return new self(
-            seen: isset($data['seen']) && is_bool($data['seen']) ? $data['seen'] : null,
-            flag: isset($data['flag']) && is_bool($data['flag']) ? $data['flag'] : null,
-            delete: isset($data['delete']) && is_bool($data['delete']) ? $data['delete'] : null,
-            spam: isset($data['spam']) && is_bool($data['spam']) ? $data['spam'] : null,
-            mailbox: isset($data['mailbox']) && is_string($data['mailbox']) ? $data['mailbox'] : null,
-            targets: $targets,
-        );
-    }
+    ) {}
 
     public function toArray(): array
     {
