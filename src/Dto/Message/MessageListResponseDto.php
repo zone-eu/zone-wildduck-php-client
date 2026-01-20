@@ -20,7 +20,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
      * @param RecipientResponseDto[] $to
      * @param RecipientResponseDto[] $cc
      * @param RecipientResponseDto[] $bcc
-     * @param MessageReferenceResponseDto[] $references
+     * @param string[] $references
      */
     public function __construct(
         public int $id,
@@ -91,9 +91,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         $references = [];
         if (isset($data['references']) && is_array($data['references'])) {
             foreach ($data['references'] as $r) {
-                if (is_array($r)) {
-                    $references[] = MessageReferenceResponseDto::fromArray($r);
-                }
+                $references[] = (string) $r;
             }
         }
 
