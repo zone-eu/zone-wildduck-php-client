@@ -12,6 +12,7 @@ use Zone\Wildduck\Dto\Message\UploadMessageRequestDto;
 use Zone\Wildduck\Dto\Shared\SuccessResponseDto;
 use Zone\Wildduck\Dto\Message\BulkUpdateMessagesResponseDto;
 use Zone\Wildduck\Dto\Message\ForwardMessageResponseDto;
+use Zone\Wildduck\Dto\Message\MessageGetRequestDto;
 use Zone\Wildduck\Dto\Message\MessagePaginatedResponseDto;
 use Zone\Wildduck\Dto\Message\MessageResponseDto;
 use Zone\Wildduck\Dto\Message\UploadMessageResponseDto;
@@ -198,12 +199,17 @@ class MessageService extends AbstractService
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function get(string $user, string $mailbox, int $message, array|null $opts = null): MessageResponseDto
-    {
+    public function get(
+        string $user,
+        string $mailbox,
+        int $message,
+        ?MessageGetRequestDto $params = null,
+        array|null $opts = null
+    ): MessageResponseDto {
         return $this->requestDto(
             'get',
             $this->buildPath('/users/%s/mailboxes/%s/messages/%s', $user, $mailbox, $message),
-            null,
+            $params,
             MessageResponseDto::class,
             $opts
         );
