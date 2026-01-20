@@ -21,11 +21,11 @@ readonly class ListAllFiltersResponseDto implements ResponseDtoInterface
     public function __construct(
         public string $id,
         public string $user,
-        public string $name,
         public string $created,
         public FilterQueryResponseDto $query,
         public FilterActionResponseDto $action,
         public bool $disabled,
+        public ?string $name = null,
         public ?array $metaData = null,
         public ?array $targets = null,
     ) {}
@@ -38,9 +38,9 @@ readonly class ListAllFiltersResponseDto implements ResponseDtoInterface
         if (!isset($data['user'])) {
             throw DtoValidationException::missingRequiredField('user', 'string');
         }
-        if (!isset($data['name'])) {
-            throw DtoValidationException::missingRequiredField('name', 'string');
-        }
+        // if (!isset($data['name'])) {
+        //     throw DtoValidationException::missingRequiredField('name', 'string');
+        // }
         if (!isset($data['created'])) {
             throw DtoValidationException::missingRequiredField('created', 'string');
         }
@@ -57,7 +57,7 @@ readonly class ListAllFiltersResponseDto implements ResponseDtoInterface
         return new self(
             id: $data['id'],
             user: $data['user'],
-            name: $data['name'],
+            name: $data['name'] ?? null,
             created: $data['created'],
             query: FilterQueryResponseDto::fromArray($data['query']),
             action: FilterActionResponseDto::fromArray($data['action']),
