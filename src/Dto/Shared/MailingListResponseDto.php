@@ -11,17 +11,20 @@ use Zone\Wildduck\Dto\ResponseDtoInterface;
  */
 readonly class MailingListResponseDto implements ResponseDtoInterface
 {
+    /**
+     * @param array{ address: string, name: string } $id Mailing list identifier
+     * @param array<int, array{ address: string, name: string }> $unsubscribe Mailing list unsubscribe addresses
+     */
     public function __construct(
-        public string $id,
-        public ?string $unsubscribe = null,
-    ) {
-    }
+        public array $id,
+        public array $unsubscribe,
+    ) {}
 
     public static function fromArray(array $data): self
     {
         return new self(
-            id: $data['id'] ?? '',
-            unsubscribe: isset($data['unsubscribe']) && is_string($data['unsubscribe']) ? $data['unsubscribe'] : null,
+            id: $data['id'] ?? [],
+            unsubscribe: $data['unsubscribe'] ?? [],
         );
     }
 }
