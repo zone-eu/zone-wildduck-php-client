@@ -41,8 +41,8 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         public bool $answered,
         public bool $forwarded,
         public MessageReferenceResponseDto $references,
-        public ListBimiResponseDto $bimi,
         public ContentTypeResponseDto $contentType,
+        public ?ListBimiResponseDto $bimi = null,
         public ?int $threadMessageCount = null,
         public ?string $idate = null,
         public ?bool $encrypted = null,
@@ -89,7 +89,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         $references = MessageReferenceResponseDto::fromArray($data['references'] ?? []);
 
         // BIMI
-        $bimi = ListBimiResponseDto::fromArray($data['bimi'] ?? []);
+        $bimi = isset($data['bimi']) ? ListBimiResponseDto::fromArray($data['bimi']) : null;
 
         // Flags / simple fields
         $intro = $data['intro'] ?? '';
