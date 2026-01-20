@@ -20,6 +20,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
      * @param RecipientResponseDto[] $to
      * @param RecipientResponseDto[] $cc
      * @param RecipientResponseDto[] $bcc
+     * @param MessageReferenceResponseDto[] $references
      */
     public function __construct(
         public int $id,
@@ -41,7 +42,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         public bool $draft,
         public bool $answered,
         public bool $forwarded,
-        public MessageReferenceResponseDto $references,
+        public array $references,
         public ContentTypeResponseDto $contentType,
         public ?MessageBimiResponseDto $bimi = null,
         public ?int $threadMessageCount = null,
@@ -87,7 +88,14 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         $contentType = ContentTypeResponseDto::fromArray($data['contentType'] ?? []);
 
         // References
-        $references = MessageReferenceResponseDto::fromArray($data['references'] ?? []);
+        $references = [];
+        if (isset($data['references']) && is_array($data['references'])) {
+            foreach ($data['references'] as $r) {
+                if (is_array($r)) {
+                    $references[] = MessageReferenceResponseDto::fromArray($r);
+                }
+            }
+        }
 
         // BIMI
         $bimi = isset($data['bimi']) ? MessageBimiResponseDto::fromArray($data['bimi']) : null;
