@@ -11,19 +11,23 @@ use Zone\Wildduck\Dto\ResponseDtoInterface;
  */
 readonly class MessageBimiResponseDto implements ResponseDtoInterface
 {
+    /**
+     * @param "VMC"|"CMC"|null $type
+     */
     public function __construct(
-        public ?string $certified = null,
-        public ?string $url = null,
-        public ?string $image = null,
-    ) {
-    }
+        public bool $certified,
+        public string $url,
+        public string $image,
+        public ?string $type = null,
+    ) {}
 
     public static function fromArray(array $data): self
     {
         return new self(
-            certified: isset($data['certified']) && is_string($data['certified']) ? $data['certified'] : null,
-            url: isset($data['url']) && is_string($data['url']) ? $data['url'] : null,
-            image: isset($data['image']) && is_string($data['image']) ? $data['image'] : null,
+            certified: $data['certified'],
+            url: $data['url'],
+            image: $data['image'],
+            type: isset($data['type']) && is_string($data['type']) ? $data['type'] : null,
         );
     }
 

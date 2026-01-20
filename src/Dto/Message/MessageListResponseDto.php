@@ -7,6 +7,7 @@ namespace Zone\Wildduck\Dto\Message;
 use Zone\Wildduck\Dto\ResponseDtoInterface;
 use Zone\Wildduck\Dto\Shared\ContentTypeResponseDto;
 use Zone\Wildduck\Dto\Shared\ListBimiResponseDto;
+use Zone\Wildduck\Dto\Shared\MessageBimiResponseDto;
 use Zone\Wildduck\Dto\Shared\MessageReferenceResponseDto;
 use Zone\Wildduck\Dto\Shared\RecipientResponseDto;
 
@@ -42,7 +43,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         public bool $forwarded,
         public MessageReferenceResponseDto $references,
         public ContentTypeResponseDto $contentType,
-        public ?ListBimiResponseDto $bimi = null,
+        public ?MessageBimiResponseDto $bimi = null,
         public ?int $threadMessageCount = null,
         public ?string $idate = null,
         public ?bool $encrypted = null,
@@ -89,7 +90,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         $references = MessageReferenceResponseDto::fromArray($data['references'] ?? []);
 
         // BIMI
-        $bimi = isset($data['bimi']) ? ListBimiResponseDto::fromArray($data['bimi']) : null;
+        $bimi = isset($data['bimi']) ? MessageBimiResponseDto::fromArray($data['bimi']) : null;
 
         // Flags / simple fields
         $intro = $data['intro'] ?? '';
