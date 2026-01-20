@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Zone\Wildduck\Dto\Filter;
 
 use Zone\Wildduck\Dto\ResponseDtoInterface;
-use Zone\Wildduck\Dto\Shared\FilterActionRequestDto;
 use Zone\Wildduck\Dto\Shared\FilterLimitsResponseDto;
-use Zone\Wildduck\Dto\Shared\FilterQueryResponseDto;
 use Zone\Wildduck\Exception\DtoValidationException;
 
 /**

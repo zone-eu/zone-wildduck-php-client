@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Zone\Wildduck\Dto\Filter;
 
 use Zone\Wildduck\Dto\ResponseDtoInterface;
-use Zone\Wildduck\Dto\Shared\FilterActionRequestDto;
+use Zone\Wildduck\Dto\Shared\FilterActionResponseDto;
 use Zone\Wildduck\Dto\Shared\FilterQueryResponseDto;
 use Zone\Wildduck\Exception\DtoValidationException;
 
@@ -22,11 +22,10 @@ readonly class FilterResponseDto implements ResponseDtoInterface
         public string $name,
         public string $created,
         public FilterQueryResponseDto $query,
-        public FilterActionRequestDto $action,
+        public FilterActionResponseDto $action,
         public bool $disabled,
         public ?array $metaData = null,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {
@@ -54,7 +53,7 @@ readonly class FilterResponseDto implements ResponseDtoInterface
             name: $data['name'],
             created: $data['created'],
             query: FilterQueryResponseDto::fromArray($data['query']),
-            action: FilterActionRequestDto::fromArray($data['action']),
+            action: FilterActionResponseDto::fromArray($data['action']),
             disabled: $data['disabled'],
             metaData: $data['metaData'] ?? null,
         );
