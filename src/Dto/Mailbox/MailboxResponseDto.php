@@ -45,8 +45,13 @@ readonly class MailboxResponseDto implements ResponseDtoInterface
             array_key_exists('specialUse', $data) && $data['specialUse'] ? $data['specialUse'] : null
         );
 
-        // Validate truthy value, because some legacy folders have boolean false as value
-        $systemFolder = array_key_exists('specialUse', $data) && $data['specialUse'];
+        // Validate truthy value, because some legacy folders have boolean false as value, null is for checking for inbox
+        $systemFolder = (
+            array_key_exists('specialUse', $data) && !!$data['specialUse']
+        ) || (
+            array_key_exists('specialUse', $data) && $data['specialUse'] === null
+        );
+
 
         return new self(
             id: $data['id'],
