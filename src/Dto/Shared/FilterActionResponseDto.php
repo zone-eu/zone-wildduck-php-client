@@ -12,9 +12,9 @@ use Zone\Wildduck\Dto\ResponseDtoInterface;
 final class FilterActionResponseDto implements ResponseDtoInterface
 {
     public function __construct(
-        public readonly ?bool $seen = null,
-        public readonly ?bool $flag = null,
-        public readonly ?bool $delete = null,
+        public readonly bool $seen,
+        public readonly bool $flag,
+        public readonly bool $delete,
         public readonly ?bool $spam = null,
         public readonly ?string $mailbox = null,
         /** @var string[]|null */
@@ -22,29 +22,48 @@ final class FilterActionResponseDto implements ResponseDtoInterface
     ) {}
 
     /**
-     * @param array<int, array{ 0: string, 1: string|false }> $data
+     * @param array<int, array{ 0: string, 1: string|bool|unset }> $data
      */
     public static function fromArray(array $data): self
     {
-        $seen = null;
-        $flag = null;
-        $delete = null;
+        $seen = false;
+        $flag = false;
+        $delete = false;
         $spam = null;
         $mailbox = null;
         $targets = null;
 
-        foreach ($data as [$key, $value]) {
+        foreach ($data as $action) {
+            $key = $action[0];
+            $value = $action[1] ?? null;
             switch ($key) {
+                case 'mark as read':
+                    $seen = true;
+                    break;
+                case 'flag it':
+                    $flag = true;
+                    break;
+                case 'delete it':
+                    $delete = true;
+                    break;
                 case 'forward to':
                     $targets = is_string($value) ? array_map('trim', explode(',', $value)) : null;
                     break;
+                case 'move to folder':
+                    $mailbox = trim($value, '"');
+                    break;
+                case 'mark it as spam':
+                    $spam = true;
+                    break;
+                case 'do not mark it as spam':
+                    $spam = false;
+                    break;
 
                 default:
-                    # code...
+                    throw new \InvalidArgumentException("Unknown filter action key: $key");
                     break;
             }
         }
-
 
         return new self(
             seen: $seen,

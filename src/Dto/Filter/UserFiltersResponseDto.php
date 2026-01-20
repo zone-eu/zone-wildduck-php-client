@@ -20,8 +20,7 @@ readonly class UserFiltersResponseDto implements ResponseDtoInterface
         public bool $success,
         public FilterLimitsResponseDto $limits,
         public array $results
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {
