@@ -52,8 +52,7 @@ readonly class ArchivedMessageResponseDto implements ResponseDtoInterface
         public ?bool $encrypted = null,
         public ?array $metaData = null,
         public ?array $headers = null,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {

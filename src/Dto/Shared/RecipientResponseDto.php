@@ -14,13 +14,13 @@ readonly class RecipientResponseDto implements ResponseDtoInterface
     public function __construct(
         public string $address,
         public ?string $name = null,
-    ) {
-    }
+    ) {}
 
+    /** @var array{address: string, name: string, group?: string } */
     public static function fromArray(array $data): self
     {
         return new self(
-            address: $data['address'],
+            address: $data['address'] ?? '',
             name: $data['name'] ?? null,
         );
     }
