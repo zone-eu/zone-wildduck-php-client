@@ -8,34 +8,31 @@ use Zone\Wildduck\Dto\ResponseDtoInterface;
 use Zone\Wildduck\Exception\DtoValidationException;
 
 /**
- * Generic response DTO for resource creation
- * Used by most create endpoints that return {success: bool}
+ * Response DTO for deleting all messages in a mailbox
+ * If in the request async: true was specified, the response will contain scheduled timestamp and existing flag, else deleted and errors count
  */
 readonly class DeleteAllMessagesResponseDto implements ResponseDtoInterface
 {
     public function __construct(
         public bool $success,
-        public int $deleted,
-        public int $errors,
-    ) {
-    }
+        public ?bool $existing = null,
+        public ?string $scheduled = null,
+        public ?int $deleted = null,
+        public ?int $errors = null,
+    ) {}
 
     public static function fromArray(array $data): self
     {
         if (!isset($data['success'])) {
             throw DtoValidationException::missingRequiredField('success', 'bool');
         }
-        if (!isset($data['deleted'])) {
-            throw DtoValidationException::missingRequiredField('deleted', 'int');
-        }
-        if (!isset($data['errors'])) {
-            throw DtoValidationException::missingRequiredField('errors', 'int');
-        }
 
         return new self(
             success: $data['success'],
-            deleted: $data['deleted'],
-            errors: $data['errors'],
+            existing: $data['existing'] ?? null,
+            scheduled: $data['scheduled'] ?? null,
+            deleted: $data['deleted'] ?? null,
+            errors: $data['errors'] ?? null,
         );
     }
 }
