@@ -213,7 +213,7 @@ class MessageService extends AbstractService
      * @param string $user
      * @param SearchMessagesRequestDto $params
      * @param array<string, mixed>|null $opts
-     * @return PaginatedResultDto<MessageResponseDto>
+     * @return MessagePaginatedResponseDto
      * @throws ApiConnectionException
      * @throws AuthenticationFailedException
      * @throws InvalidAccessTokenException
@@ -221,9 +221,15 @@ class MessageService extends AbstractService
      * @throws ValidationException
      * @throws InvalidDatabaseException
      */
-    public function search(string $user, SearchMessagesRequestDto $params, array|null $opts = null): PaginatedResultDto
+    public function search(string $user, SearchMessagesRequestDto $params, array|null $opts = null): MessagePaginatedResponseDto
     {
-        return $this->requestPaginatedDto('get', $this->buildPath('/users/%s/search', $user), $params, MessageResponseDto::class, $opts);
+        return $this->requestDto(
+            'get',
+            $this->buildPath('/users/%s/search', $user),
+            $params,
+            MessagePaginatedResponseDto::class,
+            $opts
+        );
     }
 
     /**
