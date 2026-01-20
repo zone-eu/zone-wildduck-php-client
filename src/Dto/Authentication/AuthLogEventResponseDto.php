@@ -15,16 +15,15 @@ readonly class AuthLogEventResponseDto implements ResponseDtoInterface
     public function __construct(
         public string $id,
         public string $action,
-        public string|bool $result,
         public string $created,
         public string $last,
         public int $events,
         public string $expires,
+        public string|bool|null $result = null,
         public ?string $protocol = null,
         public ?string $requiredScope = null,
         public ?string $source = null
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {
@@ -34,9 +33,9 @@ readonly class AuthLogEventResponseDto implements ResponseDtoInterface
         if (!isset($data['action'])) {
             throw DtoValidationException::missingRequiredField('action', 'string');
         }
-        if (!isset($data['result'])) {
-            throw DtoValidationException::missingRequiredField('result', 'string|bool');
-        }
+        // if (!isset($data['result'])) {
+        //     throw DtoValidationException::missingRequiredField('result', 'string|bool');
+        // }
         if (!isset($data['created'])) {
             throw DtoValidationException::missingRequiredField('created', 'string');
         }
@@ -53,7 +52,7 @@ readonly class AuthLogEventResponseDto implements ResponseDtoInterface
         return new self(
             id: $data['id'],
             action: $data['action'],
-            result: $data['result'],
+            result: $data['result'] ?? null,
             created: $data['created'],
             last: $data['last'],
             events: $data['events'],
