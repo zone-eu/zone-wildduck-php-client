@@ -74,4 +74,18 @@ final class FilterActionResponseDto implements ResponseDtoInterface
             targets: $targets,
         );
     }
+    /**
+     * @param array{ seen: true, flag: true, delete: true, spam: true, mailbox: string, targets: string[] } $data
+     */
+    public static function fromObject(array $data): self
+    {
+        return new self(
+            seen: $data['seen'],
+            flag: $data['flag'],
+            delete: $data['delete'],
+            spam: $data['spam'],
+            mailbox: $data['mailbox'],
+            targets: $data['targets'],
+        );
+    }
 }

@@ -14,7 +14,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 readonly class UserFiltersResponseDto implements ResponseDtoInterface
 {
     /**
-     * @param FilterResponseDto[] $results List of user filters
+     * @param ListUserFiltersResponseDto[] $results List of user filters
      */
     public function __construct(
         public bool $success,
@@ -25,20 +25,20 @@ readonly class UserFiltersResponseDto implements ResponseDtoInterface
     public static function fromArray(array $data): self
     {
         if (!isset($data['success'])) {
-            throw DtoValidationException::missingRequiredField('success', 'string');
+            throw DtoValidationException::missingRequiredField('success', 'bool');
         }
         if (!isset($data['limits'])) {
             throw DtoValidationException::missingRequiredField('limits', 'FilterLimitsResponseDto');
         }
         if (!isset($data['results'])) {
-            throw DtoValidationException::missingRequiredField('results', 'FilterResponseDto[]');
+            throw DtoValidationException::missingRequiredField('results', 'ListUserFiltersResponseDto[]');
         }
 
         return new self(
             success: $data['success'],
             limits: FilterLimitsResponseDto::fromArray($data['limits']),
             results: array_map(function ($item) {
-                return FilterResponseDto::fromArray($item);
+                return ListUserFiltersResponseDto::fromArray($item);
             }, $data['results']),
         );
     }

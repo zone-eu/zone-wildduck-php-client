@@ -84,4 +84,20 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
             size: $size,
         );
     }
+
+    /**
+     * @param array{ from: string, to: string, subject: string, listId: string, text: string, ha: bool, size: number } $data
+     */
+    public static function fromObject(array $data): self
+    {
+        return new self(
+            from: trim($data['from'], '()'),
+            to: trim($data['to'], '()'),
+            subject: trim($data['subject'], '()'),
+            listId: trim($data['listId'], '()'),
+            text: $data['text'],
+            ha: $data['ha'],
+            size: ['size' => (int)$data['size'], 'type' => (int)$data['size'] > 0 ? 'larger' : 'smaller'],
+        );
+    }
 }

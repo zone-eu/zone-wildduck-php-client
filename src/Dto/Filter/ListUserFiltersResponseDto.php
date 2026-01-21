@@ -10,9 +10,9 @@ use Zone\Wildduck\Dto\Shared\FilterQueryResponseDto;
 use Zone\Wildduck\Exception\DtoValidationException;
 
 /**
- * Response DTO for filter information
+ * Extended response DTO for detailed filter information
  */
-readonly class FilterResponseDto implements ResponseDtoInterface
+readonly class ListUserFiltersResponseDto implements ResponseDtoInterface
 {
     /**
      * @param array<string, mixed>|null $metaData Custom metadata
@@ -52,8 +52,8 @@ readonly class FilterResponseDto implements ResponseDtoInterface
             id: $data['id'],
             name: $data['name'] ?? null,
             created: $data['created'],
-            query: FilterQueryResponseDto::fromObject($data['query']),
-            action: FilterActionResponseDto::fromObject($data['action']),
+            query: FilterQueryResponseDto::fromArray($data['query']),
+            action: FilterActionResponseDto::fromArray($data['action']),
             disabled: $data['disabled'],
             metaData: $data['metaData'] ?? null,
         );
