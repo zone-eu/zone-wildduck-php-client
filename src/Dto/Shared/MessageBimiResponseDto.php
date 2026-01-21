@@ -30,21 +30,4 @@ readonly class MessageBimiResponseDto implements ResponseDtoInterface
             type: isset($data['type']) && is_string($data['type']) ? $data['type'] : null,
         );
     }
-
-    public function toArray(): array
-    {
-        $data = [];
-
-        if ($this->certified !== null) {
-            $data['certified'] = $this->certified;
-        }
-        if ($this->url !== null) {
-            $data['url'] = $this->url;
-        }
-        if ($this->image !== null) {
-            $data['image'] = $this->image;
-        }
-
-        return $data;
-    }
 }

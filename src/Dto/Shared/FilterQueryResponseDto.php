@@ -26,7 +26,7 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
     ) {}
 
     /**
-     * @param array<int, array{ 0: string|false, 1: string|int|unset }> $data
+     * @param array<int, array{ 0: string|false, 1: string|int|null }> $data
      */
     public static function fromArray(array $data): self
     {
@@ -70,7 +70,6 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
 
                 default:
                     throw new \InvalidArgumentException("Unknown filter action key: $key");
-                    break;
             }
         }
 

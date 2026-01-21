@@ -22,7 +22,7 @@ final class FilterActionResponseDto implements ResponseDtoInterface
     ) {}
 
     /**
-     * @param array<int, array{ 0: string, 1: string|bool|unset }> $data
+     * @param array<int, array{ 0: string, 1: string|bool|null }> $data
      */
     public static function fromArray(array $data): self
     {
@@ -50,7 +50,7 @@ final class FilterActionResponseDto implements ResponseDtoInterface
                     $targets = is_string($value) ? array_map('trim', explode(',', $value)) : null;
                     break;
                 case 'move to folder':
-                    $mailbox = trim($value, '"');
+                    $mailbox = is_string($value) ? trim($value, '"') : null;
                     break;
                 case 'mark it as spam':
                     $spam = true;
@@ -61,7 +61,6 @@ final class FilterActionResponseDto implements ResponseDtoInterface
 
                 default:
                     throw new \InvalidArgumentException("Unknown filter action key: $key");
-                    break;
             }
         }
 
@@ -75,17 +74,17 @@ final class FilterActionResponseDto implements ResponseDtoInterface
         );
     }
     /**
-     * @param array{ seen: true, flag: true, delete: true, spam: true, mailbox: string, targets: string[] } $data
+     * @param array{ seen: true|null, flag: true|null, delete: true|null, spam: true|null, mailbox: string|null, targets: string[]|null } $data
      */
     public static function fromObject(array $data): self
     {
         return new self(
-            seen: $data['seen'],
-            flag: $data['flag'],
-            delete: $data['delete'],
-            spam: $data['spam'],
-            mailbox: $data['mailbox'],
-            targets: $data['targets'],
+            seen: $data['seen'] ?? false,
+            flag: $data['flag'] ?? false,
+            delete: $data['delete'] ?? false,
+            spam: $data['spam'] ?? null,
+            mailbox: $data['mailbox'] ?? null,
+            targets: $data['targets'] ?? null,
         );
     }
 }

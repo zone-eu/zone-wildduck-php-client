@@ -16,7 +16,7 @@ readonly class RecipientResponseDto implements ResponseDtoInterface
         public ?string $name = null,
     ) {}
 
-    /** @var array{address: string, name: string, group?: string } */
+    /** @param array{address: string|null, name: string|null, group?: string } $data */
     public static function fromArray(array $data): self
     {
         return new self(
