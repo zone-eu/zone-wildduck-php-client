@@ -8,9 +8,13 @@ use Zone\Wildduck\Dto\ResponseDtoInterface;
 
 /**
  * Filter query DTO defining what messages to match
+ * @phpstan-type FilterQuerySize array{size: int, type: 'larger'|'smaller'}|null
  */
 final class FilterQueryResponseDto implements ResponseDtoInterface
 {
+    /**
+     * @param FilterQuerySize $size Message size
+     */
     public function __construct(
         public readonly ?string $from = null,
         public readonly ?string $to = null,
@@ -18,7 +22,7 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
         public readonly ?string $listId = null,
         public readonly ?string $text = null,
         public readonly ?bool $ha = null,
-        public readonly ?int $size = null,
+        public readonly ?array $size = null,
     ) {}
 
     /**
@@ -32,6 +36,7 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
         $listId = null;
         $ha = false;
         $text = null;
+        /** @var FilterQuerySize $size*/
         $size = null;
 
         foreach ($data as $query) {
@@ -57,10 +62,10 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
                     $text = trim($value, '"');
                     break;
                 case 'larger':
-                    $size = $value;
+                    $size = ['size' => (int)$value, 'type' => 'larger'];
                     break;
                 case 'smaller':
-                    $size = $value;
+                    $size = ['size' => (int)$value, 'type' => 'smaller'];
                     break;
 
                 default:
