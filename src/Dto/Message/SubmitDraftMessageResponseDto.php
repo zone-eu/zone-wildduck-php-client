@@ -8,17 +8,18 @@ use Zone\Wildduck\Dto\ResponseDtoInterface;
 use Zone\Wildduck\Exception\DtoValidationException;
 
 /**
- * Response DTO for upload message operation
+ * Response DTO for submit draft message operation
  */
 readonly class SubmitDraftMessageResponseDto implements ResponseDtoInterface
 {
+    /**
+     * @param array{ id: int, mailbox: string, size: int } $message
+     */
     public function __construct(
         public bool $success,
         public string $queueId,
-        /** @param array{ id: int, mailbox: string, size: int } */
         public array $message
-    ) {
-        }
+    ) {}
 
     public static function fromArray(array $data): self
     {

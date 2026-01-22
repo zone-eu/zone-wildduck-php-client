@@ -32,6 +32,10 @@ readonly class MessageResponseDto implements ResponseDtoInterface
      * @param FileResponseDto[] $files
      * @param OutboundResponseDto[] $outbound
      * @param string[] $forwardTargets
+     * @param array<string, mixed>|null $metaData Custom metadata
+     * @param string[]|null $html
+     * @param string[] $references
+     * @param @var string[]|null $forwardTargets
      */
     public function __construct(
         public bool $success = true,
@@ -59,20 +63,19 @@ readonly class MessageResponseDto implements ResponseDtoInterface
         public ?string $idate = null,
         public ?MailingListResponseDto $list = null,
         public ?string $expires = null,
-        /** @var string[]|null */ public ?array $html = null,
+        public ?array $html = null,
         public ?string $text = null,
         public ?array $attachments = null,
         public ?VerificationResultsResponseDto $verificationResults = null,
         public ?ListBimiResponseDto $bimi = null,
-        /** @var array<string, mixed>|null Custom metadata */ public mixed $metaData = null,
-        public ?MessageReferenceResponseDto $references = null,
+        public mixed $metaData = null,
+        public array $references,
         public ?array $files = null,
         public ?array $outbound = null,
-        /** @var string[]|null */ public ?array $forwardTargets = null,
+        public ?array $forwardTargets = null,
         public ?MessageReferenceResponseDto $reference = null,
         public ?bool $encrypted = null,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {
@@ -125,8 +128,7 @@ readonly class MessageResponseDto implements ResponseDtoInterface
         // Parse BIMI
         $bimi = isset($data['bimi']) && is_array($data['bimi']) ? ListBimiResponseDto::fromArray($data['bimi']) : null;
 
-        // Parse references
-        $references = isset($data['references']) && is_array($data['references']) ? MessageReferenceResponseDto::fromArray($data['references']) : null;
+        // Parse reference
         $reference = isset($data['reference']) && is_array($data['reference']) ? MessageReferenceResponseDto::fromArray($data['reference']) : null;
 
         return new self(
@@ -161,7 +163,7 @@ readonly class MessageResponseDto implements ResponseDtoInterface
             verificationResults: $verificationResults,
             bimi: $bimi,
             metaData: $data['metaData'] ?? null,
-            references: $references,
+            references: $data['references'] ?? [],
             files: $files,
             outbound: $outbound,
             forwardTargets: isset($data['forwardTargets']) && is_array($data['forwardTargets']) ? $data['forwardTargets'] : null,
