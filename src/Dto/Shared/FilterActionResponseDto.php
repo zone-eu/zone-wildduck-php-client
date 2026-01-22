@@ -40,6 +40,9 @@ final class FilterActionResponseDto implements ResponseDtoInterface
                 case 'mark as read':
                     $seen = true;
                     break;
+                case 'do not mark as read':
+                    $seen = false;
+                    break;
                 case 'flag it':
                     $flag = true;
                     break;

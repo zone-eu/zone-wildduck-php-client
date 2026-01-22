@@ -6,7 +6,6 @@ namespace Zone\Wildduck\Dto\Message;
 
 use Zone\Wildduck\Dto\RequestDtoInterface;
 use Zone\Wildduck\Dto\Shared\AttachmentReferenceRequestDto;
-use Zone\Wildduck\Dto\Shared\BimiResponseDto;
 use Zone\Wildduck\Dto\Shared\HeaderRequestDto;
 use Zone\Wildduck\Dto\Shared\ListBimiResponseDto;
 use Zone\Wildduck\Dto\Shared\MessageReferenceRequestDto;
@@ -51,7 +50,8 @@ class UploadMessageRequestDto implements RequestDtoInterface
         /** @var array<string, mixed>|null Custom metadata */
         public ?array $metaData = null,
         public ?MessageReferenceRequestDto $reference = null,
-        public ?MessageReferenceRequestDto $replacePrevious = null,
+        /** @var array{mailbox: string, id: int}|null */
+        public ?array $replacePrevious = null,
         public ?ListBimiResponseDto $bimi = null,
     ) {
     }

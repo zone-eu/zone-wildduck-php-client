@@ -25,14 +25,14 @@ final class FilterQueryRequestDto implements RequestDtoInterface
 
     public function toArray(): array
     {
-        return array_filter([
-            'from' => $this->from,
-            'to' => $this->to,
-            'subject' => $this->subject,
-            'listId' => $this->listId,
-            'text' => $this->text,
-            'ha' => $this->ha,
-            'size' => $this->size,
-        ], fn($value) => $value !== null);
+        return [
+            'from' => $this->from ?? '',
+            'to' => $this->to ?? '',
+            'subject' => $this->subject ?? '',
+            'listId' => $this->listId ?? '',
+            'text' => $this->text ?? '',
+            'ha' => $this->ha ?? false,
+            'size' => $this->size ?? 0,
+        ];
     }
 }

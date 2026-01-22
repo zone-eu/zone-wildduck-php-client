@@ -69,7 +69,7 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
                     break;
 
                 default:
-                    throw new \InvalidArgumentException("Unknown filter action key: $key");
+                    throw new \InvalidArgumentException("Unknown filter query key: $key");
             }
         }
 
