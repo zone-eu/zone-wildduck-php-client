@@ -56,8 +56,32 @@ class StorageService extends AbstractService
      */
     public function upload(string $user, UploadFileRequestDto $params, array|null $opts = null): UploadFileResponseDto
     {
-        return $this->requestDto('post', $this->buildPath('/users/%s/storage', $user), $params, UploadFileResponseDto::class, $opts);
+        $path = $this->buildPath(
+            '/users/%s/storage?filename=%s&contentType=%s&encoding=base64',
+            $user,
+            $params->filename ?? '',
+            $params->contentType,
+        );
+
+        if ($params->cid) {
+            $path .= '&cid=' . urlencode($params->cid);
+        }
+
+        $response = $this->uploadFile(
+            'post',
+            $path,
+            base64_encode($params->content),
+            $opts
+        );
+
+        if (is_string($response)) {
+            // Should not happen, as uploadFile is expected to return ApiResponse when uploading files
+            throw new RequestFailedException('Unexpected response type, expected ApiResponse');
+        }
+
+        return UploadFileResponseDto::fromArray($response->json);
     }
+
 
     /**
      * Download a file (returns binary content)

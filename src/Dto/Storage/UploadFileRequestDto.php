@@ -14,8 +14,8 @@ class UploadFileRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $content,
-        public ?string $filename = null,
-        public ?string $contentType = null,
+        public string $filename,
+        public string $contentType,
         public ?string $encoding = null,
         public ?string $cid = null,
     ) {
@@ -23,14 +23,12 @@ class UploadFileRequestDto implements RequestDtoInterface
 
     public function toArray(): array
     {
-        $data = ['content' => $this->content];
+        $data = [
+            'content' => $this->content,
+            'filename' => $this->filename,
+            'contentType' => $this->contentType,
+        ];
 
-        if ($this->filename !== null) {
-            $data['filename'] = $this->filename;
-        }
-        if ($this->contentType !== null) {
-            $data['contentType'] = $this->contentType;
-        }
         if ($this->encoding !== null) {
             $data['encoding'] = $this->encoding;
         }
