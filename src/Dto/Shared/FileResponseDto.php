@@ -16,6 +16,7 @@ readonly class FileResponseDto implements ResponseDtoInterface
         public string $filename,
         public string $contentType,
         public int $size,
+        public ?string $cid = null,
     ) {
     }
 
@@ -26,6 +27,7 @@ readonly class FileResponseDto implements ResponseDtoInterface
             filename: $data['filename'] ?? '',
             contentType: $data['contentType'] ?? '',
             size: isset($data['size']) && is_int($data['size']) ? $data['size'] : 0,
+            cid: $data['cid'] ?? null,
         );
     }
 }
