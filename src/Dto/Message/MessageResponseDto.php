@@ -11,6 +11,7 @@ use Zone\Wildduck\Dto\Shared\ListBimiResponseDto;
 use Zone\Wildduck\Dto\Shared\EnvelopeResponseDto;
 use Zone\Wildduck\Dto\Shared\FileResponseDto;
 use Zone\Wildduck\Dto\Shared\MailingListResponseDto;
+use Zone\Wildduck\Dto\Shared\MessageBimiResponseDto;
 use Zone\Wildduck\Dto\Shared\MessageReferenceResponseDto;
 use Zone\Wildduck\Dto\Shared\OutboundResponseDto;
 use Zone\Wildduck\Dto\Shared\RecipientResponseDto;
@@ -35,7 +36,7 @@ readonly class MessageResponseDto implements ResponseDtoInterface
      * @param array<string, mixed>|null $metaData Custom metadata
      * @param string[]|null $html
      * @param string[] $references
-     * @param @var string[]|null $forwardTargets
+     * @param string[]|null $forwardTargets
      */
     public function __construct(
         public bool $success = true,
@@ -55,6 +56,7 @@ readonly class MessageResponseDto implements ResponseDtoInterface
         public bool $draft = false,
         public bool $answered = false,
         public bool $forwarded = false,
+        public array $references = [],
         public ?ContentTypeResponseDto $contentType = null,
         public ?array $replyTo = null,
         public ?array $to = null,
@@ -67,9 +69,8 @@ readonly class MessageResponseDto implements ResponseDtoInterface
         public ?string $text = null,
         public ?array $attachments = null,
         public ?VerificationResultsResponseDto $verificationResults = null,
-        public ?ListBimiResponseDto $bimi = null,
+        public ?MessageBimiResponseDto $bimi = null,
         public mixed $metaData = null,
-        public array $references,
         public ?array $files = null,
         public ?array $outbound = null,
         public ?array $forwardTargets = null,
@@ -126,7 +127,7 @@ readonly class MessageResponseDto implements ResponseDtoInterface
         $verificationResults = isset($data['verificationResults']) && is_array($data['verificationResults']) ? VerificationResultsResponseDto::fromArray($data['verificationResults']) : null;
 
         // Parse BIMI
-        $bimi = isset($data['bimi']) && is_array($data['bimi']) ? ListBimiResponseDto::fromArray($data['bimi']) : null;
+        $bimi = isset($data['bimi']) && is_array($data['bimi']) ? MessageBimiResponseDto::fromArray($data['bimi']) : null;
 
         // Parse reference
         $reference = isset($data['reference']) && is_array($data['reference']) ? MessageReferenceResponseDto::fromArray($data['reference']) : null;

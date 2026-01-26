@@ -10,6 +10,7 @@ use Zone\Wildduck\Dto\Message\ForwardMessageRequestDto;
 use Zone\Wildduck\Dto\Message\ListMessagesRequestDto;
 use Zone\Wildduck\Dto\Message\SearchApplyMessagesRequestDto;
 use Zone\Wildduck\Dto\Message\SearchMessagesRequestDto;
+use Zone\Wildduck\Dto\Message\SubmitDraftMessageRequestDto;
 use Zone\Wildduck\Dto\Message\UploadMessageRequestDto;
 
 class MessageServiceIntegrationTest extends IntegrationTestCase
@@ -224,7 +225,8 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $result = $this->client->messages()->submitDraft(
             $this->createdUserId,
             $this->createdMailboxId,
-            (int)$this->createdMessageId
+            (int)$this->createdMessageId,
+            new SubmitDraftMessageRequestDto()
         );
 
         $this->assertTrue($result->success);
