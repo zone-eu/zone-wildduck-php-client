@@ -1,9 +1,9 @@
 {
     "name": "zone-eu/wildduck-php-client",
-    "description": "",
+    "description": "PHP client for Wildduck email server API",
     "type": "library",
     "license": "EUPL-1.1",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "require": {
         "php": "^8.3",
         "ext-curl": "*",

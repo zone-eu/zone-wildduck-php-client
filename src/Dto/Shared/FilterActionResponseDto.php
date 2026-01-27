@@ -46,8 +46,14 @@ final class FilterActionResponseDto implements ResponseDtoInterface
                 case 'flag it':
                     $flag = true;
                     break;
+                case 'do not flag it':
+                    $flag = false;
+                    break;
                 case 'delete it':
                     $delete = true;
+                    break;
+                case 'do not delete it':
+                    $delete = false;
                     break;
                 case 'forward to':
                     $targets = is_string($value) ? array_map('trim', explode(',', $value)) : null;
