@@ -15,9 +15,9 @@ final class WebAuthnCredentialDto implements ResponseDtoInterface
     public function __construct(
         public readonly string $id,
         public readonly string $description,
-        public readonly string $created,
-    ) {
-    }
+        public readonly string $rawId,
+        public readonly string $authenticatorAttachment,
+    ) {}
 
     public static function fromArray(array $data): self
     {
@@ -37,18 +37,27 @@ final class WebAuthnCredentialDto implements ResponseDtoInterface
             throw DtoValidationException::invalidType('description', 'string', $data['description']);
         }
 
-        if (!isset($data['created'])) {
-            throw DtoValidationException::missingRequiredField('created', 'string');
+        if (!isset($data['rawId'])) {
+            throw DtoValidationException::missingRequiredField('rawId', 'string');
         }
 
-        if (!is_string($data['created'])) {
-            throw DtoValidationException::invalidType('created', 'string', $data['created']);
+        if (!is_string($data['rawId'])) {
+            throw DtoValidationException::invalidType('rawId', 'string', $data['rawId']);
+        }
+
+        if (!isset($data['authenticatorAttachment'])) {
+            throw DtoValidationException::missingRequiredField('authenticatorAttachment', 'string');
+        }
+
+        if (!is_string($data['authenticatorAttachment'])) {
+            throw DtoValidationException::invalidType('authenticatorAttachment', 'string', $data['authenticatorAttachment']);
         }
 
         return new self(
             id: $data['id'],
             description: $data['description'],
-            created: $data['created'],
+            rawId: $data['rawId'],
+            authenticatorAttachment: $data['authenticatorAttachment'],
         );
     }
 }
