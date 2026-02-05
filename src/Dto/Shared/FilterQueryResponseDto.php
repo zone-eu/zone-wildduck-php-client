@@ -26,7 +26,7 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
     ) {}
 
     /**
-     * @param array<int, array{ 0: string|false, 1: string|int|null }> $data
+     * @param array<int, array{ 0: string, 1: string|int|null }> $data
      */
     public static function fromArray(array $data): self
     {
@@ -58,7 +58,7 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
                 case 'has attachment':
                     $ha = true;
                     break;
-                case false:
+                case 'text':
                     $text = trim($value, '"');
                     break;
                 case 'larger':
