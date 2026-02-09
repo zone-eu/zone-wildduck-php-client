@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zone\Wildduck\Dto\Message;
 
 use Zone\Wildduck\Dto\ResponseDtoInterface;
+use Zone\Wildduck\Dto\Shared\AttachmentResponseDto;
 use Zone\Wildduck\Dto\Shared\ContentTypeResponseDto;
 use Zone\Wildduck\Dto\Shared\ListBimiResponseDto;
 use Zone\Wildduck\Dto\Shared\MessageBimiResponseDto;
@@ -21,6 +22,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
      * @param RecipientResponseDto[] $cc
      * @param RecipientResponseDto[] $bcc
      * @param string[] $references
+     * @param AttachmentResponseDto[] $attachmentsList
      */
     public function __construct(
         public int $id,
@@ -35,6 +37,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         public string $date,
         public string $intro,
         public bool $attachments,
+        public array $attachmentsList,
         public int $size,
         public bool $seen,
         public bool $deleted,
@@ -100,7 +103,8 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
 
         // Flags / simple fields
         $intro = $data['intro'] ?? '';
-        $attachmentsFlag = isset($data['attachments']) && is_array($data['attachments']) && count($data['attachments']) > 0;
+        $attachments = $data['attachments'] ?? false;
+        $attachmentsList = isset($data['attachmentsList']) && is_array($data['attachmentsList']) ? array_map(fn($item) => AttachmentResponseDto::fromArray($item), $data['attachmentsList']) : [];
         $size = isset($data['size']) ? (int) $data['size'] : 0;
         $seen = (bool) ($data['seen'] ?? false);
         $deleted = (bool) ($data['deleted'] ?? false);
@@ -126,7 +130,8 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
             $data['subject'] ?? '',
             $data['date'] ?? '',
             $intro,
-            $attachmentsFlag,
+            $attachments,
+            $attachmentsList,
             $size,
             $seen,
             $deleted,
