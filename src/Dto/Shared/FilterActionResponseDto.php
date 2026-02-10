@@ -12,9 +12,9 @@ use Zone\Wildduck\Dto\ResponseDtoInterface;
 final class FilterActionResponseDto implements ResponseDtoInterface
 {
     public function __construct(
-        public readonly bool $seen,
-        public readonly bool $flag,
-        public readonly bool $delete,
+        public readonly ?bool $seen,
+        public readonly ?bool $flag,
+        public readonly ?bool $delete,
         public readonly ?bool $spam = null,
         public readonly ?string $mailbox = null,
         /** @var string[]|null */
@@ -26,9 +26,9 @@ final class FilterActionResponseDto implements ResponseDtoInterface
      */
     public static function fromArray(array $data): self
     {
-        $seen = false;
-        $flag = false;
-        $delete = false;
+        $seen = null;
+        $flag = null;
+        $delete = null;
         $spam = null;
         $mailbox = null;
         $targets = null;
@@ -56,7 +56,7 @@ final class FilterActionResponseDto implements ResponseDtoInterface
                     $delete = false;
                     break;
                 case 'forward to':
-                    $targets = is_string($value) ? array_map('trim', explode(',', $value)) : null;
+                    $targets = is_string($value) && $value ? array_map('trim', explode(',', $value)) : null;
                     break;
                 case 'move to folder':
                     $mailbox = is_string($value) ? trim($value, '"') : null;

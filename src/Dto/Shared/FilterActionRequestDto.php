@@ -24,13 +24,13 @@ final class FilterActionRequestDto implements RequestDtoInterface
 
     public function toArray(): array
     {
-        return [
-            'seen' => $this->seen ?? false,
-            'flag' => $this->flag ?? false,
-            'delete' => $this->delete ?? false,
-            'spam' => $this->spam ?? false,
-            'mailbox' => $this->mailbox ?? '',
-            'targets' => $this->targets ?? [],
-        ];
+        return array_filter([
+            'seen' => $this->seen,
+            'flag' => $this->flag,
+            'delete' => $this->delete,
+            'spam' => $this->spam,
+            'mailbox' => $this->mailbox,
+            'targets' => $this->targets,
+        ], fn($value) => $value !== null);
     }
 }
