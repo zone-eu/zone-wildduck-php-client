@@ -108,9 +108,9 @@ abstract class Util
 
         if (is_array($values)) {
             foreach ($values as $k => $value) {
-                if (null === $value) {
-                    continue;
-                }
+                // if (null === $value) {
+                //     continue;
+                // }
                 $results[$k] = self::test($value);
             }
             return $results;
