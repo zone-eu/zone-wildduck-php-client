@@ -33,10 +33,22 @@ class SearchMessagesRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public ?string $q = null,
+        public ?string $query = null,
         public ?string $mailbox = null,
         public ?string $id = null,
         public ?string $thread = null,
+        public ?string $from = null,
+        public ?string $to = null,
         public ?SearchOrTermsDto $or = null,
+        public ?string $subject = null,
+        public ?bool $attachments = null,
+        public ?bool $flagged = null,
+        public ?bool $unseen = null,
+        public ?bool $seen = null,
+        public ?string $dateStart = null,
+        public ?string $dateEnd = null,
+        public ?int $minSize = null,
+        public ?int $maxSize = null,
         public string|bool|null $includeHeaders = null,
         public ?bool $searchable = null,
         public ?bool $threadCounters = null,
@@ -44,25 +56,13 @@ class SearchMessagesRequestDto implements RequestDtoInterface
         public ?string $order = null,
         public ?string $next = null,
         public ?string $previous = null,
-        public ?string $query = null,
-        public ?string $dateStart = null,
-        public ?string $dateEnd = null,
-        public ?string $from = null,
-        public ?string $to = null,
-        public ?string $subject = null,
-        public ?int $minSize = null,
-        public ?int $maxSize = null,
-        public ?bool $attachments = null,
-        public ?bool $flagged = null,
-        public ?bool $unseen = null,
-        public ?bool $seen = null,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {
         return array_filter([
             'q' => $this->q,
+            'query' => $this->query,
             'mailbox' => $this->mailbox,
             'id' => $this->id,
             'thread' => $this->thread,

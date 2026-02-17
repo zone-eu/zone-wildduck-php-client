@@ -7,9 +7,7 @@ namespace Zone\Wildduck\Dto\Message;
 use Zone\Wildduck\Dto\ResponseDtoInterface;
 use Zone\Wildduck\Dto\Shared\AttachmentResponseDto;
 use Zone\Wildduck\Dto\Shared\ContentTypeResponseDto;
-use Zone\Wildduck\Dto\Shared\ListBimiResponseDto;
 use Zone\Wildduck\Dto\Shared\MessageBimiResponseDto;
-use Zone\Wildduck\Dto\Shared\MessageReferenceResponseDto;
 use Zone\Wildduck\Dto\Shared\RecipientResponseDto;
 
 /**
