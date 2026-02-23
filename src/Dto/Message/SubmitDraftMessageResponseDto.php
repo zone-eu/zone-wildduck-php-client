@@ -17,8 +17,8 @@ readonly class SubmitDraftMessageResponseDto implements ResponseDtoInterface
      */
     public function __construct(
         public bool $success,
-        public string $queueId,
-        public array $message
+        public ?string $queueId = null,
+        public ?array $message = null
     ) {}
 
     public static function fromArray(array $data): self
@@ -26,17 +26,11 @@ readonly class SubmitDraftMessageResponseDto implements ResponseDtoInterface
         if (!isset($data['success'])) {
             throw DtoValidationException::missingRequiredField('success', 'bool');
         }
-        if (!isset($data['queueId'])) {
-            throw DtoValidationException::missingRequiredField('queueId', 'string');
-        }
-        if (!isset($data['message'])) {
-            throw DtoValidationException::missingRequiredField('message', 'object');
-        }
 
         return new self(
             success: $data['success'],
-            queueId: $data['queueId'],
-            message: $data['message'],
+            queueId: $data['queueId'] ?? null,
+            message: $data['message'] ?? null,
         );
     }
 }
