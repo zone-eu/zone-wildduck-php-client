@@ -60,9 +60,6 @@ class FilterServiceIntegrationTest extends IntegrationTestCase
         $filters = $this->client->filters()->userAll($this->createdUserId, null);
         $this->assertGreaterThan(0, count($filters->results));
         $this->createdFilterId = $filters->results[0]->id;
-
-        // List filters
-        $filters = $this->client->filters()->userAll($this->createdUserId, null);
         $this->assertCount(1, $filters->results);
 
         // Get specific filter
