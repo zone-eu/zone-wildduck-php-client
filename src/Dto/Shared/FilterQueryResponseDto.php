@@ -85,18 +85,18 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
     }
 
     /**
-     * @param array{ from: string, to: string, subject: string, listId: string, text: string, ha: bool, size: number } $data
+     * @param array{ from: string|null, to: string|null, subject: string|null, listId: string|null, text: string|null, ha: bool|null, size: int|null } $data
      */
     public static function fromObject(array $data): self
     {
         return new self(
-            from: trim($data['from'], '()'),
-            to: trim($data['to'], '()'),
-            subject: trim($data['subject'], '()'),
-            listId: trim($data['listId'], '()'),
-            text: $data['text'],
-            ha: $data['ha'],
-            size: ['size' => (int)$data['size'], 'type' => (int)$data['size'] > 0 ? 'larger' : 'smaller'],
+            from: isset($data['from']) ? trim($data['from'], '()') : null,
+            to: isset($data['to']) ? trim($data['to'], '()') : null,
+            subject: isset($data['subject']) ? trim($data['subject'], '()') : null,
+            listId: isset($data['listId']) ? trim($data['listId'], '()') : null,
+            text: $data['text'] ?? null,
+            ha: $data['ha'] ?? false,
+            size: isset($data['size']) ? ['size' => (int)$data['size'], 'type' => (int)$data['size'] > 0 ? 'larger' : 'smaller'] : null,
         );
     }
 }
