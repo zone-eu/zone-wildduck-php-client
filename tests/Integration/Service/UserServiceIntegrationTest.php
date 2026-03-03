@@ -7,6 +7,7 @@ namespace Tests\Integration\Service;
 use Tests\Integration\IntegrationTestCase;
 use Zone\Wildduck\Dto\User\CreateUserRequestDto;
 use Zone\Wildduck\Dto\User\CreatedUserResponseDto;
+use Zone\Wildduck\Dto\User\DeleteUserRequestDto;
 use Zone\Wildduck\Dto\User\UpdateUserRequestDto;
 use Zone\Wildduck\Dto\User\UserResponseDto;
 use Zone\Wildduck\Dto\User\UserInfoResponseDto;
@@ -227,20 +228,15 @@ class UserServiceIntegrationTest extends IntegrationTestCase
         $createResult = $this->client->users()->create($createDto);
         $this->createdUserId = $createResult->id;
 
-        // Note: This test assumes the user can be marked for deletion.
-        // In WildDuck, you typically delete a user, then can restore it within a time window.
-        // We'll test the cancelDeletion method directly.
+        // Delete user
+        $deleteResult = $this->client->users()->delete($this->createdUserId, new DeleteUserRequestDto(
+            deleteAfter: (new \DateTime())->add(\DateInterval::createFromDateString('2 day'))->format(\DateTime::ATOM)
+        ));
+        $this->assertTrue($deleteResult->success);
 
         // Cancel deletion (used after marking user for deletion)
-        $cancelDto = new \Zone\Wildduck\Dto\User\CancelUserDeletionRequestDto();
-
-        try {
-            $cancelResult = $this->client->users()->cancelDeletion($this->createdUserId, $cancelDto);
-            $this->assertInstanceOf(\Zone\Wildduck\Dto\User\CancelUserDeletionResponseDto::class, $cancelResult);
-            // If no error, the call succeeded (even if user wasn't scheduled for deletion)
-        } catch (\Exception $e) {
-            // User may not be scheduled for deletion, which is expected
-        }
+        $cancelResult = $this->client->users()->cancelDeletion($this->createdUserId);
+        $this->assertTrue($cancelResult->success);
     }
 
     public function testGetRestoreInfo(): void

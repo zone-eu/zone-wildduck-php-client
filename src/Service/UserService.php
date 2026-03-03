@@ -7,10 +7,10 @@ namespace Zone\Wildduck\Service;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Zone\Wildduck\Dto\PaginatedResultDto;
 use Zone\Wildduck\Dto\Shared\SuccessResponseDto;
-use Zone\Wildduck\Dto\User\CancelUserDeletionRequestDto;
 use Zone\Wildduck\Dto\User\CancelUserDeletionResponseDto;
 use Zone\Wildduck\Dto\User\CreateUserRequestDto;
 use Zone\Wildduck\Dto\User\CreatedUserResponseDto;
+use Zone\Wildduck\Dto\User\DeleteUserRequestDto;
 use Zone\Wildduck\Dto\User\DeleteUserResponseDto;
 use Zone\Wildduck\Dto\User\ListUsersRequestDto;
 use Zone\Wildduck\Dto\User\LogoutUserRequestDto;
@@ -22,7 +22,6 @@ use Zone\Wildduck\Dto\User\ResolveUserResponseDto;
 use Zone\Wildduck\Dto\User\RestoreUserInfoDto;
 use Zone\Wildduck\Dto\User\UpdateUserRequestDto;
 use Zone\Wildduck\Dto\User\UserResponseDto;
-use Zone\Wildduck\Dto\User\UserInfoResponseDto;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
@@ -109,6 +108,7 @@ class UserService extends AbstractService
      * Delete a user
      *
      * @param string $id
+     * @param DeleteUserRequestDto|null $params
      * @param array|null $opts
      * @return DeleteUserResponseDto
      * @throws ApiConnectionException
@@ -117,9 +117,9 @@ class UserService extends AbstractService
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function delete(string $id, array|null $opts = null): DeleteUserResponseDto
+    public function delete(string $id, DeleteUserRequestDto|null $params = null, array|null $opts = null): DeleteUserResponseDto
     {
-        return $this->requestDto('delete', $this->buildPath('/users/%s', $id), null, DeleteUserResponseDto::class, $opts);
+        return $this->requestDto('delete', $this->buildPath('/users/%s', $id), $params, DeleteUserResponseDto::class, $opts);
     }
 
     /**
@@ -225,7 +225,6 @@ class UserService extends AbstractService
      * Cancel user deletion task
      *
      * @param string $id
-     * @param CancelUserDeletionRequestDto $params
      * @param array|null $opts
      * @return CancelUserDeletionResponseDto
      * @throws ApiConnectionException
@@ -234,9 +233,9 @@ class UserService extends AbstractService
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function cancelDeletion(string $id, CancelUserDeletionRequestDto $params, array|null $opts = null): CancelUserDeletionResponseDto
+    public function cancelDeletion(string $id, array|null $opts = null): CancelUserDeletionResponseDto
     {
-        return $this->requestDto('delete', $this->buildPath('/users/%s/restore', $id), $params, CancelUserDeletionResponseDto::class, $opts);
+        return $this->requestDto('post', $this->buildPath('/users/%s/restore', $id), null, CancelUserDeletionResponseDto::class, $opts);
     }
 
     /**

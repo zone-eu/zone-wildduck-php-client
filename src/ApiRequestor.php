@@ -487,7 +487,19 @@ class ApiRequestor
             throw new UnexpectedValueException($msg, $rcode);
         }
 
-        if ($rcode < 200 || $rcode >= 300 || isset($resp['error']) || (isset($resp['code']) && $resp['code'] !== 'TaskScheduled')) {
+        if (
+            $rcode < 200 ||
+            $rcode >= 300 ||
+            isset($resp['error']) ||
+            (
+                isset($resp['code']) &&
+                // We can safely ignore these codes as they are used for internal task scheduling and cancellation and do not indicate an error in the request
+                !array_any(
+                    ['TaskScheduled', 'TaskCancelled'],
+                    fn($value) => $value === $resp['code']
+                )
+            )
+        ) {
             $this->handleErrorResponse($rbody, $rcode, $resp);
         }
 
