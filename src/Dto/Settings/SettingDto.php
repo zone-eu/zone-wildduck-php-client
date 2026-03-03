@@ -14,13 +14,12 @@ final readonly class SettingDto implements ResponseDtoInterface
 {
     public function __construct(
         public string $key,
-        public string|int $value,
+        public string|int|false $value,
         public string $name,
         public string $description,
         public string $type,
         public bool $custom,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {
