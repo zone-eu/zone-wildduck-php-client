@@ -2,3 +2,5 @@
 .DS_Store
 /vendor/
 testing.php
+.phpunit.result.cache
+coverage-report/*

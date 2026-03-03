@@ -3,7 +3,6 @@
     xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     bootstrap="vendor/autoload.php"
     colors="true"
-    verbose="true"
     failOnWarning="true"
     failOnRisky="true">
     <testsuites>
@@ -20,9 +19,9 @@
         <env name="WILDDUCK_ACCESS_TOKEN" value="WDTESTSERVER" />
     </php>
 
-    <coverage>
+    <source>
         <include>
-            <directory suffix=".php">src</directory>
+            <directory suffix=".php">./src</directory>
         </include>
-    </coverage>
+    </source>
 </phpunit>
