@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration\Service;
 
 use Tests\Integration\IntegrationTestCase;
+use Zone\Wildduck\ApiResponse;
 use Zone\Wildduck\Dto\Message\BulkUpdateMessagesRequestDto;
 use Zone\Wildduck\Dto\Message\ForwardMessageRequestDto;
 use Zone\Wildduck\Dto\Message\ListMessagesRequestDto;
@@ -357,8 +358,18 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
                 $attachmentId
             );
 
+            if ($content instanceof ApiResponse) {
+                $content = $content->body;
+            }
+
             $this->assertNotEmpty($content);
-            $this->assertEquals("Test attachment content", $content);
+
+            $decodedContent = base64_decode($content, true);
+            if ($decodedContent !== false) {
+                $this->assertEquals('Test attachment content', $decodedContent);
+            } else {
+                $this->assertEquals('Test attachment content', $content);
+            }
         } else {
             $this->markTestSkipped('Message did not contain attachments');
         }

@@ -19,8 +19,8 @@ readonly class AuthLogEventResponseDto implements ResponseDtoInterface
         public string $created,
         public int $events,
         public string $expires,
-        public string $ip,
         public string $last,
+        public ?string $ip = null,
         public ?string $filter = null,
         public ?string $target = null,
         public ?string $protocol = null,
@@ -52,9 +52,6 @@ readonly class AuthLogEventResponseDto implements ResponseDtoInterface
         if (!isset($data['expires'])) {
             throw DtoValidationException::missingRequiredField('expires', 'string');
         }
-        if (!isset($data['ip'])) {
-            throw DtoValidationException::missingRequiredField('ip', 'string');
-        }
         if (!isset($data['last'])) {
             throw DtoValidationException::missingRequiredField('last', 'string');
         }
@@ -66,8 +63,8 @@ readonly class AuthLogEventResponseDto implements ResponseDtoInterface
             created: $data['created'],
             events: $data['events'],
             expires: $data['expires'],
-            ip: $data['ip'],
             last: $data['last'],
+            ip: $data['ip'] ?? null,
             filter: $data['filter'] ?? null,
             target: $data['target'] ?? null,
             protocol: $data['protocol'] ?? null,

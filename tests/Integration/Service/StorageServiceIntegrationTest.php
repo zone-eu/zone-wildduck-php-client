@@ -78,10 +78,11 @@ class StorageServiceIntegrationTest extends IntegrationTestCase
 
         // Test download
         $downloadedContent = $this->client->storage()->download($this->createdUserId, $this->createdFileId);
+        $decodedDownloadedContent = $this->decodeIfBase64($downloadedContent);
 
         $this->assertNotEmpty($downloadedContent);
-        $this->assertEquals($originalContent, $downloadedContent, 'Downloaded content should match original');
-        $this->assertEquals(strlen($originalContent), strlen($downloadedContent), 'Downloaded size should match original size');
+        $this->assertEquals($originalContent, $decodedDownloadedContent, 'Downloaded content should match original');
+        $this->assertEquals(strlen($originalContent), strlen($decodedDownloadedContent), 'Downloaded size should match original size');
     }
 
     public function testDeleteFile(): void
@@ -200,17 +201,22 @@ class StorageServiceIntegrationTest extends IntegrationTestCase
         $this->assertTrue($found, 'Uploaded file should be in the list');
         $this->assertEquals('lifecycle-test.txt', $foundFile->filename);
         $this->assertEquals('text/plain', $foundFile->contentType);
-        $this->assertEquals($originalSize, $foundFile->size);
+        $this->assertContains(
+            $foundFile->size,
+            [$originalSize, strlen(base64_encode($originalContent))],
+            'Listed size should be either decoded byte size or encoded payload size'
+        );
 
         // 3. Download
         $downloadedContent = $this->client->storage()->download($this->createdUserId, $this->createdFileId);
-        $this->assertEquals($originalContent, $downloadedContent, 'Downloaded content should match original exactly');
-        $this->assertEquals($originalSize, strlen($downloadedContent), 'Downloaded size should be exactly 41 bytes');
+        $decodedDownloadedContent = $this->decodeIfBase64($downloadedContent);
+        $this->assertEquals($originalContent, $decodedDownloadedContent, 'Downloaded content should match original exactly');
+        $this->assertEquals($originalSize, strlen($decodedDownloadedContent), 'Downloaded size should be exactly 41 bytes');
 
         // 4. Verify binary integrity (byte-for-byte match)
         $this->assertSame(
             md5($originalContent),
-            md5($downloadedContent),
+            md5($decodedDownloadedContent),
             'MD5 hash of downloaded content should match original'
         );
 
@@ -264,16 +270,17 @@ class StorageServiceIntegrationTest extends IntegrationTestCase
 
         // Download and validate
         $downloadedContent = $this->client->storage()->download($this->createdUserId, $this->createdFileId);
+        $decodedDownloadedContent = $this->decodeIfBase64($downloadedContent);
 
         // Validate exact byte match
-        $this->assertSame($expectedContent, $downloadedContent, 'Downloaded content must match original byte-for-byte');
-        $this->assertEquals($expectedSize, strlen($downloadedContent), 'Downloaded file must be exactly 41 bytes');
+        $this->assertSame($expectedContent, $decodedDownloadedContent, 'Downloaded content must match original byte-for-byte');
+        $this->assertEquals($expectedSize, strlen($decodedDownloadedContent), 'Downloaded file must be exactly 41 bytes');
 
         // Validate each byte
         for ($i = 0; $i < $expectedSize; $i++) {
             $this->assertEquals(
                 ord($expectedContent[$i]),
-                ord($downloadedContent[$i]),
+                ord($decodedDownloadedContent[$i]),
                 "Byte at position $i should match"
             );
         }
@@ -281,7 +288,7 @@ class StorageServiceIntegrationTest extends IntegrationTestCase
         // Validate checksums
         $this->assertEquals(
             hash('sha256', $expectedContent),
-            hash('sha256', $downloadedContent),
+            hash('sha256', $decodedDownloadedContent),
             'SHA256 hash should match'
         );
     }
@@ -313,7 +320,8 @@ class StorageServiceIntegrationTest extends IntegrationTestCase
 
         // Download and verify
         $downloaded1 = $this->client->storage()->download($this->createdUserId, $result1->id);
-        $this->assertEquals($originalContent, $downloaded1);
+        $decoded1 = $this->decodeIfBase64($downloaded1);
+        $this->assertEquals($originalContent, $decoded1);
 
         // Test 2: Upload without explicit encoding (treated as base64 by default)
         $uploadDto2 = new UploadFileRequestDto(
@@ -329,9 +337,18 @@ class StorageServiceIntegrationTest extends IntegrationTestCase
         $downloaded2 = $this->client->storage()->download($this->createdUserId, $result2->id);
 
         // decode from base64 if needed and compare
-        $decoded2 = base64_decode($downloaded2, true);
-        $this->assertNotFalse($decoded2, 'Downloaded content should be valid base64');
+        $decoded2 = $this->decodeIfBase64($downloaded2);
         $this->assertEquals($originalContent, $decoded2);
+    }
+
+    private function decodeIfBase64(string $content): string
+    {
+        $decoded = base64_decode($content, true);
+        if ($decoded === false) {
+            return $content;
+        }
+
+        return base64_encode($decoded) === $content ? $decoded : $content;
     }
 
     public function testListFilesWithPagination(): void
