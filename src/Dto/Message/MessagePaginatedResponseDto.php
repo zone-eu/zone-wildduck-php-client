@@ -41,7 +41,7 @@ readonly class MessagePaginatedResponseDto implements ResponseDtoInterface
         $instance = new self(
             results: $parentSelf->results,
             total: $parentSelf->total,
-            specialUse: $data['specialUse'] ?? null,
+            specialUse: isset($data['specialUse']) && $data['specialUse'] ? $data['specialUse'] : null,
             nextCursor: $parentSelf->nextCursor,
             previousCursor: $parentSelf->previousCursor,
             page: $parentSelf->page
