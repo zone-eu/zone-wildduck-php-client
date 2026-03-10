@@ -23,6 +23,7 @@ class BaseWildduckClient implements WildduckClientInterface
         'resolve_uri' => false,
         'session' => null,
         'ip' => null,
+        'request_options' => [],
     ];
 
     protected static null|WildduckClient $_instance = null;
