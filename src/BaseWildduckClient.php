@@ -63,7 +63,7 @@ class BaseWildduckClient implements WildduckClientInterface
 
         $this->config = $config;
 
-        $this->defaultOpts = RequestOptions::parse([]);
+        $this->defaultOpts = RequestOptions::parse(array_key_exists('request_options', $config) ? $config['request_options'] : []);
     }
 
     /**
