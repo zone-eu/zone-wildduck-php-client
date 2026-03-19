@@ -11,11 +11,8 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
  */
 class SearchApplyMessagesRequestDto implements RequestDtoInterface
 {
-    /**
-     * @param array<string, mixed> $action Define actions to take with matching messages
-     */
     public function __construct(
-        public array $action,
+        public BulkUpdateSearchActionsRequestDto $action,
         public ?string $q = null,
         public ?string $mailbox = null,
         public ?string $id = null,
@@ -25,6 +22,7 @@ class SearchApplyMessagesRequestDto implements RequestDtoInterface
         public ?string $dateend = null,
         public ?string $from = null,
         public ?string $to = null,
+        public ?SearchOrTermsDto $or = null,
         public ?string $subject = null,
         public ?int $minSize = null,
         public ?int $maxSize = null,
@@ -33,13 +31,13 @@ class SearchApplyMessagesRequestDto implements RequestDtoInterface
         public ?bool $unseen = null,
         public ?bool $seen = null,
         public ?string $includeHeaders = null,
+        public ?bool $metaData = null,
         public ?bool $searchable = null,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {
-        $data = ['action' => $this->action];
+        $data = ['action' => $this->action->toArray()];
 
         return array_merge($data, array_filter([
             'q' => $this->q,
@@ -60,6 +58,7 @@ class SearchApplyMessagesRequestDto implements RequestDtoInterface
             'seen' => $this->seen,
             'includeHeaders' => $this->includeHeaders,
             'searchable' => $this->searchable,
+            'or' => $this->or?->toArray(),
         ], fn($value) => $value !== null));
     }
 }
