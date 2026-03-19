@@ -6,26 +6,6 @@ namespace Zone\Wildduck\Dto\Message;
 
 use Zone\Wildduck\Dto\RequestDtoInterface;
 
-class SearchOrTermsDto implements RequestDtoInterface
-{
-    public function __construct(
-        public ?string $query = null,
-        public ?string $from = null,
-        public ?string $to = null,
-        public ?string $subject = null,
-    ) {}
-
-    public function toArray(): array
-    {
-        return array_filter([
-            'query' => $this->query,
-            'from' => $this->from,
-            'to' => $this->to,
-            'subject' => $this->subject,
-        ], fn($value) => $value !== null);
-    }
-}
-
 /**
  * Request DTO for searching messages
  */
@@ -39,7 +19,7 @@ class SearchMessagesRequestDto implements RequestDtoInterface
         public ?string $thread = null,
         public ?string $from = null,
         public ?string $to = null,
-        public ?SearchOrTermsDto $or = null,
+        public ?SearchOrTermsRequestDto $or = null,
         public ?string $subject = null,
         public ?bool $attachments = null,
         public ?bool $flagged = null,

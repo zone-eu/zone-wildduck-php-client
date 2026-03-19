@@ -22,7 +22,7 @@ class SearchApplyMessagesRequestDto implements RequestDtoInterface
         public ?string $dateend = null,
         public ?string $from = null,
         public ?string $to = null,
-        public ?SearchOrTermsDto $or = null,
+        public ?SearchOrTermsRequestDto $or = null,
         public ?string $subject = null,
         public ?int $minSize = null,
         public ?int $maxSize = null,
