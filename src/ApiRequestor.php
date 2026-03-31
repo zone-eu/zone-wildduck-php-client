@@ -9,6 +9,7 @@ use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\InvalidArgumentException;
 use Zone\Wildduck\Exception\InvalidDatabaseException;
+use Zone\Wildduck\Exception\OverQuotaException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\UnexpectedValueException;
 use Zone\Wildduck\Exception\ValidationException;
@@ -47,6 +48,9 @@ class ApiRequestor
     public const string CODE_INTERNAL_SERVER = 'InternalServer';
 
     public const string CODE_INVALID_DATABASE = 'InternalDatabaseError';
+
+    public const string CODE_OVER_QUOTA = 'OverQuotaError';
+
     private static ?ClientInterface $_httpClient = null;
     private readonly string $_apiBase;
     private readonly string|null $_accessToken;
@@ -457,6 +461,8 @@ class ApiRequestor
                 throw new ValidationException($error);
             case static::CODE_INVALID_DATABASE:
                 throw new InvalidDatabaseException($error);
+            case static::CODE_OVER_QUOTA:
+                throw new OverQuotaException($error);
         }
 
         throw new RequestFailedException($error, $code, $rCode);
