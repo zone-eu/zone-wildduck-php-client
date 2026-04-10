@@ -7,6 +7,7 @@ namespace Tests\Integration\Service;
 use Tests\Integration\IntegrationTestCase;
 use Zone\Wildduck\ApiResponse;
 use Zone\Wildduck\Dto\Message\BulkUpdateMessagesRequestDto;
+use Zone\Wildduck\Dto\Message\BulkUpdateSearchActionsRequestDto;
 use Zone\Wildduck\Dto\Message\ForwardMessageRequestDto;
 use Zone\Wildduck\Dto\Message\ListMessagesRequestDto;
 use Zone\Wildduck\Dto\Message\SearchApplyMessagesRequestDto;
@@ -296,7 +297,7 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
 
         // Test search and apply (mark as flagged)
         $searchApplyDto = new SearchApplyMessagesRequestDto(
-            action: ['seen' => true, 'flagged' => true],
+            action: new BulkUpdateSearchActionsRequestDto(flagged: true, seen: true),
             subject: $uniqueSubject
         );
 

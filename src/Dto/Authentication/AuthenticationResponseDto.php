@@ -24,9 +24,9 @@ readonly class AuthenticationResponseDto implements ResponseDtoInterface
         public array|bool $require2fa,
         public bool $requirePasswordChange,
         public ?string $token = null,
+        public ?string $totpNonce = null,
         public ?bool $passwordPwned = null,
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {
@@ -61,6 +61,7 @@ readonly class AuthenticationResponseDto implements ResponseDtoInterface
             require2fa: is_array($data['require2fa']) ? $data['require2fa'] : $data['require2fa'],
             requirePasswordChange: $data['requirePasswordChange'],
             token: $data['token'] ?? null,
+            totpNonce: $data['totpNonce'] ?? null,
             passwordPwned: $data['passwordPwned'] ?? null,
         );
     }

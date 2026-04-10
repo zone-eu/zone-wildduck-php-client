@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zone\Wildduck\Dto\TwoFactorAuth;
 
 use Zone\Wildduck\Dto\RequestDtoInterface;
-use Zone\Wildduck\Exception\DtoValidationException;
 
 /**
  * Request DTO for validating TOTP token
@@ -15,12 +14,14 @@ class ValidateTotpRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $token,
+        public string $totpNonce
     ) {}
 
     public function toArray(): array
     {
         return [
             'token' => $this->token,
+            'totpNonce' => $this->totpNonce,
         ];
     }
 }

@@ -64,6 +64,7 @@ class BaseWildduckClient implements WildduckClientInterface
 
         $this->config = $config;
 
+        // @phpstan-ignore function.alreadyNarrowedType
         $this->defaultOpts = RequestOptions::parse(array_key_exists('request_options', $config) ? $config['request_options'] : []);
     }
 
