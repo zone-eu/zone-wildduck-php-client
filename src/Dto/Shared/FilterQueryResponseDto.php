@@ -59,7 +59,9 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
                     $ha = true;
                     break;
                 case 'text':
-                    $text = $value;
+                    $text = is_string($value) && strlen($value) >= 2 && $value[0] === '"' && $value[-1] === '"'
+                        ? substr($value, 1, -1)
+                        : $value;
                     break;
                 case 'larger':
                     $size = ['size' => (int)$value, 'type' => 'larger'];
