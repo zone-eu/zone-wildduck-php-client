@@ -52,8 +52,8 @@ readonly class FilterResponseDto implements ResponseDtoInterface
             id: $data['id'],
             name: $data['name'] ?? null,
             created: $data['created'],
-            query: FilterQueryResponseDto::fromObject($data['originalQuery']),
-            action: FilterActionResponseDto::fromObject($data['originalAction']),
+            query: FilterQueryResponseDto::fromObject($data['originalQuery'] ?? $data['query']),
+            action: FilterActionResponseDto::fromObject($data['originalAction'] ?? $data['action']),
             disabled: $data['disabled'],
             metaData: $data['metaData'] ?? null,
         );
