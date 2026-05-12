@@ -52,6 +52,8 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         /** @var array<string, mixed>|null Custom metadata */
         public mixed $metaData = null,
     ) {}
+
+
     public static function fromArray(array $data): self
     {
         // From
@@ -116,6 +118,8 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         $encrypted = isset($data['encrypted']) ? (bool) $data['encrypted'] : null;
         $metaData = $data['metaData'] ?? null;
 
+        $messageId = is_array($data['messageId']) ? array_pop($data['messageId']) : $data['messageId'] ?? '';
+
         return new self(
             isset($data['id']) ? (int) $data['id'] : 0,
             $data['mailbox'] ?? '',
@@ -124,7 +128,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
             $to,
             $cc,
             $bcc,
-            $data['messageId'] ?? '',
+            $messageId,
             $data['subject'] ?? '',
             $data['date'] ?? '',
             $intro,
