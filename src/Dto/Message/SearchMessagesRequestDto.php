@@ -36,6 +36,7 @@ class SearchMessagesRequestDto implements RequestDtoInterface
         public ?string $order = null,
         public ?string $next = null,
         public ?string $previous = null,
+        public ?bool $useAndSearch = null,
     ) {}
 
     public function toArray(): array
@@ -65,6 +66,7 @@ class SearchMessagesRequestDto implements RequestDtoInterface
             'order' => $this->order,
             'next' => $this->next,
             'previous' => $this->previous,
+            'useAndSearch' => $this->useAndSearch,
         ], fn($value) => $value !== null);
     }
 }

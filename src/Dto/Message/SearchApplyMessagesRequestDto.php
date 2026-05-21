@@ -33,6 +33,7 @@ class SearchApplyMessagesRequestDto implements RequestDtoInterface
         public ?string $includeHeaders = null,
         public ?bool $metaData = null,
         public ?bool $searchable = null,
+        public ?bool $useAndSearch = null,
     ) {}
 
     public function toArray(): array
@@ -59,6 +60,8 @@ class SearchApplyMessagesRequestDto implements RequestDtoInterface
             'includeHeaders' => $this->includeHeaders,
             'searchable' => $this->searchable,
             'or' => $this->or?->toArray(),
+            'useAndSearch' => $this->useAndSearch,
+
         ], fn($value) => $value !== null));
     }
 }
