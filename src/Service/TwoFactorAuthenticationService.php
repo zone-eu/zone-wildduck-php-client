@@ -13,6 +13,8 @@ use Zone\Wildduck\Dto\TwoFactorAuth\WebAuthnRegistrationAttestationRequestDto;
 use Zone\Wildduck\Dto\TwoFactorAuth\WebAuthnRegistrationChallengeRequestDto;
 use Zone\Wildduck\Dto\TwoFactorAuth\DeleteWebAuthnCredentialResponseDto;
 use Zone\Wildduck\Dto\TwoFactorAuth\TotpSeedResponseDto;
+use Zone\Wildduck\Dto\TwoFactorAuth\ValidateTotpResponseDto;
+use Zone\Wildduck\Dto\TwoFactorAuth\WebAuthnAuthenticationAssertionResponseDto;
 use Zone\Wildduck\Dto\TwoFactorAuth\WebAuthnCredentialsResponseDto;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
@@ -121,16 +123,16 @@ class TwoFactorAuthenticationService extends AbstractService
      * @param string $user
      * @param ValidateTotpRequestDto $params
      * @param array<string, mixed>|null $opts
-     * @return SuccessResponseDto
+     * @return ValidateTotpResponseDto
      * @throws RequestFailedException
      * @throws InvalidAccessTokenException
      * @throws AuthenticationFailedException
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function validateTOTPToken(string $user, ValidateTotpRequestDto $params, array|null $opts = null): SuccessResponseDto
+    public function validateTOTPToken(string $user, ValidateTotpRequestDto $params, array|null $opts = null): ValidateTotpResponseDto
     {
-        return $this->requestDto('post', $this->buildPath('/users/%s/2fa/totp/check', $user), $params, SuccessResponseDto::class, $opts);
+        return $this->requestDto('post', $this->buildPath('/users/%s/2fa/totp/check', $user), $params, ValidateTotpResponseDto::class, $opts);
     }
 
     /**
@@ -228,15 +230,16 @@ class TwoFactorAuthenticationService extends AbstractService
      * @param string $user
      * @param WebAuthnAuthenticationAssertionRequestDto $params
      * @param array<string, mixed>|null $opts
-     * @return array<string, mixed>
+     * @return WebAuthnAuthenticationAssertionResponseDto
      * @throws RequestFailedException
      * @throws InvalidAccessTokenException
      * @throws AuthenticationFailedException
      * @throws ApiConnectionException
      * @throws ValidationException
      */
-    public function webAuthNAuthenticationAssertion(string $user, WebAuthnAuthenticationAssertionRequestDto $params, array|null $opts = null): array
+    public function webAuthNAuthenticationAssertion(string $user, WebAuthnAuthenticationAssertionRequestDto $params, array|null $opts = null): WebAuthnAuthenticationAssertionResponseDto
     {
-        return $this->request('post', $this->buildPath('/users/%s/2fa/webauthn/authentication-assertion', $user), $params, $opts);
+
+        return $this->requestDto('post', $this->buildPath('/users/%s/2fa/webauthn/authentication-assertion', $user), $params, WebAuthnAuthenticationAssertionResponseDto::class, $opts);
     }
 }
