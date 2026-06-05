@@ -15,8 +15,8 @@ class WebAuthnAuthenticationChallengeRequestDto implements RequestDtoInterface
         public string $origin,
         public ?string $authenticatorAttachment = null,
         public ?string $rpId = null,
-    ) {
-    }
+        public ?string $twoFactorNonce = null,
+    ) {}
 
     public function toArray(): array
     {
@@ -24,6 +24,7 @@ class WebAuthnAuthenticationChallengeRequestDto implements RequestDtoInterface
             'origin' => $this->origin,
             'authenticatorAttachment' => $this->authenticatorAttachment,
             'rpId' => $this->rpId,
+            'twoFactorNonce' => $this->twoFactorNonce,
         ], fn($value) => $value !== null);
     }
 }
