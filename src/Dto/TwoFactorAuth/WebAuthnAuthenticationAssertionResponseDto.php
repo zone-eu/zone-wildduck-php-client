@@ -14,6 +14,7 @@ final class WebAuthnAuthenticationAssertionResponseDto implements ResponseDtoInt
 {
     public function __construct(
         public readonly bool $success,
+        public readonly WebAuthnAuthenticationAssertionResponseResponseDto $response,
         public readonly ?string $token = null,
     ) {}
 
@@ -29,8 +30,8 @@ final class WebAuthnAuthenticationAssertionResponseDto implements ResponseDtoInt
 
         return new self(
             success: $data['success'],
-            token: $data['token'],
             response: WebAuthnAuthenticationAssertionResponseResponseDto::fromArray($data['response'] ?? []),
+            token: $data['token'],
         );
     }
 }
