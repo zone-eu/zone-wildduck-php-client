@@ -31,7 +31,7 @@ final class WebAuthnAuthenticationAssertionResponseDto implements ResponseDtoInt
         return new self(
             success: $data['success'],
             response: WebAuthnAuthenticationAssertionResponseResponseDto::fromArray($data['response'] ?? []),
-            token: $data['token'],
+            token: $data['token'] ?? null,
         );
     }
 }

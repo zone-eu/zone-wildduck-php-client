@@ -17,7 +17,7 @@ class WebAuthnAuthenticationAssertionRequestDto implements RequestDtoInterface
         public string $clientDataJSON,
         public string $authenticatorData,
         public string $signature,
-        public ?string $twoFactorNonce,
+        public ?string $twoFactorNonce = null,
         public ?string $rpId = null,
         public ?bool $token = null,
     ) {}
