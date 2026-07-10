@@ -15,13 +15,13 @@ class ListMessagesRequestDto implements RequestDtoInterface
         public ?bool $unseen = null,
         public ?bool $metaData = null,
         public ?bool $threadCounters = null,
+        public ?bool $collapseThreads = null,
         public ?int $limit = null,
         public ?string $order = null,
         public ?string $next = null,
         public ?string $previous = null,
         public string|bool|null $includeHeaders = null,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {
@@ -29,6 +29,7 @@ class ListMessagesRequestDto implements RequestDtoInterface
             'unseen' => $this->unseen,
             'metaData' => $this->metaData,
             'threadCounters' => $this->threadCounters,
+            'collapseThreads' => $this->collapseThreads,
             'limit' => $this->limit,
             'order' => $this->order,
             'next' => $this->next,

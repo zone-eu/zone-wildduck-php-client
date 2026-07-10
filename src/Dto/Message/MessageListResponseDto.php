@@ -43,6 +43,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         public bool $draft,
         public bool $answered,
         public bool $forwarded,
+        public bool $hasDrafts,
         public array $references,
         public ContentTypeResponseDto $contentType,
         public ?MessageBimiResponseDto $bimi = null,
@@ -112,6 +113,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         $draft = (bool) ($data['draft'] ?? false);
         $answered = (bool) ($data['answered'] ?? false);
         $forwarded = (bool) ($data['forwarded'] ?? false);
+        $hasDrafts = (bool) ($data['hasDrafts'] ?? false);
 
         $threadMessageCount = isset($data['threadMessageCount']) ? (int) $data['threadMessageCount'] : null;
         $idate = $data['idate'] ?? null;
@@ -141,6 +143,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
             $draft,
             $answered,
             $forwarded,
+            $hasDrafts,
             $references,
             $contentType,
             $bimi,

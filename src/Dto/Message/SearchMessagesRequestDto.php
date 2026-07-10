@@ -37,6 +37,7 @@ class SearchMessagesRequestDto implements RequestDtoInterface
         public ?string $next = null,
         public ?string $previous = null,
         public ?bool $useAndSearch = null,
+        public ?bool $collapseThreads = null,
     ) {}
 
     public function toArray(): array
@@ -67,6 +68,7 @@ class SearchMessagesRequestDto implements RequestDtoInterface
             'next' => $this->next,
             'previous' => $this->previous,
             'useAndSearch' => $this->useAndSearch,
+            'collapseThreads' => $this->collapseThreads,
         ], fn($value) => $value !== null);
     }
 }
