@@ -19,9 +19,9 @@ class ValidateTotpRequestDto implements RequestDtoInterface
 
     public function toArray(): array
     {
-        return [
+        return array_filter([
             'token' => $this->token,
             'totpNonce' => $this->totpNonce,
-        ];
+        ]);
     }
 }

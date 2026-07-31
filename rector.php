@@ -9,11 +9,9 @@ use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
 use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
 use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
-use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
 use Rector\Php83\Rector\ClassConst\AddTypeToConstRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\Transform\Rector\Class_\AddAllowDynamicPropertiesAttributeRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 use Rector\Php74\Rector\Property\RestoreDefaultNullToNullableTypePropertyRector;
 
@@ -37,18 +35,16 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(TypedPropertyFromAssignsRector::class);
     $rectorConfig->rule(CompleteDynamicPropertiesRector::class);
     $rectorConfig->rule(AddTypeToConstRector::class);
-    $rectorConfig->rule(AddAllowDynamicPropertiesAttributeRector::class);
 
     $rectorConfig->importNames();
     $rectorConfig->removeUnusedImports();
     $rectorConfig->importShortClasses();
 
-	$rectorConfig->skip([
-		RemoveUselessParamTagRector::class,
-		RemoveUselessVarTagRector::class,
-		RemoveUselessReturnTagRector::class,
-		RemoveNullTagValueNodeRector::class,
-		MixedTypeRector::class,
-		ClassPropertyAssignToConstructorPromotionRector::class,
-	]);
+    $rectorConfig->skip([
+        RemoveUselessParamTagRector::class,
+        RemoveUselessVarTagRector::class,
+        RemoveUselessReturnTagRector::class,
+        RemoveNullTagValueNodeRector::class,
+        ClassPropertyAssignToConstructorPromotionRector::class,
+    ]);
 };

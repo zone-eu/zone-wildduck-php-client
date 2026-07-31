@@ -43,6 +43,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         public bool $draft,
         public bool $answered,
         public bool $forwarded,
+        public bool $hasDrafts,
         public array $references,
         public ContentTypeResponseDto $contentType,
         public ?MessageBimiResponseDto $bimi = null,
@@ -52,6 +53,8 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         /** @var array<string, mixed>|null Custom metadata */
         public mixed $metaData = null,
     ) {}
+
+
     public static function fromArray(array $data): self
     {
         // From
@@ -110,11 +113,14 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         $draft = (bool) ($data['draft'] ?? false);
         $answered = (bool) ($data['answered'] ?? false);
         $forwarded = (bool) ($data['forwarded'] ?? false);
+        $hasDrafts = (bool) ($data['hasDrafts'] ?? false);
 
         $threadMessageCount = isset($data['threadMessageCount']) ? (int) $data['threadMessageCount'] : null;
         $idate = $data['idate'] ?? null;
         $encrypted = isset($data['encrypted']) ? (bool) $data['encrypted'] : null;
         $metaData = $data['metaData'] ?? null;
+
+        $messageId = is_array($data['messageId']) ? array_pop($data['messageId']) : $data['messageId'] ?? '';
 
         return new self(
             isset($data['id']) ? (int) $data['id'] : 0,
@@ -124,7 +130,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
             $to,
             $cc,
             $bcc,
-            $data['messageId'] ?? '',
+            $messageId,
             $data['subject'] ?? '',
             $data['date'] ?? '',
             $intro,
@@ -137,6 +143,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
             $draft,
             $answered,
             $forwarded,
+            $hasDrafts,
             $references,
             $contentType,
             $bimi,

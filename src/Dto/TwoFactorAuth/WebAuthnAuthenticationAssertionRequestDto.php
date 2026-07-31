@@ -17,10 +17,10 @@ class WebAuthnAuthenticationAssertionRequestDto implements RequestDtoInterface
         public string $clientDataJSON,
         public string $authenticatorData,
         public string $signature,
+        public ?string $twoFactorNonce = null,
         public ?string $rpId = null,
         public ?bool $token = null,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {
@@ -32,6 +32,7 @@ class WebAuthnAuthenticationAssertionRequestDto implements RequestDtoInterface
             'signature' => $this->signature,
             'rpId' => $this->rpId,
             'token' => $this->token,
+            'twoFactorNonce' => $this->twoFactorNonce,
         ], fn($value) => $value !== null);
     }
 }

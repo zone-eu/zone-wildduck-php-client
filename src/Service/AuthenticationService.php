@@ -24,6 +24,21 @@ class AuthenticationService extends AbstractService
     /**
      * Authenticate a user
      *
+     * @param array|null $opts
+     * @return SuccessResponseDto
+     * @throws ApiConnectionException
+     * @throws AuthenticationFailedException
+     * @throws InvalidAccessTokenException
+     * @throws RequestFailedException
+     * @throws ValidationException
+     */
+    public function isAuthenticated(array|null $opts = null): SuccessResponseDto
+    {
+        return $this->requestDto('get', '/authenticated', null, SuccessResponseDto::class, $opts);
+    }
+    /**
+     * Authenticate a user
+     *
      * @param AuthenticateRequestDto $params
      * @param array|null $opts
      * @return AuthenticationResponseDto

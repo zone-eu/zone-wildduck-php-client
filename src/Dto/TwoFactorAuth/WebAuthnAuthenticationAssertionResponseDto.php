@@ -8,12 +8,13 @@ use Zone\Wildduck\Dto\ResponseDtoInterface;
 use Zone\Wildduck\Exception\DtoValidationException;
 
 /**
- * Response DTO for TOTP token validation result
+ * Response DTO for WebAuthn authentication assertion result
  */
-final class ValidateTotpResponseDto implements ResponseDtoInterface
+final class WebAuthnAuthenticationAssertionResponseDto implements ResponseDtoInterface
 {
     public function __construct(
         public readonly bool $success,
+        public readonly WebAuthnAuthenticationAssertionResponseResponseDto $response,
         public readonly ?string $token = null,
     ) {}
 
@@ -29,7 +30,8 @@ final class ValidateTotpResponseDto implements ResponseDtoInterface
 
         return new self(
             success: $data['success'],
-            token: $data['token'],
+            response: WebAuthnAuthenticationAssertionResponseResponseDto::fromArray($data['response'] ?? []),
+            token: $data['token'] ?? null,
         );
     }
 }
