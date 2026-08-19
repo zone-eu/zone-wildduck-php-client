@@ -14,7 +14,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 readonly class PaginatedResultDto
 {
     /**
-     * @param T[] $results Array of result DTOs
+     * @param list<T> $results Array of result DTOs
      * @param int $total Total number of results
      * @param string|false|null $nextCursor Cursor for next page (false when no next page)
      * @param string|false|null $previousCursor Cursor for previous page (false when no previous page)
@@ -47,7 +47,7 @@ readonly class PaginatedResultDto
             throw DtoValidationException::invalidType('results', 'array', $data['results']);
         }
 
-        /** @var T[] */
+        /** @var list<T> */
         $results = [];
         foreach ($data['results'] as $index => $item) {
             if (!is_array($item)) {
