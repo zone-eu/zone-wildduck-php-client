@@ -11,6 +11,7 @@ use Zone\Wildduck\Dto\Message\SearchMessagesRequestDto;
 use Zone\Wildduck\Dto\Message\UploadMessageRequestDto;
 use Zone\Wildduck\Dto\Shared\SuccessResponseDto;
 use Zone\Wildduck\Dto\Message\BulkUpdateMessagesResponseDto;
+use Zone\Wildduck\Dto\Message\DeleteMessageRequestDto;
 use Zone\Wildduck\Dto\Message\ForwardMessageResponseDto;
 use Zone\Wildduck\Dto\Message\MessageGetRequestDto;
 use Zone\Wildduck\Dto\Message\MessagePaginatedResponseDto;
@@ -30,9 +31,6 @@ use Zone\Wildduck\Exception\ValidationException;
 class MessageService extends AbstractService
 {
     /**
-     * @param string $user
-     * @param string $mailbox
-     * @param int $message
      * @param array<string, mixed>|null $opts
      * @return SuccessResponseDto
      * @throws ApiConnectionException
@@ -41,20 +39,18 @@ class MessageService extends AbstractService
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function delete(string $user, string $mailbox, int $message, array|null $opts = null): SuccessResponseDto
+    public function delete(string $user, string $mailbox, int $message, DeleteMessageRequestDto $params, array|null $opts = null): SuccessResponseDto
     {
         return $this->requestDto(
             'delete',
             $this->buildPath('/users/%s/mailboxes/%s/messages/%s', $user, $mailbox, $message),
-            null,
+            $params,
             SuccessResponseDto::class,
             $opts
         );
     }
 
     /**
-     * @param string $user
-     * @param string $queueId
      * @param array<string, mixed>|null $opts
      * @return SuccessResponseDto
      * @throws ApiConnectionException
@@ -69,9 +65,6 @@ class MessageService extends AbstractService
     }
 
     /**
-     * @param string $user
-     * @param string $queueId
-     * @param UpdateOutboundMessageRequestDto $params
      * @param array<string, mixed>|null $opts
      * @return UpdateOutboundMessageResponseDto
      * @throws ApiConnectionException

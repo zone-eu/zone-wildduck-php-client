@@ -21,6 +21,7 @@ class BulkUpdateMessagesRequestDto implements RequestDtoInterface
         public ?bool $deleted = null,
         public ?bool $flagged = null,
         public ?bool $draft = null,
+        public ?bool $updateThread = null,
         public string|false|null $expires = null,
         /** @var array<string, mixed>|null Custom metadata */
         public ?array $metaData = null,
@@ -44,6 +45,9 @@ class BulkUpdateMessagesRequestDto implements RequestDtoInterface
         }
         if ($this->draft !== null) {
             $data['draft'] = $this->draft;
+        }
+        if ($this->updateThread !== null) {
+            $data['updateThread'] = $this->updateThread;
         }
         if ($this->expires !== null) {
             $data['expires'] = $this->expires;
