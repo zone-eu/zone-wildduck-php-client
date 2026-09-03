@@ -11,7 +11,7 @@ A modern PHP client for the [Wildduck email server](https://github.com/nodemaile
 - 📦 **DTOs**: Request and response Data Transfer Objects for IDE autocomplete
 - 🎯 **Modern PHP**: Readonly properties, named parameters, union types
 - 🔄 **EventSource**: Real-time updates via server-sent events
-- 📚 **Comprehensive**: All 17 WildDuck API services covered
+- 📚 **Comprehensive**: All WildDuck API services covered
 
 ## Requirements
 
@@ -73,6 +73,7 @@ All services are accessed via the `WildduckClient` instance:
 - `$client->filters()` - Email filters
 - `$client->autoreply()` - Auto-reply settings
 - `$client->applicationPasswords()` - App-specific passwords
+- `$client->mcpTokens()` - MCP access tokens
 - `$client->authentication()` - Authentication endpoints
 - `$client->twoFactorAuthentication()` - 2FA management
 - `$client->archive()` - Message archiving

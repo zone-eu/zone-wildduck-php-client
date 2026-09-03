@@ -25,6 +25,7 @@ class ServiceStructureTest extends TestCase
         \Zone\Wildduck\Service\DomainAliasService::class,
         \Zone\Wildduck\Service\FilterService::class,
         \Zone\Wildduck\Service\MailboxService::class,
+        \Zone\Wildduck\Service\McpTokenService::class,
         \Zone\Wildduck\Service\MessageService::class,
         \Zone\Wildduck\Service\StorageService::class,
         \Zone\Wildduck\Service\SubmissionService::class,
