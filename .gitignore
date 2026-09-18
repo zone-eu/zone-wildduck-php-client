@@ -4,3 +4,4 @@
 testing.php
 .phpunit.result.cache
 coverage-report/*
+.phpunit.result.cache
