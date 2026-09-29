@@ -6,21 +6,24 @@ This guide explains how to run integration tests against a real WildDuck test se
 
 - Docker installed and running
 - PHP 8.3+
-- Composer dependencies installed
+- Composer dependencies installed (`composer install` — the test server ships as the dev dependency `kurbar/wildduck-test-server`)
 
 ## Quick Start
 
 ### 1. Start the Test Server
 
 ```bash
-bin/start-test-server.sh start
+vendor/bin/wildduck-test-server start 30
 ```
 
+The optional second argument is the number of seconds to wait for the server
+to become responsive (default 15; use a higher value on slow machines).
+
 This will:
-- Pull the latest Redis, MongoDB, and WildDuck images
+- Pull the WildDuck, Redis, and MongoDB images
+- Create the `wdtest` Docker network
 - Start all containers with proper networking
-- Wait for services to be ready
-- Configure WildDuck with test access token
+- Wait for the API to respond
 
 The server will be available at:
 - **API URL**: `http://localhost:9080`
@@ -42,7 +45,7 @@ vendor/bin/phpunit tests/Integration/Service/UserServiceIntegrationTest.php
 ### 3. Stop the Test Server
 
 ```bash
-bin/start-test-server.sh stop
+vendor/bin/wildduck-test-server stop
 ```
 
 This will remove all containers and clean up the Docker network.
@@ -51,9 +54,9 @@ This will remove all containers and clean up the Docker network.
 
 ### Containers
 
-- **wdt_redis**: Redis 8.x (Alpine) on network `wdtest`
-- **wdt_mongo**: MongoDB latest on network `wdtest`
-- **wdt_wildduck**: WildDuck latest on network `wdtest`
+- **wdt_redis**: `redis:alpine` on network `wdtest`
+- **wdt_mongo**: `mongo` (unpinned) on network `wdtest`
+- **wdt_wildduck**: `ghcr.io/zone-eu/wildduck:latest` on network `wdtest`
 
 ### Ports
 
@@ -140,11 +143,11 @@ public function testUserCreation(): void
 docker ps
 
 # Clean up any stale containers
-bin/start-test-server.sh stop
+vendor/bin/wildduck-test-server stop
 docker system prune -f
 
 # Try starting again
-bin/start-test-server.sh start
+vendor/bin/wildduck-test-server start 30
 ```
 
 ### Tests Are Skipped
@@ -174,13 +177,10 @@ docker network rm wdtest
 
 ### Port Conflicts
 
-If port 9080 is already in use, modify the port mapping in `bin/start-test-server.sh`:
-
-```bash
--p 9080:8080  # Change 9080 to another port
-```
-
-Also update the `API_URL` in `tests/Integration/IntegrationTestCase.php`.
+Port mappings (9080, 9143, 9110, 9993, 9995) are fixed by the
+`kurbar/wildduck-test-server` package. If 9080 is already in use, stop the
+other service or file an issue against the package; after updating the
+package, also update the `API_URL` in `tests/Integration/IntegrationTestCase.php`.
 
 ## CI/CD Integration
 
@@ -207,30 +207,25 @@ jobs:
         run: composer install
 
       - name: Start test server
-        run: bin/start-test-server.sh start
+        run: vendor/bin/wildduck-test-server start 30
 
       - name: Run integration tests
         run: vendor/bin/phpunit --testsuite=Integration
 
       - name: Stop test server
         if: always()
-        run: bin/start-test-server.sh stop
+        run: vendor/bin/wildduck-test-server stop
 ```
 
 ## Known Issues
 
-### Original vendor/kurbar/wildduck-test-server Issues
+### Vendored `kurbar/wildduck-test-server` (0.8.x)
 
-The original script in `vendor/kurbar/wildduck-test-server/bin/wildduck-test-server` has bugs:
+The currently released helper has a few rough edges:
 
-1. Missing `-d` flag on Redis and MongoDB containers (blocks execution)
-2. Incorrect volume mounts (`-v /data` instead of `-v wdt_redis_data:/data`)
-3. No health checks before starting WildDuck
+1. Images are pulled unpinned (`mongo`, `ghcr.io/zone-eu/wildduck:latest`), so behaviour can drift over time.
+2. Redis and MongoDB use host bind mounts (`-v /data`, `-v /data/db`) instead of named volumes.
 
-Our wrapper script `bin/start-test-server.sh` fixes these issues.
-
-## Resources
-
-- [WildDuck Documentation](https://docs.wildduck.email/)
-- [WildDuck API Reference](https://docs.wildduck.email/api/)
-- [WildDuck GitHub](https://github.com/nodemailer/wildduck)
+A fixed release (pinned MongoDB image, named volumes) is pending on Packagist.
+Until it lands, bump `kurbar/wildduck-test-server` in `composer.json` and
+re-run `composer update kurbar/wildduck-test-server` after the release.
