@@ -74,6 +74,7 @@ All services are accessed via the `WildduckClient` instance:
 - `$client->autoreply()` - Auto-reply settings
 - `$client->applicationPasswords()` - App-specific passwords
 - `$client->mcpTokens()` - MCP access tokens
+- `$client->scopedTokens()` - Scoped authentication tokens
 - `$client->authentication()` - Authentication endpoints
 - `$client->twoFactorAuthentication()` - 2FA management
 - `$client->archive()` - Message archiving

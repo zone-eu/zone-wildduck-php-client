@@ -19,6 +19,7 @@ use Zone\Wildduck\Service\HealthService;
 use Zone\Wildduck\Service\MailboxService;
 use Zone\Wildduck\Service\McpTokenService;
 use Zone\Wildduck\Service\MessageService;
+use Zone\Wildduck\Service\ScopedTokenService;
 use Zone\Wildduck\Service\SettingsService;
 use Zone\Wildduck\Service\StorageService;
 use Zone\Wildduck\Service\SubmissionService;
@@ -48,6 +49,7 @@ class WildduckClient extends BaseWildduckClient
     private ?MailboxService $mailboxService = null;
     private ?McpTokenService $mcpTokenService = null;
     private ?MessageService $messageService = null;
+    private ?ScopedTokenService $scopedTokenService = null;
     private ?SettingsService $settingsService = null;
     private ?StorageService $storageService = null;
     private ?SubmissionService $submissionService = null;
@@ -138,6 +140,11 @@ class WildduckClient extends BaseWildduckClient
     public function messages(): MessageService
     {
         return $this->messageService ??= new MessageService($this);
+    }
+
+    public function scopedTokens(): ScopedTokenService
+    {
+        return $this->scopedTokenService ??= new ScopedTokenService($this);
     }
 
     public function settings(): SettingsService

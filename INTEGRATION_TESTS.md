@@ -178,9 +178,10 @@ docker network rm wdtest
 ### Port Conflicts
 
 Port mappings (9080, 9143, 9110, 9993, 9995) are fixed by the
-`kurbar/wildduck-test-server` package. If 9080 is already in use, stop the
-other service or file an issue against the package; after updating the
-package, also update the `API_URL` in `tests/Integration/IntegrationTestCase.php`.
+`kurbar/wildduck-test-server` package. To target a different WildDuck
+instance (e.g. an isolated branch stack on another port), set the
+`WILDDUCK_API_URL` environment variable — `tests/Integration/IntegrationTestCase.php`
+honors it and leaves externally started instances untouched.
 
 ## CI/CD Integration
 

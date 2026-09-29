@@ -13,13 +13,32 @@ use Zone\Wildduck\WildduckClient;
 abstract class IntegrationTestCase extends TestCase
 {
     protected static bool $serverStarted = false;
+    protected static bool $serverStartedByUs = false;
     protected ?WildduckClient $client = null;
 
-    const WILDDUCK_API_URL = 'http://localhost:9080';
-    const WILDDUCK_ACCESS_TOKEN = 'WDTESTSERVER';
+    public const DEFAULT_WILDDUCK_API_URL = 'http://localhost:9080';
+    public const WILDDUCK_ACCESS_TOKEN = 'WDTESTSERVER';
 
     /**
-     * Start WildDuck test server once for all tests
+     * Base URL of the WildDuck API under test.
+     *
+     * Honors the WILDDUCK_API_URL environment variable (see phpunit.xml) so
+     * non-standard instances can be targeted, e.g. an isolated branch stack
+     * running on another port.
+     */
+    protected static function apiBaseUrl(): string
+    {
+        $url = getenv('WILDDUCK_API_URL');
+
+        return $url !== false && $url !== '' ? $url : self::DEFAULT_WILDDUCK_API_URL;
+    }
+
+    /**
+     * Connect to the WildDuck API under test once for all tests.
+     *
+     * An already-running instance (e.g. an isolated branch stack targeted
+     * via WILDDUCK_API_URL) is used as-is. Only the bundled test server,
+     * started here for the default port, is stopped after the suite.
      */
     public static function setUpBeforeClass(): void
     {
@@ -29,23 +48,40 @@ abstract class IntegrationTestCase extends TestCase
             return;
         }
 
-        // Start the test server using the CLI tool
+        // A short probe first so external instances are not shadowed by a CLI start
+        if (self::waitForApi(6)) {
+            self::$serverStarted = true;
+            return;
+        }
+
         $vendorBin = __DIR__ . '/../../vendor/bin/wildduck-test-server';
 
         if (!file_exists($vendorBin)) {
             throw new \RuntimeException('WildDuck test server not found. Run: composer install');
         }
 
-        // Start the server in the background
+        // Start the bundled test server in the background (it always binds the default port)
         exec("$vendorBin start > /dev/null 2>&1 &");
+        self::$serverStartedByUs = true;
 
-        // Wait for server to be ready
-        $maxAttempts = 60; // 60 * 0.5 seconds = 30 seconds
-        $attempt = 0;
+        if (!self::waitForApi(60)) {
+            throw new \RuntimeException('WildDuck test server failed to start within 30 seconds');
+        }
 
-        while ($attempt < $maxAttempts) {
+        self::$serverStarted = true;
+    }
+
+    /**
+     * Poll the API until it answers with a valid access token
+     *
+     * @param int $maxAttempts
+     * @return bool
+     */
+    protected static function waitForApi(int $maxAttempts): bool
+    {
+        for ($attempt = 0; $attempt < $maxAttempts; $attempt++) {
             try {
-                $ch = curl_init(self::WILDDUCK_API_URL . '/users');
+                $ch = curl_init(self::apiBaseUrl() . '/users');
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-Access-Token: ' . self::WILDDUCK_ACCESS_TOKEN]);
                 curl_setopt($ch, CURLOPT_TIMEOUT, 1);
@@ -54,30 +90,30 @@ abstract class IntegrationTestCase extends TestCase
                 curl_close($ch);
 
                 if ($httpCode === 200) {
-                    self::$serverStarted = true;
-                    return;
+                    return true;
                 }
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // Server not ready yet
             }
 
-            $attempt++;
             usleep(500000); // Wait 0.5 seconds
         }
 
-        throw new \RuntimeException('WildDuck test server failed to start within 30 seconds');
+        return false;
     }
 
     /**
-     * Stop WildDuck test server after all tests
+     * Stop the bundled test server after all tests, if we started it
      */
     public static function tearDownAfterClass(): void
     {
-        if (self::$serverStarted) {
+        if (self::$serverStartedByUs) {
             $vendorBin = __DIR__ . '/../../vendor/bin/wildduck-test-server';
             exec("$vendorBin stop > /dev/null 2>&1");
-            self::$serverStarted = false;
+            self::$serverStartedByUs = false;
         }
+
+        self::$serverStarted = false;
 
         parent::tearDownAfterClass();
     }
@@ -90,7 +126,7 @@ abstract class IntegrationTestCase extends TestCase
         parent::setUp();
 
         $this->client = new WildduckClient([
-            'api_base' => self::WILDDUCK_API_URL,
+            'api_base' => self::apiBaseUrl(),
             'access_token' => self::WILDDUCK_ACCESS_TOKEN,
         ]);
     }

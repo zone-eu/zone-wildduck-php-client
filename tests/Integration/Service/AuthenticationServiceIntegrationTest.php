@@ -121,7 +121,7 @@ class AuthenticationServiceIntegrationTest extends IntegrationTestCase
 
         // Create a new client with the user's token
         $userClient = new \Zone\Wildduck\WildduckClient([
-            'api_base' => self::WILDDUCK_API_URL,
+            'api_base' => self::apiBaseUrl(),
             'access_token' => $authResult->token,
         ]);
 

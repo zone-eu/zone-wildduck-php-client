@@ -9,9 +9,15 @@ use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
 use Zone\Wildduck\Exception\InvalidArgumentException;
 use Zone\Wildduck\Exception\InvalidDatabaseException;
+use Zone\Wildduck\Exception\MasterTokenNotEligibleException;
+use Zone\Wildduck\Exception\MasterTokenRequiredException;
+use Zone\Wildduck\Exception\MfaRequiredException;
 use Zone\Wildduck\Exception\OverQuotaException;
+use Zone\Wildduck\Exception\PasswordChangeRequiredException;
 use Zone\Wildduck\Exception\RequestFailedException;
+use Zone\Wildduck\Exception\ScopedTokenNotFoundException;
 use Zone\Wildduck\Exception\UnexpectedValueException;
+use Zone\Wildduck\Exception\UnsupportedAuthScopeException;
 use Zone\Wildduck\Exception\ValidationException;
 use Zone\Wildduck\HttpClient\ClientInterface;
 use Zone\Wildduck\HttpClient\CurlClient;
@@ -50,6 +56,20 @@ class ApiRequestor
     public const string CODE_INVALID_DATABASE = 'InternalDatabaseError';
 
     public const string CODE_OVER_QUOTA = 'OverQuotaError';
+
+    public const string CODE_MASTER_TOKEN_REQUIRED = 'MasterTokenRequired';
+
+    public const string CODE_UNSUPPORTED_AUTH_SCOPE = 'UnsupportedAuthScope';
+
+    public const string CODE_MASTER_TOKEN_NOT_ELIGIBLE = 'MasterTokenNotEligible';
+
+    public const string CODE_PASSWORD_CHANGE_REQUIRED = 'PasswordChangeRequired';
+
+    public const string CODE_MFA_REQUIRED = 'MfaRequired';
+
+    public const string CODE_SCOPED_TOKEN_NOT_FOUND = 'ScopedTokenNotFound';
+
+    public const string CODE_MCP_TOKEN_NOT_FOUND = 'McpTokenNotFound';
 
     private static ?ClientInterface $_httpClient = null;
     private readonly string $_apiBase;
@@ -116,7 +136,14 @@ class ApiRequestor
      * @throws AuthenticationFailedException
      * @throws InvalidAccessTokenException
      * @throws InvalidDatabaseException
+     * @throws MasterTokenNotEligibleException
+     * @throws MasterTokenRequiredException
+     * @throws ScopedTokenNotFoundException
+     * @throws MfaRequiredException
+     * @throws OverQuotaException
+     * @throws PasswordChangeRequiredException
      * @throws RequestFailedException
+     * @throws UnsupportedAuthScopeException
      * @throws ValidationException
      */
     public function request(string $method, string $url, mixed $params = null, array|null $headers = null, bool $raw = false, bool $fileUpload = false): array
@@ -419,7 +446,14 @@ class ApiRequestor
      * @throws AuthenticationFailedException
      * @throws InvalidAccessTokenException
      * @throws InvalidDatabaseException
+     * @throws MasterTokenNotEligibleException
+     * @throws MasterTokenRequiredException
+     * @throws ScopedTokenNotFoundException
+     * @throws MfaRequiredException
+     * @throws OverQuotaException
+     * @throws PasswordChangeRequiredException
      * @throws RequestFailedException
+     * @throws UnsupportedAuthScopeException
      * @throws ValidationException
      */
     public function handleErrorResponse(string $rbody, int $rcode, array $resp): void
@@ -446,8 +480,15 @@ class ApiRequestor
      * @param int $rCode - The wildduck http response code
      * @throws InvalidAccessTokenException
      * @throws AuthenticationFailedException
-     * @throws ValidationException
+     * @throws MasterTokenNotEligibleException
+     * @throws MasterTokenRequiredException
+     * @throws ScopedTokenNotFoundException
+     * @throws MfaRequiredException
+     * @throws OverQuotaException
+     * @throws PasswordChangeRequiredException
      * @throws RequestFailedException
+     * @throws UnsupportedAuthScopeException
+     * @throws ValidationException
      * @throws InvalidDatabaseException
      */
     private function _specificAPIError(string $code, string $error, int $rCode = 0): void
@@ -463,6 +504,19 @@ class ApiRequestor
                 throw new InvalidDatabaseException($error);
             case static::CODE_OVER_QUOTA:
                 throw new OverQuotaException($error);
+            case static::CODE_MASTER_TOKEN_REQUIRED:
+                throw new MasterTokenRequiredException($error);
+            case static::CODE_UNSUPPORTED_AUTH_SCOPE:
+                throw new UnsupportedAuthScopeException($error);
+            case static::CODE_MASTER_TOKEN_NOT_ELIGIBLE:
+                throw new MasterTokenNotEligibleException($error);
+            case static::CODE_PASSWORD_CHANGE_REQUIRED:
+                throw new PasswordChangeRequiredException($error);
+            case static::CODE_MFA_REQUIRED:
+                throw new MfaRequiredException($error);
+            case static::CODE_MCP_TOKEN_NOT_FOUND: // legacy MCP-specific revocation route
+            case static::CODE_SCOPED_TOKEN_NOT_FOUND:
+                throw new ScopedTokenNotFoundException($error, $code);
         }
 
         throw new RequestFailedException($error, $code, $rCode);
