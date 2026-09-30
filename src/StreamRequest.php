@@ -34,8 +34,12 @@ class StreamRequest
 
     private int $_retry = self::RETRY_DEFAULT_MS;
 
-    public function __construct(string|null $apiBase, string|null $accessToken, array|RequestOptions $opts = [])
-    {
+    public function __construct(
+        string|null $apiBase,
+        string|null $accessToken,
+        array|RequestOptions $opts = [],
+        string $authMode = ApiRequestor::AUTH_MODE_ACCESS_TOKEN
+    ) {
 
         if (!$apiBase) {
             $apiBase = Wildduck::getApiBase();
@@ -51,12 +55,16 @@ class StreamRequest
             self::$_httpOptions = $opts;
         }
 
+        $authHeaders = $authMode === ApiRequestor::AUTH_MODE_BEARER
+            ? ['Authorization' => 'Bearer ' . $accessToken]
+            : ['X-Access-Token' => $accessToken];
+
         self::$_httpClient = new Client([
             'base_uri' => $apiBase,
             'headers' => [
                 'Accept' => 'text/event-stream',
                 'Cache-Control' => 'no-cache',
-                'X-Access-Token' => $accessToken,
+                ...$authHeaders,
             ]
         ]);
     }

@@ -71,24 +71,35 @@ class ApiRequestor
 
     public const string CODE_MCP_TOKEN_NOT_FOUND = 'McpTokenNotFound';
 
+    public const string AUTH_MODE_ACCESS_TOKEN = 'access_token';
+
+    public const string AUTH_MODE_BEARER = 'bearer';
+
     private static ?ClientInterface $_httpClient = null;
     private readonly string $_apiBase;
     private readonly string|null $_accessToken;
+    private readonly string $_authMode;
 
     /**
      * ApiRequestor constructor.
      *
      * @param null|string $accessToken
      * @param null|string $apiBase
+     * @param string $authMode How the token is presented: X-Access-Token header
+     *   (AUTH_MODE_ACCESS_TOKEN) or Authorization: Bearer header (AUTH_MODE_BEARER)
      */
-    public function __construct(?string $accessToken = null, ?string $apiBase = null)
-    {
+    public function __construct(
+        ?string $accessToken = null,
+        ?string $apiBase = null,
+        string $authMode = self::AUTH_MODE_ACCESS_TOKEN
+    ) {
         $this->_accessToken = $accessToken;
         if (!$apiBase) {
             $apiBase = Wildduck::$apiBase;
         }
 
         $this->_apiBase = $apiBase;
+        $this->_authMode = $authMode;
     }
 
     /**
@@ -289,10 +300,14 @@ class ApiRequestor
             $ua['application'] = $appInfo;
         }
 
+        $authHeaders = self::AUTH_MODE_BEARER === $this->_authMode
+            ? ['Authorization' => 'Bearer ' . $accessToken]
+            : ['X-Access-Token' => $accessToken];
+
         return [
             'X-Wildduck-Client-User-Agent' => json_encode($ua),
             'User-Agent' => $uaString,
-            'X-Access-Token' => $accessToken,
+            ...$authHeaders,
         ];
     }
 

@@ -13,12 +13,14 @@ use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
 use Zone\Wildduck\Util\RequestOptions;
 
+use function in_array;
 use function is_countable;
 
 class BaseWildduckClient implements WildduckClientInterface
 {
     private const array DEFAULT_CONFIG = [
         'access_token' => null,
+        'auth_mode' => ApiRequestor::AUTH_MODE_ACCESS_TOKEN,
         'api_base' => 'https://localhost:8080',
         'resolve_uri' => false,
         'session' => null,
@@ -86,6 +88,13 @@ class BaseWildduckClient implements WildduckClientInterface
             throw new InvalidArgumentException($msg);
         }
 
+        // auth_mode
+        if (($config['auth_mode'] ?? null) !== null
+            && !in_array($config['auth_mode'], [ApiRequestor::AUTH_MODE_ACCESS_TOKEN, ApiRequestor::AUTH_MODE_BEARER], true)
+        ) {
+            throw new InvalidArgumentException('auth_mode must be "access_token" or "bearer"');
+        }
+
         if ($tokenOnly) {
             return;
         }
@@ -104,7 +113,21 @@ class BaseWildduckClient implements WildduckClientInterface
 
     public static function token(string $token): BaseWildduckClient
     {
-        return self::instance(['access_token' => $token]);
+        // The carrier is pinned to the header explicitly: the singleton
+        // retains configuration between calls, and bearer mode set by an
+        // earlier call must not leak into ordinary token classes.
+        return self::instance(['access_token' => $token, 'auth_mode' => ApiRequestor::AUTH_MODE_ACCESS_TOKEN]);
+    }
+
+    /**
+     * Returns a client that presents its token as a bearer credential
+     * (Authorization: Bearer) instead of the X-Access-Token header.
+     * Required for MCP (wdmcp_) credentials, which WildDuck refuses
+     * in the header carrier.
+     */
+    public static function bearerToken(string $token): BaseWildduckClient
+    {
+        return self::instance(['access_token' => $token, 'auth_mode' => ApiRequestor::AUTH_MODE_BEARER]);
     }
 
     public static function instance(array|string $config = []): WildduckClient
@@ -114,7 +137,7 @@ class BaseWildduckClient implements WildduckClientInterface
         }
 
         if (is_countable($config) && $config !== []) {
-            self::$_instance->validateConfig($config, array_keys($config) === ['access_token']);
+            self::$_instance->validateConfig($config, array_diff(array_keys($config), ['access_token', 'auth_mode']) === []);
             self::$_instance->updateConfig($config);
         }
 
@@ -166,7 +189,11 @@ class BaseWildduckClient implements WildduckClientInterface
 
         $opts = $this->defaultOpts->merge($opts, true);
         $baseUrl = $opts->apiBase ?: $this->getApiBase();
-        $requestor = new ApiRequestor($this->accessTokenForRequest($opts), $baseUrl);
+        $requestor = new ApiRequestor(
+            $this->accessTokenForRequest($opts),
+            $baseUrl,
+            $this->config['auth_mode']
+        );
 
 
         [$response, $opts->apiKey] = $requestor->request($method, $path, $params, $opts->headers, $opts->raw, $fileUpload);
@@ -249,6 +276,8 @@ class BaseWildduckClient implements WildduckClientInterface
     public function stream(string $method, string $path, array|null $params, array|object|null $opts): StreamedResponse
     {
         $baseUrl = $opts->apiBase ?? $this->getApiBase();
-        return (new StreamRequest($baseUrl, $this->accessTokenForRequest($opts)))->stream($method, $path, $params, $opts->headers ?? []);
+        $streamRequest = new StreamRequest($baseUrl, $this->accessTokenForRequest($opts), [], $this->config['auth_mode']);
+
+        return $streamRequest->stream($method, $path, $params, $opts->headers ?? []);
     }
 }
