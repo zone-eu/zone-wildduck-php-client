@@ -14,7 +14,6 @@ use Zone\Wildduck\Exception\ValidationException;
 use Zone\Wildduck\Util\RequestOptions;
 
 use function in_array;
-use function is_countable;
 
 class BaseWildduckClient implements WildduckClientInterface
 {
@@ -28,8 +27,6 @@ class BaseWildduckClient implements WildduckClientInterface
         'request_options' => [],
     ];
 
-    protected static null|WildduckClient $_instance = null;
-
     /** @var array<string, mixed> */
     private array $config;
 
@@ -38,8 +35,8 @@ class BaseWildduckClient implements WildduckClientInterface
     /**
      * Initializes a new instance of the {@link BaseWildduckClient} class.
      *
-     * The constructor takes a single argument. The argument can be a string, in which case it
-     * should be the API key. It can also be an array with various configuration settings.
+     * The constructor takes a single argument: an array with the client configuration
+     * settings. A string argument is rejected.
      *
      * Configuration settings include the following options:
      *
@@ -52,8 +49,7 @@ class BaseWildduckClient implements WildduckClientInterface
      * - api_base (string): the base URL for regular API requests. Defaults to
      *   {@link DEFAULT_CONFIG}.
      *
-     * @param array<string, mixed>|string $config the API key as a string, or an array containing
-     *   the client configuration settings
+     * @param array<string, mixed>|string $config the client configuration settings
      */
     public function __construct(array|string $config = [])
     {
@@ -113,9 +109,6 @@ class BaseWildduckClient implements WildduckClientInterface
 
     public static function token(string $token): BaseWildduckClient
     {
-        // The carrier is pinned to the header explicitly: the singleton
-        // retains configuration between calls, and bearer mode set by an
-        // earlier call must not leak into ordinary token classes.
         return self::instance(['access_token' => $token, 'auth_mode' => ApiRequestor::AUTH_MODE_ACCESS_TOKEN]);
     }
 
@@ -132,23 +125,7 @@ class BaseWildduckClient implements WildduckClientInterface
 
     public static function instance(array|string $config = []): WildduckClient
     {
-        if (!self::$_instance instanceof WildduckClient) {
-            self::$_instance = new WildduckClient($config);
-        }
-
-        if (is_countable($config) && $config !== []) {
-            self::$_instance->validateConfig($config, array_diff(array_keys($config), ['access_token', 'auth_mode']) === []);
-            self::$_instance->updateConfig($config);
-        }
-
-        return WildduckClient::$_instance;
-    }
-
-    protected function updateConfig(string|array $config): void
-    {
-        foreach ($config as $k => $v) {
-            $this->config[$k] = $v;
-        }
+        return new WildduckClient($config);
     }
 
     public function resolve(): static
