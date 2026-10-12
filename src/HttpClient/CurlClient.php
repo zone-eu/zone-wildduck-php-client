@@ -104,7 +104,8 @@ class CurlClient implements ClientInterface
     private function closeCurlHandle(): void
     {
         if (null !== $this->curlHandle) {
-            curl_close($this->curlHandle);
+            // curl_close() is a no-op since PHP 8.0 (removed in PHP 8.5);
+            // dropping the reference lets garbage collection free the handle.
             $this->curlHandle = null;
         }
     }

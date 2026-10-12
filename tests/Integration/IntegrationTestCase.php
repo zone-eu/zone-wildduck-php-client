@@ -87,7 +87,7 @@ abstract class IntegrationTestCase extends TestCase
                 curl_setopt($ch, CURLOPT_TIMEOUT, 1);
                 $result = curl_exec($ch);
                 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                curl_close($ch);
+                // curl_close() is deprecated; the handle is released automatically.
 
                 if ($httpCode === 200) {
                     return true;
