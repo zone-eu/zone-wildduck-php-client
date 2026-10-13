@@ -16,6 +16,7 @@ use Zone\Wildduck\Service\DomainAliasService;
 use Zone\Wildduck\Service\ExportService;
 use Zone\Wildduck\Service\FilterService;
 use Zone\Wildduck\Service\HealthService;
+use Zone\Wildduck\Service\LabelService;
 use Zone\Wildduck\Service\MailboxService;
 use Zone\Wildduck\Service\McpTokenService;
 use Zone\Wildduck\Service\MessageService;
@@ -46,6 +47,7 @@ class WildduckClient extends BaseWildduckClient
     private ?ExportService $exportService = null;
     private ?FilterService $filterService = null;
     private ?HealthService $healthService = null;
+    private ?LabelService $labelService = null;
     private ?MailboxService $mailboxService = null;
     private ?McpTokenService $mcpTokenService = null;
     private ?MessageService $messageService = null;
@@ -125,6 +127,11 @@ class WildduckClient extends BaseWildduckClient
     public function health(): HealthService
     {
         return $this->healthService ??= new HealthService($this);
+    }
+
+    public function labels(): LabelService
+    {
+        return $this->labelService ??= new LabelService($this);
     }
 
     public function mailboxes(): MailboxService

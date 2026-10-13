@@ -15,6 +15,7 @@ class SearchApplyMessagesRequestDto implements RequestDtoInterface
         public BulkUpdateSearchActionsRequestDto $action,
         public ?string $q = null,
         public ?string $mailbox = null,
+        public ?string $label = null,
         public ?string $id = null,
         public ?string $thread = null,
         public ?string $query = null,
@@ -43,6 +44,7 @@ class SearchApplyMessagesRequestDto implements RequestDtoInterface
         return array_merge($data, array_filter([
             'q' => $this->q,
             'mailbox' => $this->mailbox,
+            'label' => $this->label,
             'id' => $this->id,
             'thread' => $this->thread,
             'query' => $this->query,
