@@ -13,11 +13,18 @@ use Zone\Wildduck\HttpClient\ClientInterface;
 class RecordingClient implements ClientInterface
 {
     public array|null $lastHeaders = null;
+    public string|null $lastMethod = null;
+    public string|null $lastUrl = null;
+    public mixed $lastParams = null;
+    public string $responseBody = '{"success":true}';
 
     public function request(string $method, string $absUrl, array $headers, mixed $params, bool $hasFile): array
     {
         $this->lastHeaders = $headers;
+        $this->lastMethod = $method;
+        $this->lastUrl = $absUrl;
+        $this->lastParams = $params;
 
-        return ['{"success":true}', 200, ['X-RateLimit-Limit' => '100']];
+        return [$this->responseBody, 200, ['X-RateLimit-Limit' => '100']];
     }
 }

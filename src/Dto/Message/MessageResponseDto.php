@@ -37,6 +37,7 @@ readonly class MessageResponseDto implements ResponseDtoInterface
      * @param string[]|null $html
      * @param string[] $references
      * @param string[]|null $forwardTargets
+     * @param string[] $labels
      */
     public function __construct(
         public bool $success = true,
@@ -76,6 +77,7 @@ readonly class MessageResponseDto implements ResponseDtoInterface
         public ?array $forwardTargets = null,
         public ?MessageReferenceResponseDto $reference = null,
         public ?bool $encrypted = null,
+        public array $labels = [],
     ) {}
 
     public static function fromArray(array $data): self
@@ -170,6 +172,7 @@ readonly class MessageResponseDto implements ResponseDtoInterface
             forwardTargets: isset($data['forwardTargets']) && is_array($data['forwardTargets']) ? $data['forwardTargets'] : null,
             reference: $reference,
             encrypted: $data['encrypted'] ?? null,
+            labels: $data['labels'] ?? [],
         );
     }
 }
