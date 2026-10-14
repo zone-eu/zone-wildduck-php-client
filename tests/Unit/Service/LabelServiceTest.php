@@ -90,7 +90,7 @@ class LabelServiceTest extends TestCase
 
         $this->assertSame('get', $this->http->lastMethod);
         $this->assertSame(
-            'https://localhost:8080/users/' . self::USER . '/label-counters/Home+%3E+Kids+%22All%22',
+            'https://localhost:8080/users/' . self::USER . '/label-counters/Home%20%3E%20Kids%20%22All%22',
             $this->http->lastUrl
         );
         $this->assertSame(['searchable' => true], $this->http->lastParams);
@@ -98,6 +98,21 @@ class LabelServiceTest extends TestCase
         $this->assertSame('Home > Kids "All"', $result->label);
         $this->assertSame(42, $result->total);
         $this->assertSame(7, $result->unseen);
+    }
+
+    public function testGetCounterEncodesSpaceInLabelNameAsPercentTwenty(): void
+    {
+        $this->http->responseBody = '{"success":true,"label":"My Folder","total":3,"unseen":1}';
+
+        $result = $this->service->getCounter(self::USER, 'My Folder');
+
+        $this->assertSame('get', $this->http->lastMethod);
+        $this->assertSame(
+            'https://localhost:8080/users/' . self::USER . '/label-counters/My%20Folder',
+            $this->http->lastUrl
+        );
+        $this->assertInstanceOf(LabelCounterResponseDto::class, $result);
+        $this->assertSame('My Folder', $result->label);
     }
 
     public function testGetCounterUrlEncodesSlashesInLabelName(): void

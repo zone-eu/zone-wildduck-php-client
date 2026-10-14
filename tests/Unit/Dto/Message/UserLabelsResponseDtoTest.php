@@ -51,4 +51,18 @@ class UserLabelsResponseDtoTest extends TestCase
 
         UserLabelsResponseDto::fromArray(['success' => true]);
     }
+
+    public function testFromArrayThrowsWhenLabelsIsNotArray(): void
+    {
+        $this->expectException(DtoValidationException::class);
+
+        UserLabelsResponseDto::fromArray(['success' => true, 'labels' => 'Work']);
+    }
+
+    public function testFromArrayThrowsWhenLabelEntryIsNotArray(): void
+    {
+        $this->expectException(DtoValidationException::class);
+
+        UserLabelsResponseDto::fromArray(['success' => true, 'labels' => ['a1']]);
+    }
 }

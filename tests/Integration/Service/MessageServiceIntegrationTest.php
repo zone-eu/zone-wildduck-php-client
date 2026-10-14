@@ -8,6 +8,7 @@ use Tests\Integration\IntegrationTestCase;
 use Zone\Wildduck\ApiResponse;
 use Zone\Wildduck\Dto\Message\BulkUpdateMessagesRequestDto;
 use Zone\Wildduck\Dto\Message\BulkUpdateSearchActionsRequestDto;
+use Zone\Wildduck\Dto\Message\DeleteMessageRequestDto;
 use Zone\Wildduck\Dto\Message\ForwardMessageRequestDto;
 use Zone\Wildduck\Dto\Message\ListMessagesRequestDto;
 use Zone\Wildduck\Dto\Message\SearchApplyMessagesRequestDto;
@@ -105,7 +106,13 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $messageId = $this->uploadTestMessage($this->createdUserId, $this->createdMailboxId, $rawMessage);
 
         // Test delete
-        $result = $this->client->messages()->delete($this->createdUserId, $this->createdMailboxId, (int)$messageId);
+        $deleteDto = new DeleteMessageRequestDto(updateThread: false);
+        $result = $this->client->messages()->delete(
+            $this->createdUserId,
+            $this->createdMailboxId,
+            (int)$messageId,
+            $deleteDto
+        );
 
         $this->assertTrue($result->success);
     }
@@ -496,7 +503,13 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $this->assertTrue($moveResult->success);
 
         // 5. Delete
-        $deleteResult = $this->client->messages()->delete($this->createdUserId, $this->secondMailboxId, (int)$this->createdMessageId);
+        $deleteDto = new DeleteMessageRequestDto(updateThread: false);
+        $deleteResult = $this->client->messages()->delete(
+            $this->createdUserId,
+            $this->secondMailboxId,
+            (int)$this->createdMessageId,
+            $deleteDto
+        );
         $this->assertTrue($deleteResult->success);
     }
 }

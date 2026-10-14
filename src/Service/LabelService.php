@@ -15,6 +15,7 @@ use Zone\Wildduck\Dto\Shared\SuccessResponseDto;
 use Zone\Wildduck\Exception\ApiConnectionException;
 use Zone\Wildduck\Exception\AuthenticationFailedException;
 use Zone\Wildduck\Exception\InvalidAccessTokenException;
+use Zone\Wildduck\Exception\InvalidArgumentException;
 use Zone\Wildduck\Exception\RequestFailedException;
 use Zone\Wildduck\Exception\ValidationException;
 
@@ -56,7 +57,7 @@ class LabelService extends AbstractService
      * Get total/unseen counters for a custom label
      *
      * @param string $user
-     * @param string $label Label name (URL-encoded in the path)
+     * @param string $labelName Label name (percent-encoded in the path)
      * @param bool $searchable Count only searchable mailboxes (Junk, Trash and non-searchable excluded)
      * @param array|null $opts
      * @return LabelCounterResponseDto
@@ -68,13 +69,23 @@ class LabelService extends AbstractService
      */
     public function getCounter(
         string $user,
-        string $label,
+        string $labelName,
         bool $searchable = true,
         array|null $opts = null
     ): LabelCounterResponseDto {
+        if ('' === trim($labelName)) {
+            throw new InvalidArgumentException('The label name cannot be null or whitespace.');
+        }
+
+        // Label names may contain spaces. buildPath() encodes with urlencode(),
+        // which turns spaces into "+"; WildDuck percent-decodes path segments,
+        // so "+" stays a literal plus and the exact-name lookup misses.
+        // Encode the name with rawurlencode() and append it outside buildPath().
+        $path = $this->buildPath('/users/%s', $user) . '/label-counters/' . rawurlencode($labelName);
+
         return $this->requestDto(
             'get',
-            $this->buildPath('/users/%s/label-counters/%s', $user, $label),
+            $path,
             new LabelCounterRequestDto($searchable),
             LabelCounterResponseDto::class,
             $opts

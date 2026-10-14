@@ -136,13 +136,13 @@ class TwoFactorAuthenticationServiceIntegrationTest extends IntegrationTestCase
         $this->createdUserId = $this->createTestUser($username, $password, $address);
 
         // Try to remove a non-existent WebAuthn credential
-        // This should fail gracefully
-        $result = $this->client->twoFactor()->webAuthNRemoveCredential(
+        // WildDuck rejects unknown credential ids with an error response
+        $this->expectException(RequestFailedException::class);
+
+        $this->client->twoFactor()->webAuthNRemoveCredential(
             $this->createdUserId,
             'aaaaaaaaaaaaaaaaaaaaaaaa'
         );
-
-        $this->assertTrue($result->success);
     }
 
     public function testDisable2FAMethodsInSequence(): void

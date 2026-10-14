@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
+use Zone\Wildduck\Dto\Message\DeleteMessageRequestDto;
 use Zone\Wildduck\WildduckClient;
 
 /**
@@ -236,7 +237,9 @@ abstract class IntegrationTestCase extends TestCase
      */
     protected function deleteMessage(string $userId, string $mailboxId, string $messageId): void
     {
-        $this->client->messages()->delete($userId, $mailboxId, (int)$messageId);
+        $deleteDto = new DeleteMessageRequestDto(updateThread: false);
+
+        $this->client->messages()->delete($userId, $mailboxId, (int)$messageId, $deleteDto);
     }
 
     /**

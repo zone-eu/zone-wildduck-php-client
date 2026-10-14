@@ -29,10 +29,22 @@ readonly class UserLabelsResponseDto implements ResponseDtoInterface
         if (!isset($data['labels'])) {
             throw DtoValidationException::missingRequiredField('labels', 'LabelResponseDto[]');
         }
+        if (!is_array($data['labels'])) {
+            throw DtoValidationException::invalidType('labels', 'LabelResponseDto[]', $data['labels']);
+        }
+
+        $labels = [];
+        foreach ($data['labels'] as $index => $label) {
+            if (!is_array($label)) {
+                throw DtoValidationException::invalidType("labels[{$index}]", 'LabelResponseDto', $label);
+            }
+
+            $labels[] = LabelResponseDto::fromArray($label);
+        }
 
         return new self(
             success: $data['success'],
-            labels: array_map(fn($label) => LabelResponseDto::fromArray($label), $data['labels']),
+            labels: $labels,
         );
     }
 }
