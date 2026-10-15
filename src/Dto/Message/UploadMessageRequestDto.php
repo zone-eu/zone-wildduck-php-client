@@ -28,6 +28,7 @@ class UploadMessageRequestDto implements RequestDtoInterface
      * @param HeaderRequestDto[]|null $headers
      * @param string[]|null $files
      * @param AttachmentReferenceRequestDto[]|null $attachments
+     * @param string[]|null $labels
      * @param array<string, mixed>|null $metaData
      */
     public function __construct(
@@ -47,6 +48,7 @@ class UploadMessageRequestDto implements RequestDtoInterface
         public ?string $html = null,
         public ?array $files = null,
         public ?array $attachments = null,
+        public ?array $labels = null,
         /** @var array<string, mixed>|null Custom metadata */
         public ?array $metaData = null,
         public ?MessageReferenceRequestDto $reference = null,
@@ -102,6 +104,9 @@ class UploadMessageRequestDto implements RequestDtoInterface
         }
         if ($this->attachments !== null) {
             $data['attachments'] = array_map(fn($a) => $a->toArray(), $this->attachments);
+        }
+        if ($this->labels !== null) {
+            $data['labels'] = $this->labels;
         }
         if ($this->reference !== null) {
             $data['reference'] = $this->reference->toArray();

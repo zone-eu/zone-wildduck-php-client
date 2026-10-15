@@ -14,6 +14,12 @@ class BulkUpdateMessagesRequestDto implements RequestDtoInterface
 {
     use MetaDataSupportTrait;
 
+    /**
+     * @param string[]|null $labels Custom labels to set on the message. Replaces all existing custom labels. System flags are not affected.
+     * @param string[]|null $addLabels Custom labels to add to the message without affecting existing labels.
+     * @param string[]|null $removeLabels Custom labels to remove from the message without affecting other labels.
+     * @param array<string, mixed>|null $metaData Custom metadata
+     */
     public function __construct(
         public string $message,
         public ?string $moveTo = null,
@@ -24,7 +30,9 @@ class BulkUpdateMessagesRequestDto implements RequestDtoInterface
         public ?bool $updateThread = null,
         public ?bool $updateThreadAll = null,
         public string|false|null $expires = null,
-        /** @var array<string, mixed>|null Custom metadata */
+        public ?array $labels = null,
+        public ?array $addLabels = null,
+        public ?array $removeLabels = null,
         public ?array $metaData = null,
     ) {}
 
@@ -55,6 +63,15 @@ class BulkUpdateMessagesRequestDto implements RequestDtoInterface
         }
         if ($this->expires !== null) {
             $data['expires'] = $this->expires;
+        }
+        if ($this->labels !== null) {
+            $data['labels'] = $this->labels;
+        }
+        if ($this->addLabels !== null) {
+            $data['addLabels'] = $this->addLabels;
+        }
+        if ($this->removeLabels !== null) {
+            $data['removeLabels'] = $this->removeLabels;
         }
 
         return array_merge($data, $this->getMetaDataArray());

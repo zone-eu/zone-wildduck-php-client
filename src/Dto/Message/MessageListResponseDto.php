@@ -20,6 +20,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
      * @param RecipientResponseDto[] $cc
      * @param RecipientResponseDto[] $bcc
      * @param string[] $references
+     * @param string[] $labels
      * @param AttachmentResponseDto[] $attachmentsList
      */
     public function __construct(
@@ -45,6 +46,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         public bool $forwarded,
         public bool $hasDrafts,
         public array $references,
+        public array $labels,
         public ContentTypeResponseDto $contentType,
         public ?MessageBimiResponseDto $bimi = null,
         public ?int $threadMessageCount = null,
@@ -98,6 +100,12 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
                 $references[] = (string) $r;
             }
         }
+        $labels = [];
+        if (isset($data['labels']) && is_array($data['labels'])) {
+            foreach ($data['labels'] as $r) {
+                $labels[] = (string) $r;
+            }
+        }
 
         // BIMI
         $bimi = isset($data['bimi']) ? MessageBimiResponseDto::fromArray($data['bimi']) : null;
@@ -145,6 +153,7 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
             $forwarded,
             $hasDrafts,
             $references,
+            $labels,
             $contentType,
             $bimi,
             $threadMessageCount,

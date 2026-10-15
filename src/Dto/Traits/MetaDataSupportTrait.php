@@ -8,8 +8,8 @@ namespace Zone\Wildduck\Dto\Traits;
  * Trait for DTOs that support metadata fields
  *
  * Expects the DTO to have:
- * - public readonly ?array $metaData
- * - public readonly ?array $internalData
+ * @property-read array|null $metaData
+ * @property-read array|null $internalData
  */
 trait MetaDataSupportTrait
 {

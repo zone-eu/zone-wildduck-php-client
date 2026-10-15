@@ -56,4 +56,33 @@ class BulkUpdateMessagesRequestDtoTest extends TestCase
             $dto->toArray()
         );
     }
+
+    public function testToArrayIncludesLabelFieldsWhenSet(): void
+    {
+        $dto = new BulkUpdateMessagesRequestDto(
+            message: '1,2',
+            labels: ['Work', 'Urgent'],
+            addLabels: ['New'],
+            removeLabels: ['Done'],
+        );
+
+        $this->assertSame(
+            [
+                'message' => '1,2',
+                'labels' => ['Work', 'Urgent'],
+                'addLabels' => ['New'],
+                'removeLabels' => ['Done'],
+            ],
+            $dto->toArray()
+        );
+    }
+
+    public function testToArrayOmitsLabelFieldsWhenUnset(): void
+    {
+        $dto = new BulkUpdateMessagesRequestDto(message: '1', seen: true);
+
+        $this->assertArrayNotHasKey('labels', $dto->toArray());
+        $this->assertArrayNotHasKey('addLabels', $dto->toArray());
+        $this->assertArrayNotHasKey('removeLabels', $dto->toArray());
+    }
 }

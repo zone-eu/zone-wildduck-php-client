@@ -20,6 +20,8 @@ final class FilterActionRequestDto implements RequestDtoInterface
         public readonly ?string $mailbox = null,
         /** @var string[]|null */
         public readonly ?array $targets = null,
+        /** @var string[]|null Labels to apply to matching messages */
+        public readonly ?array $labels = null,
     ) {}
 
     public function toArray(): array
@@ -32,6 +34,7 @@ final class FilterActionRequestDto implements RequestDtoInterface
                 'spam' => $this->spam,
                 'mailbox' => $this->mailbox,
                 'targets' => $this->targets,
+                'labels' => $this->labels,
             ],
             // Spam is a tristate where null is also a valid option
             fn($value, $key) => $value !== null || $key === 'spam',

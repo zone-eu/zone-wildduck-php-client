@@ -34,4 +34,26 @@ class SearchApplyMessagesRequestDtoTest extends TestCase
             $dto->toArray()
         );
     }
+
+    public function testToArrayIncludesActionLabelFieldsWhenSet(): void
+    {
+        $action = new BulkUpdateSearchActionsRequestDto(
+            labels: ['Work'],
+            addLabels: ['New'],
+            removeLabels: ['Done'],
+        );
+        $dto = new SearchApplyMessagesRequestDto(action: $action, q: 'hello');
+
+        $this->assertSame(
+            [
+                'action' => [
+                    'labels' => ['Work'],
+                    'addLabels' => ['New'],
+                    'removeLabels' => ['Done'],
+                ],
+                'q' => 'hello',
+            ],
+            $dto->toArray()
+        );
+    }
 }
