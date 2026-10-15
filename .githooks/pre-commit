@@ -1,0 +1,36 @@
+#!/bin/sh
+# Pre-commit hook: auto-fix and gate code style (ruleset: phpcs.xml).
+#
+# Enable with:  git config core.hooksPath .githooks
+# Bypass with:  git commit --no-verify
+
+set -u
+
+# PHP files staged for this commit.
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.php$' || true)
+[ -z "$files" ] && exit 0
+
+if [ ! -x vendor/bin/phpcbf ]; then
+    echo "pre-commit: vendor/bin/phpcbf not found (run 'composer install') - skipping style fix" >&2
+    exit 0
+fi
+
+# Fix style issues in the working tree; phpcbf exits non-zero when
+# unfixable violations remain.
+# shellcheck disable=SC2086  # deliberate word splitting of the file list
+if ! vendor/bin/phpcbf --standard=phpcs.xml -- $files > /dev/null 2>&1; then
+    # shellcheck disable=SC2086
+    vendor/bin/phpcs --standard=phpcs.xml -- $files
+    echo "" >&2
+    echo "pre-commit: code style violations remain (see above)." >&2
+    echo "            Fix them, re-stage the files and commit again." >&2
+    echo "            (bypass: git commit --no-verify)" >&2
+    exit 1
+fi
+
+# Re-stage any files phpcbf rewrote.
+for file in $files; do
+    [ -f "$file" ] && git add -- "$file"
+done
+
+exit 0
