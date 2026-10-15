@@ -19,7 +19,8 @@ final readonly class SettingDto implements ResponseDtoInterface
         public string $description,
         public string $type,
         public bool $custom,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

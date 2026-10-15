@@ -20,7 +20,8 @@ final class FilterQueryRequestDto implements RequestDtoInterface
         public readonly ?string $text = null,
         public readonly ?bool $ha = null,
         public readonly ?int $size = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

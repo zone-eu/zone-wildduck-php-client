@@ -165,7 +165,7 @@ class ApiRequestor
         [$rBody, $rCode, $rHeaders, $myApiKey] = $this->_requestRaw($method, $url, $params, $headers, $fileUpload);
         $json = null;
         if ($rCode < 200 || $rCode >= 300) {
-            $resp = json_decode((string)$rBody, true);
+            $resp = json_decode((string) $rBody, true);
             $jsonError = json_last_error();
             if ($resp && $jsonError === JSON_ERROR_NONE) {
                 $this->handleErrorResponse($rBody, $rCode, $resp);

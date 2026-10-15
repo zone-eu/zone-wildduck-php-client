@@ -14,7 +14,8 @@ readonly class RecipientResponseDto implements ResponseDtoInterface
     public function __construct(
         public string $address,
         public ?string $name = null,
-    ) {}
+    ) {
+    }
 
     /** @param array{address: string|null, name: string|null, group?: string } $data */
     public static function fromArray(array $data): self

@@ -28,7 +28,8 @@ readonly class ListAllFiltersResponseDto implements ResponseDtoInterface
         public ?string $name = null,
         public ?array $metaData = null,
         public ?array $targets = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

@@ -17,7 +17,8 @@ final class WebAuthnCredentialDto implements ResponseDtoInterface
         public readonly string $description,
         public readonly string $rawId,
         public readonly string $authenticatorAttachment,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

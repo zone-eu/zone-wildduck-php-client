@@ -22,7 +22,8 @@ class BulkUpdateSearchActionsRequestDto implements RequestDtoInterface
         public ?array $addLabels = null,
         /** @var string[]|null Custom labels to remove from matched messages without affecting other labels. */
         public ?array $removeLabels = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

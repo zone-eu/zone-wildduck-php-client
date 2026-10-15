@@ -33,7 +33,7 @@
         "test": "phpunit --colors=always",
         "rector": "rector process src tests --set php85",
         "phpstan": "phpstan --memory-limit=1G analyse src tests",
-        "cs-check": "phpcs --standard=PSR12 src tests",
-        "cs-fix": "phpcbf --standard=PSR12 src tests"
+        "cs-check": "phpcs --standard=phpcs.xml src tests",
+        "cs-fix": "phpcbf --standard=phpcs.xml src tests"
     }
 }

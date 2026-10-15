@@ -34,7 +34,8 @@ class BulkUpdateMessagesRequestDto implements RequestDtoInterface
         public ?array $addLabels = null,
         public ?array $removeLabels = null,
         public ?array $metaData = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

@@ -13,7 +13,8 @@ class ListAllUserApplicationPasswordRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public bool $showAll = false
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

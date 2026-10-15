@@ -23,7 +23,8 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
         public readonly ?string $text = null,
         public readonly ?bool $ha = null,
         public readonly ?array $size = null,
-    ) {}
+    ) {
+    }
 
     /**
      * @param array<int, array{ 0: string, 1: string|int|null }> $data
@@ -64,10 +65,10 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
                         : $value;
                     break;
                 case 'larger':
-                    $size = ['size' => (int)$value, 'type' => 'larger'];
+                    $size = ['size' => (int) $value, 'type' => 'larger'];
                     break;
                 case 'smaller':
-                    $size = ['size' => (int)$value, 'type' => 'smaller'];
+                    $size = ['size' => (int) $value, 'type' => 'smaller'];
                     break;
 
                 default:
@@ -98,7 +99,7 @@ final class FilterQueryResponseDto implements ResponseDtoInterface
             listId: isset($data['listId']) ? trim($data['listId'], '()') : null,
             text: $data['text'] ?? null,
             ha: $data['ha'] ?? false,
-            size: isset($data['size']) ? ['size' => (int)$data['size'], 'type' => (int)$data['size'] > 0 ? 'larger' : 'smaller'] : null,
+            size: isset($data['size']) ? ['size' => (int) $data['size'], 'type' => (int) $data['size'] > 0 ? 'larger' : 'smaller'] : null,
         );
     }
 }

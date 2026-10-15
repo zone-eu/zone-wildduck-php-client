@@ -15,7 +15,8 @@ final class WebAuthnAuthenticationAssertionResponseResponseDto implements Respon
     public function __construct(
         public readonly bool $authenticated,
         public readonly string $credential,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

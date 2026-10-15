@@ -13,7 +13,8 @@ class DeleteMessageRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public bool $updateThread,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

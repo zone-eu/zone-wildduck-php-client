@@ -17,7 +17,8 @@ class CreateMailboxRequestDto implements RequestDtoInterface
         public bool $hidden = false,
         public int $retention = 0,
         public bool $encryptMessages = false,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

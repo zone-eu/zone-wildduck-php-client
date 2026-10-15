@@ -52,7 +52,8 @@ readonly class UserResponseDto implements ResponseDtoInterface
         public ?bool $suspended = null,
         public ?bool $passwordPwned = null,
         public ?bool $requirePasswordChange = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

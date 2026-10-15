@@ -18,7 +18,8 @@ readonly class MailingListResponseDto implements ResponseDtoInterface
     public function __construct(
         public array $id,
         public array $unsubscribe,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

@@ -78,7 +78,8 @@ readonly class MessageResponseDto implements ResponseDtoInterface
         public ?MessageReferenceResponseDto $reference = null,
         public ?bool $encrypted = null,
         public array $labels = [],
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

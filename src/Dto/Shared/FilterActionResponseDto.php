@@ -19,7 +19,8 @@ final class FilterActionResponseDto implements ResponseDtoInterface
         public readonly ?string $mailbox = null,
         /** @var string[]|null */
         public readonly ?array $targets = null,
-    ) {}
+    ) {
+    }
 
     /**
      * @param array<int, array{ 0: string, 1: string|bool|null }> $data

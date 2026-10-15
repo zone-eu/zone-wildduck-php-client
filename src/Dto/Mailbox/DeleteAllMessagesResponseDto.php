@@ -19,7 +19,8 @@ readonly class DeleteAllMessagesResponseDto implements ResponseDtoInterface
         public ?string $scheduled = null,
         public ?int $deleted = null,
         public ?int $errors = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

@@ -40,7 +40,8 @@ class SearchMessagesRequestDto implements RequestDtoInterface
         public ?bool $useAndSearch = null,
         public ?bool $collapseThreads = null,
         public ?bool $includeHasDrafts = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

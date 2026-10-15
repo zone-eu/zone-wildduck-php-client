@@ -16,7 +16,8 @@ readonly class EnvelopeResponseDto implements ResponseDtoInterface
         public string $from,
         /** @var string[]|null */
         public ?array $rcpt = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

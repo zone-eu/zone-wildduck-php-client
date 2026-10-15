@@ -25,7 +25,8 @@ readonly class FilterResponseDto implements ResponseDtoInterface
         public bool $disabled,
         public ?string $name = null,
         public ?array $metaData = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

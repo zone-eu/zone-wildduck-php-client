@@ -58,7 +58,7 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $result = $this->client->messages()->upload($this->createdUserId, $this->createdMailboxId, $uploadDto);
 
         $this->assertTrue($result->success);
-        $this->createdMessageId = (string)$result->message->id;
+        $this->createdMessageId = (string) $result->message->id;
     }
 
     public function testGetMessage(): void
@@ -80,9 +80,9 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $this->createdMessageId = $this->uploadTestMessage($this->createdUserId, $this->createdMailboxId, $rawMessage);
 
         // Test get
-        $message = $this->client->messages()->get($this->createdUserId, $this->createdMailboxId, (int)$this->createdMessageId);
+        $message = $this->client->messages()->get($this->createdUserId, $this->createdMailboxId, (int) $this->createdMessageId);
 
-        $this->assertEquals((int)$this->createdMessageId, $message->id);
+        $this->assertEquals((int) $this->createdMessageId, $message->id);
         $this->assertEquals($this->createdMailboxId, $message->mailbox);
         $this->assertStringContainsString('Test Get Message', $message->subject ?? '');
     }
@@ -110,7 +110,7 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $result = $this->client->messages()->delete(
             $this->createdUserId,
             $this->createdMailboxId,
-            (int)$messageId,
+            (int) $messageId,
             $deleteDto
         );
 
@@ -140,7 +140,7 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $result = $this->client->messages()->forward(
             $this->createdUserId,
             $this->createdMailboxId,
-            (int)$this->createdMessageId,
+            (int) $this->createdMessageId,
             $forwardDto
         );
 
@@ -204,7 +204,7 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $this->createdMessageId = $this->uploadTestMessage($this->createdUserId, $this->createdMailboxId, $rawMessage);
 
         // Test source
-        $source = $this->client->messages()->source($this->createdUserId, $this->createdMailboxId, (int)$this->createdMessageId);
+        $source = $this->client->messages()->source($this->createdUserId, $this->createdMailboxId, (int) $this->createdMessageId);
 
         $this->assertStringContainsString('Test Source', $source);
     }
@@ -228,13 +228,13 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
 
         $uploadDto = new UploadMessageRequestDto(raw: $rawMessage, draft: true);
         $uploadResult = $this->client->messages()->upload($this->createdUserId, $this->createdMailboxId, $uploadDto);
-        $this->createdMessageId = (string)$uploadResult->message->id;
+        $this->createdMessageId = (string) $uploadResult->message->id;
 
         // Test submit draft
         $result = $this->client->messages()->submitDraft(
             $this->createdUserId,
             $this->createdMailboxId,
-            (int)$this->createdMessageId,
+            (int) $this->createdMessageId,
             new SubmitDraftMessageRequestDto()
         );
 
@@ -352,7 +352,7 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $this->createdMessageId = $this->uploadTestMessage($this->createdUserId, $this->createdMailboxId, $rawMessage);
 
         // Get message details to find attachment ID
-        $message = $this->client->messages()->get($this->createdUserId, $this->createdMailboxId, (int)$this->createdMessageId);
+        $message = $this->client->messages()->get($this->createdUserId, $this->createdMailboxId, (int) $this->createdMessageId);
 
         // Check if message has attachments
         if (!empty($message->attachments)) {
@@ -362,7 +362,7 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
             $content = $this->client->messages()->downloadAttachment(
                 $this->createdUserId,
                 $this->createdMailboxId,
-                (int)$this->createdMessageId,
+                (int) $this->createdMessageId,
                 $attachmentId
             );
 
@@ -407,7 +407,7 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $forwardResult = $this->client->messages()->forward(
             $this->createdUserId,
             $this->createdMailboxId,
-            (int)$this->createdMessageId,
+            (int) $this->createdMessageId,
             $forwardDto
         );
 
@@ -473,11 +473,11 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $uploadDto = new UploadMessageRequestDto(raw: $rawMessage);
         $uploadResult = $this->client->messages()->upload($this->createdUserId, $this->createdMailboxId, $uploadDto);
         $this->assertTrue($uploadResult->success);
-        $this->createdMessageId = (string)$uploadResult->message->id;
+        $this->createdMessageId = (string) $uploadResult->message->id;
 
         // 2. Read
-        $message = $this->client->messages()->get($this->createdUserId, $this->createdMailboxId, (int)$this->createdMessageId);
-        $this->assertEquals((int)$this->createdMessageId, $message->id);
+        $message = $this->client->messages()->get($this->createdUserId, $this->createdMailboxId, (int) $this->createdMessageId);
+        $this->assertEquals((int) $this->createdMessageId, $message->id);
         // Note: seen status after upload varies by API implementation
 
         // 3. Update (mark as seen and flagged)
@@ -490,7 +490,7 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $this->assertTrue($updateResult->success);
 
         // Verify update
-        $updatedMessage = $this->client->messages()->get($this->createdUserId, $this->createdMailboxId, (int)$this->createdMessageId);
+        $updatedMessage = $this->client->messages()->get($this->createdUserId, $this->createdMailboxId, (int) $this->createdMessageId);
         $this->assertTrue($updatedMessage->seen ?? false);
         $this->assertTrue($updatedMessage->flagged ?? false);
 
@@ -507,7 +507,7 @@ class MessageServiceIntegrationTest extends IntegrationTestCase
         $deleteResult = $this->client->messages()->delete(
             $this->createdUserId,
             $this->secondMailboxId,
-            (int)$this->createdMessageId,
+            (int) $this->createdMessageId,
             $deleteDto
         );
         $this->assertTrue($deleteResult->success);

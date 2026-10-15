@@ -13,7 +13,8 @@ class SearchOrTermsRequestDto implements RequestDtoInterface
         public ?string $from = null,
         public ?string $to = null,
         public ?string $subject = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

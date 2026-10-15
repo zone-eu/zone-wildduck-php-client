@@ -16,7 +16,8 @@ final class WebAuthnAuthenticationAssertionResponseDto implements ResponseDtoInt
         public readonly bool $success,
         public readonly WebAuthnAuthenticationAssertionResponseResponseDto $response,
         public readonly ?string $token = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

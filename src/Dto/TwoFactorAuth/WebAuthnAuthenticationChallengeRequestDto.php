@@ -16,7 +16,8 @@ class WebAuthnAuthenticationChallengeRequestDto implements RequestDtoInterface
         public ?string $authenticatorAttachment = null,
         public ?string $rpId = null,
         public ?string $twoFactorNonce = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

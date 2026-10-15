@@ -19,7 +19,8 @@ readonly class MessageBimiResponseDto implements ResponseDtoInterface
         public string $url,
         public string $image,
         public ?string $type = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

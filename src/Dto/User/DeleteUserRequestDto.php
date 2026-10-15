@@ -13,7 +13,8 @@ readonly class DeleteUserRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public bool|string $deleteAfter = false,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

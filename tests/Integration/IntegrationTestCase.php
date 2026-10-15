@@ -224,7 +224,7 @@ abstract class IntegrationTestCase extends TestCase
         );
 
         $result = $this->client->messages()->upload($userId, $mailboxId, $uploadDto);
-        return (string)$result->message->id;
+        return (string) $result->message->id;
     }
 
     /**
@@ -239,7 +239,7 @@ abstract class IntegrationTestCase extends TestCase
     {
         $deleteDto = new DeleteMessageRequestDto(updateThread: false);
 
-        $this->client->messages()->delete($userId, $mailboxId, (int)$messageId, $deleteDto);
+        $this->client->messages()->delete($userId, $mailboxId, (int) $messageId, $deleteDto);
     }
 
     /**

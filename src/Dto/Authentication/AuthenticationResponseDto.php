@@ -26,7 +26,8 @@ readonly class AuthenticationResponseDto implements ResponseDtoInterface
         public bool $passwordPwned,
         public ?string $token = null,
         public ?string $twoFactorNonce = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

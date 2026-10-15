@@ -85,7 +85,8 @@ class BaseWildduckClient implements WildduckClientInterface
         }
 
         // auth_mode
-        if (($config['auth_mode'] ?? null) !== null
+        if (
+            ($config['auth_mode'] ?? null) !== null
             && !in_array($config['auth_mode'], [ApiRequestor::AUTH_MODE_ACCESS_TOKEN, ApiRequestor::AUTH_MODE_BEARER], true)
         ) {
             throw new InvalidArgumentException('auth_mode must be "access_token" or "bearer"');

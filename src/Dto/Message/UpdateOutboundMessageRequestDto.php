@@ -16,7 +16,8 @@ class UpdateOutboundMessageRequestDto implements RequestDtoInterface
      */
     public function __construct(
         public string $sendTime,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

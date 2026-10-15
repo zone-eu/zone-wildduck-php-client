@@ -15,7 +15,8 @@ class ValidateTotpRequestDto implements RequestDtoInterface
     public function __construct(
         public string $token,
         public string $totpNonce
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

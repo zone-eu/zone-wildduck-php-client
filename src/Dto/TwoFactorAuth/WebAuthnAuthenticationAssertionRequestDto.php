@@ -20,7 +20,8 @@ class WebAuthnAuthenticationAssertionRequestDto implements RequestDtoInterface
         public ?string $twoFactorNonce = null,
         public ?string $rpId = null,
         public ?bool $token = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

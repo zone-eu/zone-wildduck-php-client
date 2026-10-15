@@ -35,7 +35,8 @@ class SearchApplyMessagesRequestDto implements RequestDtoInterface
         public ?bool $metaData = null,
         public ?bool $searchable = null,
         public ?bool $useAndSearch = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

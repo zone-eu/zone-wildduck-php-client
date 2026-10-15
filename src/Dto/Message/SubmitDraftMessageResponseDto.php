@@ -19,7 +19,8 @@ readonly class SubmitDraftMessageResponseDto implements ResponseDtoInterface
         public bool $success,
         public ?string $queueId = null,
         public ?array $message = null
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

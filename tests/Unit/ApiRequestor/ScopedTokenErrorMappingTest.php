@@ -36,7 +36,7 @@ class ScopedTokenErrorMappingTest extends TestCase
         $resp = ['error' => $error, 'code' => $code];
 
         try {
-            $this->makeRequestor()->handleErrorResponse((string)json_encode($resp), $httpCode, $resp);
+            $this->makeRequestor()->handleErrorResponse((string) json_encode($resp), $httpCode, $resp);
             $this->fail(
                 sprintf('Expected %s for machine-readable code %s', $exceptionClass, $code)
             );
@@ -109,7 +109,7 @@ class ScopedTokenErrorMappingTest extends TestCase
 
         $this->expectException(ValidationException::class);
 
-        $this->makeRequestor()->handleErrorResponse((string)json_encode($resp), 400, $resp);
+        $this->makeRequestor()->handleErrorResponse((string) json_encode($resp), 400, $resp);
     }
 
     public function testUnknownCodeStillFallsBackToRequestFailedException(): void
@@ -117,7 +117,7 @@ class ScopedTokenErrorMappingTest extends TestCase
         $resp = ['error' => 'Something novel happened', 'code' => 'TotallyNewCode'];
 
         try {
-            $this->makeRequestor()->handleErrorResponse((string)json_encode($resp), 418, $resp);
+            $this->makeRequestor()->handleErrorResponse((string) json_encode($resp), 418, $resp);
             $this->fail('Expected RequestFailedException for unknown code');
         } catch (RequestFailedException $exception) {
             $this->assertSame('TotallyNewCode', $exception->getErrorCode());

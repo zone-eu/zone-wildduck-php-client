@@ -22,7 +22,8 @@ final class FilterActionRequestDto implements RequestDtoInterface
         public readonly ?array $targets = null,
         /** @var string[]|null Labels to apply to matching messages */
         public readonly ?array $labels = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

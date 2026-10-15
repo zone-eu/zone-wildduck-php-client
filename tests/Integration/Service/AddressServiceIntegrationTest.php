@@ -272,7 +272,7 @@ class AddressServiceIntegrationTest extends IntegrationTestCase
 
             $updateResult = $this->client->addresses()->updateAddressFromRegister(
                 $this->createdUserId,
-                (string)$firstAddress->id,
+                (string) $firstAddress->id,
                 $updateDto
             );
 

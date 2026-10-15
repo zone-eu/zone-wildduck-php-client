@@ -10,7 +10,7 @@ use Zone\Wildduck\Util\RandomGenerator;
 use Zone\Wildduck\Util\Util;
 use Zone\Wildduck\Wildduck;
 
-// @codingStandardsIgnoreStart
+// phpcs:disable Generic.NamingConventions.UpperCaseConstantName
 // PSR2 requires all constants be upper case. Sadly, the CURL_SSLVERSION
 // constants do not abide by those rules.
 
@@ -22,7 +22,7 @@ if (!defined('CURL_SSLVERSION_TLSv1_2')) {
     define('CURL_SSLVERSION_TLSv1_2', 6);
 }
 
-// @codingStandardsIgnoreEnd
+// phpcs:enable
 
 // Available since PHP 7.0.7 and cURL 7.47.0
 if (!defined('CURL_HTTP_VERSION_2TLS')) {
@@ -255,7 +255,7 @@ class CurlClient implements ClientInterface
     private function hasHeader(array $headers, string $name = ''): bool
     {
         foreach ($headers as $header) {
-            if (0 === (int)strncasecmp($header, $name . ': ', strlen($name) + 2)) {
+            if (0 === (int) strncasecmp($header, $name . ': ', strlen($name) + 2)) {
                 return true;
             }
         }
@@ -483,7 +483,7 @@ class CurlClient implements ClientInterface
         $sleepSeconds = max(Wildduck::getInitialNetworkRetryDelay(), $sleepSeconds);
 
         // And never sleep less than the time the API asks us to wait, assuming it's a reasonable ask.
-        $retryAfter = isset($rheaders['retry-after']) ? (float)($rheaders['retry-after']) : 0.0;
+        $retryAfter = isset($rheaders['retry-after']) ? (float) ($rheaders['retry-after']) : 0.0;
         if (floor($retryAfter) === $retryAfter && $retryAfter <= Wildduck::getMaxRetryAfter()) {
             return max($sleepSeconds, $retryAfter);
         }

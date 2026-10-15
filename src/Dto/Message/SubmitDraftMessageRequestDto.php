@@ -12,9 +12,8 @@ use Zone\Wildduck\Dto\RequestDtoInterface;
 class SubmitDraftMessageRequestDto implements RequestDtoInterface
 {
     public function __construct(
-
-    public bool $deleteFiles = false,
-    public ?string $sendTime = null,
+        public bool $deleteFiles = false,
+        public ?string $sendTime = null,
     ) {
     }
 

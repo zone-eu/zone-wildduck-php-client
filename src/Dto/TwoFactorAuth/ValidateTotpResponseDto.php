@@ -15,7 +15,8 @@ final class ValidateTotpResponseDto implements ResponseDtoInterface
     public function __construct(
         public readonly bool $success,
         public readonly ?string $token = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

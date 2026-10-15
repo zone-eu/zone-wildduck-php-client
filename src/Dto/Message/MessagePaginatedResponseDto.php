@@ -24,7 +24,8 @@ readonly class MessagePaginatedResponseDto implements ResponseDtoInterface
         public string|false|null $nextCursor = null,
         public string|false|null $previousCursor = null,
         public int $page = 1,
-    ) {}
+    ) {
+    }
 
     /**
      * Create paginated result from API response

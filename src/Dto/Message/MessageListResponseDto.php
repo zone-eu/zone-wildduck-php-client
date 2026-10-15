@@ -54,7 +54,8 @@ readonly class MessageListResponseDto implements ResponseDtoInterface
         public ?bool $encrypted = null,
         /** @var array<string, mixed>|null Custom metadata */
         public mixed $metaData = null,
-    ) {}
+    ) {
+    }
 
 
     public static function fromArray(array $data): self

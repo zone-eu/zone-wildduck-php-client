@@ -30,7 +30,8 @@ readonly class AuthLogEventResponseDto implements ResponseDtoInterface
         public ?string $aname = null,
         public ?string $asp = null,
         public ?string $source = null
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

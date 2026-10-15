@@ -23,7 +23,8 @@ readonly class AttachmentResponseDto implements ResponseDtoInterface
         public int $sizeKb,
         public int $size,
         public ?string $cid = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

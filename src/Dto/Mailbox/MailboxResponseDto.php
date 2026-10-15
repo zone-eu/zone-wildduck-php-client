@@ -27,7 +27,8 @@ readonly class MailboxResponseDto implements ResponseDtoInterface
         public int $total = 0,
         public int $unseen = 0,
         public ?int $size = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

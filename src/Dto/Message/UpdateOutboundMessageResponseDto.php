@@ -18,7 +18,8 @@ class UpdateOutboundMessageResponseDto implements ResponseDtoInterface
         public string $sendTime,
         public int $updated,
         public ?string $code = null,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

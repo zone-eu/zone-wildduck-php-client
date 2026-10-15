@@ -22,7 +22,8 @@ class ListMessagesRequestDto implements RequestDtoInterface
         public ?string $next = null,
         public ?string $previous = null,
         public string|bool|null $includeHeaders = null,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {

@@ -14,7 +14,8 @@ class EnableTotpRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $token,
-    ) {}
+    ) {
+    }
 
     public function toArray(): array
     {
