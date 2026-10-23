@@ -33,6 +33,14 @@ readonly class UserResponseDto implements ResponseDtoInterface
         public ?bool $encryptMessages = null,
         public ?bool $encryptForwarded = null,
         public ?string $pubKey = null,
+        /** @var string[]|null S/MIME certificates (PEM) */
+        public ?array $smimeCerts = null,
+        /** @var list<array<string, mixed>>|null S/MIME certificate metadata (subject, serial, fingerprint) */
+        public ?array $smimeCertInfo = null,
+        /** @var string|null S/MIME content encryption cipher (AES-CBC, AES-GCM) */
+        public ?string $smimeCipher = null,
+        /** @var string|null S/MIME RSA key transport algorithm (PKCS#1 v1.5, OAEP) */
+        public ?string $smimeKeyTransport = null,
         public ?KeyInfoResponseDto $keyInfo = null,
         /** @var array<string, mixed>|null Custom metadata */
         public ?array $metaData = null,
@@ -71,6 +79,16 @@ readonly class UserResponseDto implements ResponseDtoInterface
             throw DtoValidationException::invalidType('username', 'string', $data['username']);
         }
 
+        $smimeCerts = null;
+        if (isset($data['smimeCerts']) && is_array($data['smimeCerts'])) {
+            $smimeCerts = array_values($data['smimeCerts']);
+        }
+
+        $smimeCertInfo = null;
+        if (isset($data['smimeCertInfo']) && is_array($data['smimeCertInfo'])) {
+            $smimeCertInfo = array_values($data['smimeCertInfo']);
+        }
+
         $keyInfo = null;
         if (isset($data['keyInfo']) && is_array($data['keyInfo'])) {
             $keyInfo = KeyInfoResponseDto::fromArray($data['keyInfo']);
@@ -97,6 +115,10 @@ readonly class UserResponseDto implements ResponseDtoInterface
             encryptMessages: isset($data['encryptMessages']) && is_bool($data['encryptMessages']) ? $data['encryptMessages'] : null,
             encryptForwarded: isset($data['encryptForwarded']) && is_bool($data['encryptForwarded']) ? $data['encryptForwarded'] : null,
             pubKey: isset($data['pubKey']) && is_string($data['pubKey']) ? $data['pubKey'] : null,
+            smimeCerts: $smimeCerts,
+            smimeCertInfo: $smimeCertInfo,
+            smimeCipher: isset($data['smimeCipher']) && is_string($data['smimeCipher']) ? $data['smimeCipher'] : null,
+            smimeKeyTransport: isset($data['smimeKeyTransport']) && is_string($data['smimeKeyTransport']) ? $data['smimeKeyTransport'] : null,
             keyInfo: $keyInfo,
             metaData: $metaData,
             targets: isset($data['targets']) && is_array($data['targets']) ? $data['targets'] : [],

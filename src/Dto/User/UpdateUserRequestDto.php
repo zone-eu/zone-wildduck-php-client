@@ -49,6 +49,9 @@ class UpdateUserRequestDto implements RequestDtoInterface
         /** @var array<string, mixed>|null Custom metadata */ public ?array $metaData = null,
         /** @var array<string, mixed>|null Internal data */ public ?array $internalData = null,
         public ?string $pubKey = null,
+        /** @var string[]|null S/MIME certificates (PEM) */ public ?array $smimeCerts = null,
+        /** @var string|null S/MIME content encryption cipher (AES-CBC, AES-GCM) */ public ?string $smimeCipher = null,
+        /** @var string|null S/MIME RSA key transport algorithm (PKCS#1 v1.5, OAEP) */ public ?string $smimeKeyTransport = null,
         public ?bool $encryptMessages = null,
         public ?bool $encryptForwarded = null,
         public int|bool|null $retention = null,
@@ -125,6 +128,15 @@ class UpdateUserRequestDto implements RequestDtoInterface
         }
         if ($this->pubKey !== null) {
             $data['pubKey'] = $this->pubKey;
+        }
+        if ($this->smimeCerts !== null) {
+            $data['smimeCerts'] = $this->smimeCerts;
+        }
+        if ($this->smimeCipher !== null) {
+            $data['smimeCipher'] = $this->smimeCipher;
+        }
+        if ($this->smimeKeyTransport !== null) {
+            $data['smimeKeyTransport'] = $this->smimeKeyTransport;
         }
         if ($this->retention !== null) {
             $data['retention'] = $this->retention;
