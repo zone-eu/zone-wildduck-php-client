@@ -19,6 +19,8 @@ final class FilterActionResponseDto implements ResponseDtoInterface
         public readonly ?string $mailbox = null,
         /** @var string[]|null */
         public readonly ?array $targets = null,
+        /** @var string[]|null */
+        public readonly ?array $labels = null,
     ) {
     }
 
@@ -68,6 +70,11 @@ final class FilterActionResponseDto implements ResponseDtoInterface
                 case 'do not mark it as spam':
                     $spam = false;
                     break;
+                case 'apply labels':
+                    // Human-readable action array carries comma-joined label
+                    // names, which cannot be resolved to ids without the
+                    // user's label list, so leave $labels null here.
+                    break;
 
                 default:
                     throw new \InvalidArgumentException("Unknown filter action key: $key");
@@ -83,9 +90,6 @@ final class FilterActionResponseDto implements ResponseDtoInterface
             targets: $targets,
         );
     }
-    /**
-     * @param array{ seen: true|null, flag: true|null, delete: true|null, spam: true|null, mailbox: string|null, targets: string[]|null } $data
-     */
     public static function fromObject(array $data): self
     {
         return new self(
@@ -95,6 +99,7 @@ final class FilterActionResponseDto implements ResponseDtoInterface
             spam: $data['spam'] ?? null,
             mailbox: $data['mailbox'] ?? null,
             targets: $data['targets'] ?? null,
+            labels: $data['labels'] ?? null,
         );
     }
 }
