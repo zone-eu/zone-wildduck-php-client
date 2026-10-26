@@ -13,7 +13,7 @@ use Zone\Wildduck\Exception\DtoValidationException;
 readonly class AuthenticationResponseDto implements ResponseDtoInterface
 {
     /**
-     * @param string[]|bool $require2fa
+     * @param list<string>|bool $require2fa
      */
     public function __construct(
         public bool $success,
