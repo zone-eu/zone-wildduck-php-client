@@ -13,6 +13,7 @@ class CreateLabelRequestDto implements RequestDtoInterface
 {
     public function __construct(
         public string $name,
+        public ?array $metaData = null,
     ) {
     }
 
@@ -20,6 +21,7 @@ class CreateLabelRequestDto implements RequestDtoInterface
     {
         return [
             'name' => $this->name,
+            ...($this->metaData !== null ? ['metaData' => $this->metaData] : []),
         ];
     }
 }

@@ -175,6 +175,18 @@ class LabelServiceTest extends TestCase
         $this->assertSame('Work', $result->name);
     }
 
+    public function testCreateSendsPostWithNameAndMetaDataBody(): void
+    {
+        $this->http->responseBody = '{"success":true,"id":"a1","name":"Work","metaData":{"color":"#e53935"}}';
+
+        $result = $this->service->create(self::USER, 'Work', metaData: ['color' => '#e53935']);
+
+        $this->assertSame('post', $this->http->lastMethod);
+        $this->assertSame('https://localhost:8080/users/' . self::USER . '/labels', $this->http->lastUrl);
+        $this->assertSame(['name' => 'Work', 'metaData' => ['color' => '#e53935']], $this->http->lastParams);
+        $this->assertSame(['color' => '#e53935'], $result->metaData);
+    }
+
     public function testGetSendsGetToLabelPath(): void
     {
         $this->http->responseBody = '{"success":true,"id":"a1","name":"Work","metaData":{"color":"red"}}';
@@ -188,17 +200,50 @@ class LabelServiceTest extends TestCase
         $this->assertSame(['color' => 'red'], $result->metaData);
     }
 
-    public function testRenameSendsPutWithNewNameBody(): void
+    public function testUpdateSendsPutWithNameBody(): void
     {
         $this->http->responseBody = '{"success":true,"id":"a1","name":"Family"}';
 
-        $result = $this->service->rename(self::USER, 'a1', 'Family');
+        $result = $this->service->update(self::USER, 'a1', name: 'Family');
 
         $this->assertSame('put', $this->http->lastMethod);
         $this->assertSame('https://localhost:8080/users/' . self::USER . '/labels/a1', $this->http->lastUrl);
         $this->assertSame(['name' => 'Family'], $this->http->lastParams);
         $this->assertInstanceOf(LabelResponseDto::class, $result);
         $this->assertSame('Family', $result->name);
+    }
+
+    public function testUpdateSendsPutWithMetaDataOnlyBody(): void
+    {
+        $this->http->responseBody = '{"success":true,"id":"a1","name":"Work","metaData":{"color":"#e53935"}}';
+
+        $result = $this->service->update(self::USER, 'a1', metaData: ['color' => '#e53935']);
+
+        $this->assertSame('put', $this->http->lastMethod);
+        $this->assertSame('https://localhost:8080/users/' . self::USER . '/labels/a1', $this->http->lastUrl);
+        $this->assertSame(['metaData' => ['color' => '#e53935']], $this->http->lastParams);
+        $this->assertSame(['color' => '#e53935'], $result->metaData);
+    }
+
+    public function testUpdateSendsEmptyMetaDataToClearIt(): void
+    {
+        $this->http->responseBody = '{"success":true,"id":"a1","name":"Work"}';
+
+        $result = $this->service->update(self::USER, 'a1', metaData: []);
+
+        $this->assertSame(['metaData' => []], $this->http->lastParams);
+        $this->assertNull($result->metaData);
+    }
+
+    public function testUpdateSendsPutWithNameAndMetaDataBody(): void
+    {
+        $this->http->responseBody = '{"success":true,"id":"a1","name":"Family","metaData":{"color":"#1976d2"}}';
+
+        $result = $this->service->update(self::USER, 'a1', name: 'Family', metaData: ['color' => '#1976d2']);
+
+        $this->assertSame(['name' => 'Family', 'metaData' => ['color' => '#1976d2']], $this->http->lastParams);
+        $this->assertSame('Family', $result->name);
+        $this->assertSame(['color' => '#1976d2'], $result->metaData);
     }
 
     public function testDeleteSendsDeleteWithoutBody(): void

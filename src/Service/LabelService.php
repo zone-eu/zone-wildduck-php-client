@@ -9,7 +9,7 @@ use Zone\Wildduck\Dto\Message\LabelCounterRequestDto;
 use Zone\Wildduck\Dto\Message\LabelCounterResponseDto;
 use Zone\Wildduck\Dto\Message\LabelResponseDto;
 use Zone\Wildduck\Dto\Message\ListLabelsRequestDto;
-use Zone\Wildduck\Dto\Message\RenameLabelRequestDto;
+use Zone\Wildduck\Dto\Message\UpdateLabelRequestDto;
 use Zone\Wildduck\Dto\Message\UserLabelsResponseDto;
 use Zone\Wildduck\Dto\Shared\SuccessResponseDto;
 use Zone\Wildduck\Exception\ApiConnectionException;
@@ -126,6 +126,7 @@ class LabelService extends AbstractService
      *
      * @param string $user
      * @param string $name
+     * @param array|null $metaData Custom label metadata (written only when provided)
      * @param array|null $opts
      * @return LabelResponseDto
      * @throws ApiConnectionException
@@ -134,12 +135,12 @@ class LabelService extends AbstractService
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function create(string $user, string $name, array|null $opts = null): LabelResponseDto
+    public function create(string $user, string $name, ?array $metaData = null, array|null $opts = null): LabelResponseDto
     {
         return $this->requestDto(
             'post',
             $this->buildPath('/users/%s/labels', $user),
-            new CreateLabelRequestDto($name),
+            new CreateLabelRequestDto($name, $metaData),
             LabelResponseDto::class,
             $opts
         );
@@ -170,11 +171,13 @@ class LabelService extends AbstractService
     }
 
     /**
-     * Rename a label, preserving its id and message assignments
+     * Update a label's name and/or metadata, preserving its id and message
+     * assignments. An empty metadata array clears the stored metadata.
      *
      * @param string $user
      * @param string $label
-     * @param string $newName
+     * @param string|null $name New label name
+     * @param array|null $metaData New label metadata (written only when provided)
      * @param array|null $opts
      * @return LabelResponseDto
      * @throws ApiConnectionException
@@ -183,12 +186,12 @@ class LabelService extends AbstractService
      * @throws RequestFailedException
      * @throws ValidationException
      */
-    public function rename(string $user, string $label, string $newName, array|null $opts = null): LabelResponseDto
+    public function update(string $user, string $label, ?string $name = null, ?array $metaData = null, array|null $opts = null): LabelResponseDto
     {
         return $this->requestDto(
             'put',
             $this->buildPath('/users/%s/labels/%s', $user, $label),
-            new RenameLabelRequestDto($newName),
+            new UpdateLabelRequestDto($name, $metaData),
             LabelResponseDto::class,
             $opts
         );
