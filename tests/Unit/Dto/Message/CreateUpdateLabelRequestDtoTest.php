@@ -42,7 +42,8 @@ class CreateUpdateLabelRequestDtoTest extends TestCase
     {
         $dto = new UpdateLabelRequestDto(metaData: []);
 
-        $this->assertSame(['metaData' => []], $dto->toArray());
+        $this->assertInstanceOf(\stdClass::class, $dto->toArray()['metaData']);
+        $this->assertSame('{"metaData":{}}', json_encode($dto->toArray()));
     }
 
     public function testUpdateLabelRequestSendsNameAndMetaData(): void

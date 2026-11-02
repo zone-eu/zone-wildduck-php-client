@@ -21,7 +21,22 @@ class UpdateLabelRequestDto implements RequestDtoInterface
     {
         return [
             ...($this->name !== null ? ['name' => $this->name] : []),
-            ...($this->metaData !== null ? ['metaData' => $this->metaData] : []),
+            ...($this->metaData !== null ? ['metaData' => $this->metaDataPayload()] : []),
         ];
+    }
+
+    /**
+     * WildDuck stores a label's metadata as a JSON object. An empty payload must
+     * serialize to {} (clearing the metadata) rather than the JSON array [].
+     *
+     * @return array<string, mixed>|\stdClass
+     */
+    private function metaDataPayload(): array|\stdClass
+    {
+        if ($this->metaData === null || count($this->metaData) === 0) {
+            return new \stdClass();
+        }
+
+        return $this->metaData;
     }
 }
