@@ -231,7 +231,8 @@ class LabelServiceTest extends TestCase
 
         $result = $this->service->update(self::USER, 'a1', metaData: []);
 
-        $this->assertSame(['metaData' => []], $this->http->lastParams);
+        $this->assertInstanceOf(\stdClass::class, $this->http->lastParams['metaData']);
+        $this->assertSame('{"metaData":{}}', json_encode($this->http->lastParams));
         $this->assertNull($result->metaData);
     }
 
