@@ -38,6 +38,15 @@ class VerificationResultsResponseDtoTest extends TestCase
         $this->assertNull($dto->dmarc);
     }
 
+    public function testFromArrayLeavesDmarcNullWhenLegacyString(): void
+    {
+        $dto = VerificationResultsResponseDto::fromArray([
+            'dmarc' => 'x.fi',
+        ]);
+
+        $this->assertNull($dto->dmarc);
+    }
+
     public function testFromArrayLeavesDmarcNullWhenAbsent(): void
     {
         $dto = VerificationResultsResponseDto::fromArray([
