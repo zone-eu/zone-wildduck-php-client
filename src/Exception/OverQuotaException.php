@@ -10,12 +10,12 @@ class OverQuotaException extends WildduckException
     /**
      * @param string $message
      */
-    public function __construct(string $message = '', int $code = 413)
+    public function __construct(string $message = '', int $code = 413, ?int $httpStatus = null)
     {
         if ($message === '') {
             $message = 'Over Quota Error';
         }
 
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, null, $httpStatus);
     }
 }

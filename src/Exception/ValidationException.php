@@ -9,10 +9,10 @@ class ValidationException extends WildduckException
 {
     private readonly string $errors;
 
-    public function __construct(string $errors = '')
+    public function __construct(string $errors = '', ?int $httpStatus = null)
     {
         $this->errors = $this->formatErrors($errors);
-        parent::__construct('Request failed due to validation error', 422);
+        parent::__construct('Request failed due to validation error', 422, null, $httpStatus);
     }
 
     public function getErrors(): string // TODO: Currently Wildduck only returns all validation errors as one string

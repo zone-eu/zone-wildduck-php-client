@@ -16,13 +16,13 @@ class MfaRequiredException extends WildduckException
     /**
      * @param string $message
      */
-    public function __construct(string $message = '')
+    public function __construct(string $message = '', ?int $httpStatus = null)
     {
         if ($message === '') {
             $message = 'Multi-factor authentication must be completed first';
         }
 
-        parent::__construct($message, 403);
+        parent::__construct($message, 403, null, $httpStatus);
     }
 
     public function getErrorCode(): string

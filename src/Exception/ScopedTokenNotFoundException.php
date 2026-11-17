@@ -26,7 +26,7 @@ class ScopedTokenNotFoundException extends WildduckException
      * @param string $message
      * @param string $errorCode Machine-readable code returned by WildDuck
      */
-    public function __construct(string $message = '', string $errorCode = self::ERROR_CODE)
+    public function __construct(string $message = '', string $errorCode = self::ERROR_CODE, ?int $httpStatus = null)
     {
         if ($message === '') {
             $message = 'This scoped token does not exist';
@@ -34,7 +34,7 @@ class ScopedTokenNotFoundException extends WildduckException
 
         $this->errorCode = $errorCode;
 
-        parent::__construct($message, 404);
+        parent::__construct($message, 404, null, $httpStatus);
     }
 
     public function getErrorCode(): string

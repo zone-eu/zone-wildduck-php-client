@@ -16,13 +16,13 @@ class UnsupportedAuthScopeException extends WildduckException
     /**
      * @param string $message
      */
-    public function __construct(string $message = '')
+    public function __construct(string $message = '', ?int $httpStatus = null)
     {
         if ($message === '') {
             $message = 'Unsupported authentication scope';
         }
 
-        parent::__construct($message, 400);
+        parent::__construct($message, 400, null, $httpStatus);
     }
 
     public function getErrorCode(): string
