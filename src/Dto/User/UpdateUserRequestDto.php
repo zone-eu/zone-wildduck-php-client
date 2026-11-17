@@ -21,7 +21,7 @@ class UpdateUserRequestDto implements RequestDtoInterface
 
     /**
      * @param string[] $tags
-     * @param string[] $fromWhitelist
+     * @param string[]|null $fromWhitelist null leaves the whitelist untouched, an explicit (possibly empty) list replaces it
      * @param string[] $disabledScopes
      */
     public function __construct(
@@ -44,7 +44,7 @@ class UpdateUserRequestDto implements RequestDtoInterface
         public ?int $imapMaxConnections = null,
         public ?int $receivedMax = null,
         /** @var string[] */ public array $tags = [],
-        /** @var string[] */ public array $fromWhitelist = [],
+        /** @var string[]|null */ public ?array $fromWhitelist = null,
         public ?bool $requirePasswordChange = null,
         /** @var array<string, mixed>|null Custom metadata */ public ?array $metaData = null,
         /** @var array<string, mixed>|null Internal data */ public ?array $internalData = null,
@@ -120,7 +120,7 @@ class UpdateUserRequestDto implements RequestDtoInterface
         if ($this->receivedMax !== null) {
             $data['receivedMax'] = $this->receivedMax;
         }
-        if (!empty($this->fromWhitelist)) {
+        if ($this->fromWhitelist !== null) {
             $data['fromWhitelist'] = $this->fromWhitelist;
         }
         if ($this->requirePasswordChange !== null) {

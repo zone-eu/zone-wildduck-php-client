@@ -32,4 +32,28 @@ class UpdateUserRequestDtoTest extends TestCase
         $this->assertArrayNotHasKey('smimeCipher', $data);
         $this->assertArrayNotHasKey('smimeKeyTransport', $data);
     }
+
+    public function testToArrayOmitsFromWhitelistWhenUnset(): void
+    {
+        $data = (new UpdateUserRequestDto())->toArray();
+
+        $this->assertArrayNotHasKey('fromWhitelist', $data);
+    }
+
+    public function testToArraySendsAnEmptyFromWhitelistSoTheServerClearsTheList(): void
+    {
+        $dto = new UpdateUserRequestDto(fromWhitelist: []);
+
+        $data = $dto->toArray();
+
+        $this->assertArrayHasKey('fromWhitelist', $data);
+        $this->assertSame([], $data['fromWhitelist']);
+    }
+
+    public function testToArraySendsFromWhitelistEntriesWhenSet(): void
+    {
+        $dto = new UpdateUserRequestDto(fromWhitelist: ['sender@example.com']);
+
+        $this->assertSame(['sender@example.com'], $dto->toArray()['fromWhitelist']);
+    }
 }
