@@ -44,4 +44,69 @@ class UserResponseDtoTest extends TestCase
         $this->assertNull($dto->smimeCipher);
         $this->assertNull($dto->smimeKeyTransport);
     }
+
+    public function testFromArrayMapsRolePermissionsAndEffectivePermissions(): void
+    {
+        $permissions = [
+            'mailboxes' => ['create' => false, 'update' => false, 'delete' => false],
+            'custom' => ['contacts' => false],
+        ];
+        $effectivePermissions = [
+            'resources' => [
+                'mailboxes' => [
+                    'create:own' => false,
+                    'create:any' => false,
+                    'read:own' => true,
+                    'read:any' => false,
+                    'update:own' => false,
+                    'update:any' => false,
+                    'delete:own' => false,
+                    'delete:any' => false,
+                ],
+            ],
+            'custom' => [
+                'contacts' => false,
+                'signatures' => true,
+            ],
+        ];
+
+        $dto = UserResponseDto::fromArray([
+            'id' => '6889fd51fe3341737ad095fe',
+            'username' => 'ivan@example.com',
+            'role' => 'premium',
+            'permissions' => $permissions,
+            'effectivePermissions' => $effectivePermissions,
+        ]);
+
+        $this->assertSame('premium', $dto->role);
+        $this->assertSame($permissions, $dto->permissions);
+        $this->assertSame($effectivePermissions, $dto->effectivePermissions);
+    }
+
+    public function testFromArrayDefaultsRolePermissionsAndEffectivePermissionsToNullWhenAbsent(): void
+    {
+        $dto = UserResponseDto::fromArray([
+            'id' => '6889fd51fe3341737ad095fe',
+            'username' => 'ivan@example.com',
+        ]);
+
+        $this->assertNull($dto->role);
+        $this->assertNull($dto->permissions);
+        $this->assertNull($dto->effectivePermissions);
+    }
+
+    public function testFromArrayIgnoresWronglyTypedRolePermissionsAndEffectivePermissions(): void
+    {
+        $dto = UserResponseDto::fromArray([
+            'id' => '6889fd51fe3341737ad095fe',
+            'username' => 'ivan@example.com',
+            'role' => 42,
+            'permissions' => 'mailboxes',
+            'effectivePermissions' => 'premium',
+        ]);
+
+        $this->assertNull($dto->role);
+        $this->assertNull($dto->permissions);
+        $this->assertNull($dto->effectivePermissions);
+    }
 }
