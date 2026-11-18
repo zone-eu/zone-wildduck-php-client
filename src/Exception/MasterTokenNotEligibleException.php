@@ -16,13 +16,13 @@ class MasterTokenNotEligibleException extends WildduckException
     /**
      * @param string $message
      */
-    public function __construct(string $message = '')
+    public function __construct(string $message = '', ?int $httpStatus = null)
     {
         if ($message === '') {
             $message = 'The master API token is no longer eligible to create scoped tokens';
         }
 
-        parent::__construct($message, 403);
+        parent::__construct($message, 403, null, $httpStatus);
     }
 
     public function getErrorCode(): string

@@ -7,8 +7,8 @@ use AllowDynamicProperties;
 #[AllowDynamicProperties]
 class InvalidDatabaseException extends WildduckException
 {
-    public function __construct($message = "", $code = 500)
+    public function __construct($message = "", $code = 500, ?int $httpStatus = null)
     {
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, null, $httpStatus);
     }
 }

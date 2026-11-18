@@ -477,14 +477,14 @@ class ApiRequestor
             $msg = sprintf('Invalid response object from API: %s ', $rbody)
                 . sprintf('(HTTP response code was %d)', $rcode);
 
-            throw new UnexpectedValueException($msg);
+            throw new UnexpectedValueException($msg, 0, null, $rcode);
         }
 
         if (isset($resp['code'])) {
             $this->_specificAPIError($resp['code'], $resp['message'] ?? $resp['error'] ?? 'unknown error', $rcode);
         }
 
-        throw new RequestFailedException($resp['error']);
+        throw new RequestFailedException($resp['error'], 'internal', $rcode);
     }
 
     /**
@@ -510,28 +510,28 @@ class ApiRequestor
     {
         switch ($code) {
             case static::CODE_INVALID_TOKEN:
-                throw new InvalidAccessTokenException('Access token used for request was invalid');
+                throw new InvalidAccessTokenException('Access token used for request was invalid', $rCode);
             case static::CODE_AUTH_FAILED:
-                throw new AuthenticationFailedException($error);
+                throw new AuthenticationFailedException($error, 100, $rCode);
             case static::CODE_INPUT_VALIDATION_ERROR:
-                throw new ValidationException($error);
+                throw new ValidationException($error, $rCode);
             case static::CODE_INVALID_DATABASE:
-                throw new InvalidDatabaseException($error);
+                throw new InvalidDatabaseException($error, 500, $rCode);
             case static::CODE_OVER_QUOTA:
-                throw new OverQuotaException($error);
+                throw new OverQuotaException($error, 413, $rCode);
             case static::CODE_MASTER_TOKEN_REQUIRED:
-                throw new MasterTokenRequiredException($error);
+                throw new MasterTokenRequiredException($error, $rCode);
             case static::CODE_UNSUPPORTED_AUTH_SCOPE:
-                throw new UnsupportedAuthScopeException($error);
+                throw new UnsupportedAuthScopeException($error, $rCode);
             case static::CODE_MASTER_TOKEN_NOT_ELIGIBLE:
-                throw new MasterTokenNotEligibleException($error);
+                throw new MasterTokenNotEligibleException($error, $rCode);
             case static::CODE_PASSWORD_CHANGE_REQUIRED:
-                throw new PasswordChangeRequiredException($error);
+                throw new PasswordChangeRequiredException($error, $rCode);
             case static::CODE_MFA_REQUIRED:
-                throw new MfaRequiredException($error);
+                throw new MfaRequiredException($error, $rCode);
             case static::CODE_MCP_TOKEN_NOT_FOUND: // legacy MCP-specific revocation route
             case static::CODE_SCOPED_TOKEN_NOT_FOUND:
-                throw new ScopedTokenNotFoundException($error, $code);
+                throw new ScopedTokenNotFoundException($error, $code, $rCode);
         }
 
         throw new RequestFailedException($error, $code, $rCode);
@@ -559,7 +559,7 @@ class ApiRequestor
             $msg = sprintf('Invalid response body from API: %s ', $rbody)
                 . sprintf('(HTTP response code was %d, json_last_error() was %s)', $rcode, $jsonError);
 
-            throw new UnexpectedValueException($msg, $rcode);
+            throw new UnexpectedValueException($msg, $rcode, null, $rcode);
         }
 
         if (

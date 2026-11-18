@@ -16,13 +16,13 @@ class MasterTokenRequiredException extends WildduckException
     /**
      * @param string $message
      */
-    public function __construct(string $message = '')
+    public function __construct(string $message = '', ?int $httpStatus = null)
     {
         if ($message === '') {
             $message = 'A master API token is required';
         }
 
-        parent::__construct($message, 403);
+        parent::__construct($message, 403, null, $httpStatus);
     }
 
     public function getErrorCode(): string

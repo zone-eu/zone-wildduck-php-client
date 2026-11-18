@@ -16,13 +16,13 @@ class PasswordChangeRequiredException extends WildduckException
     /**
      * @param string $message
      */
-    public function __construct(string $message = '')
+    public function __construct(string $message = '', ?int $httpStatus = null)
     {
         if ($message === '') {
             $message = 'The temporary password must be replaced before creating a scoped token';
         }
 
-        parent::__construct($message, 403);
+        parent::__construct($message, 403, null, $httpStatus);
     }
 
     public function getErrorCode(): string

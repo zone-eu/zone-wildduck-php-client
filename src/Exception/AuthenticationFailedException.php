@@ -11,12 +11,12 @@ class AuthenticationFailedException extends WildduckException
      * @param string $message
      * @param int $code 100='error.authentication'
      */
-    public function __construct(string $message = '', int $code = 100)
+    public function __construct(string $message = '', int $code = 100, ?int $httpStatus = null)
     {
         if ($message === '') {
             $message = 'Internal Server Error';
         }
 
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, null, $httpStatus);
     }
 }

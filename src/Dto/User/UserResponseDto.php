@@ -60,6 +60,11 @@ readonly class UserResponseDto implements ResponseDtoInterface
         public ?bool $suspended = null,
         public ?bool $passwordPwned = null,
         public ?bool $requirePasswordChange = null,
+        public ?string $role = null,
+        /** @var array<string, mixed>|null Per-user deny map: false denies, missing or true inherits the role */
+        public ?array $permissions = null,
+        /** @var array<string, mixed>|null Resolved permissions: {"resources": {"<resource>": {"create:own": bool, ...}}, "custom": {"<capability>": bool}} */
+        public ?array $effectivePermissions = null,
     ) {
     }
 
@@ -133,6 +138,9 @@ readonly class UserResponseDto implements ResponseDtoInterface
             suspended: isset($data['suspended']) && is_bool($data['suspended']) ? $data['suspended'] : null,
             passwordPwned: isset($data['passwordPwned']) && is_bool($data['passwordPwned']) ? $data['passwordPwned'] : null,
             requirePasswordChange: isset($data['requirePasswordChange']) && is_bool($data['requirePasswordChange']) ? $data['requirePasswordChange'] : null,
+            role: isset($data['role']) && is_string($data['role']) ? $data['role'] : null,
+            permissions: isset($data['permissions']) && is_array($data['permissions']) ? $data['permissions'] : null,
+            effectivePermissions: isset($data['effectivePermissions']) && is_array($data['effectivePermissions']) ? $data['effectivePermissions'] : null,
         );
     }
 }
