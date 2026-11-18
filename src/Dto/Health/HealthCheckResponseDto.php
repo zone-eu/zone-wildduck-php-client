@@ -13,6 +13,11 @@ readonly class HealthCheckResponseDto implements ResponseDtoInterface
 {
     public function __construct(
         public bool $success,
+        /**
+         * The running WildDuck API version, or null when the server predates
+         * the version field in its /health response (WildDuck < 1.46.3).
+         */
+        public ?string $version = null,
     ) {
     }
 
@@ -20,6 +25,7 @@ readonly class HealthCheckResponseDto implements ResponseDtoInterface
     {
         return new self(
             success: $data['success'] ?? true,
+            version: $data['version'] ?? null,
         );
     }
 }

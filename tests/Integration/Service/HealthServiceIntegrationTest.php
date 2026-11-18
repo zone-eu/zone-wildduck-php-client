@@ -16,6 +16,7 @@ class HealthServiceIntegrationTest extends IntegrationTestCase
 
         $this->assertInstanceOf(HealthCheckResponseDto::class, $health);
         $this->assertTrue($health->success);
+        $this->assertIsString($health->version);
 
         // Health check should return some status information
         // The exact structure depends on the API implementation
